@@ -1,0 +1,470 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hello! CytQ">
+    <title> - Hello! CytQ</title>
+    <meta name="author" content="CytQ">
+    
+    
+    
+    <meta name="description" content="Python中高阶函数可接受其他的函数作为参数。 常用高阶函数map(function, list) 让list的每一个元素依次调用function函数，并获取返回值存入一个新的list中。1234def format_name(s):    return s.capitalize() #将首字母大写，其余小写print map(format_name, [&apos;adam&apos;, &apos;LISA&apos;, &apos;bar">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Hello! CytQ">
+<meta property="og:url" content="http://yoursite.com/2018/02/11/Python学习笔记(一)　高阶函数，偏函数，闭包/index.html">
+<meta property="og:site_name" content="Hello! CytQ">
+<meta property="og:description" content="Python中高阶函数可接受其他的函数作为参数。 常用高阶函数map(function, list) 让list的每一个元素依次调用function函数，并获取返回值存入一个新的list中。1234def format_name(s):    return s.capitalize() #将首字母大写，其余小写print map(format_name, [&apos;adam&apos;, &apos;LISA&apos;, &apos;bar">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2018-02-11T09:41:20.796Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hello! CytQ">
+<meta name="twitter:description" content="Python中高阶函数可接受其他的函数作为参数。 常用高阶函数map(function, list) 让list的每一个元素依次调用function函数，并获取返回值存入一个新的list中。1234def format_name(s):    return s.capitalize() #将首字母大写，其余小写print map(format_name, [&apos;adam&apos;, &apos;LISA&apos;, &apos;bar">
+    
+    
+        
+    
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-pz4cc6y13wt2trzqa8l3n9v0yykr0sstdaheem7qj628nhjmhp9pfawvqawz.min.css">
+    <!--STYLES END-->
+    
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/ ">Hello! CytQ</a>
+    </div>
+    
+        
+            <a  class="header-right-picture "
+                href="#about">
+        
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/ "
+                            
+                            title="首页"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">首页</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-categories"
+                            
+                            title="分类"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">分类</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-tags"
+                            
+                            title="标签"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">标签</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-archives"
+                            
+                            title="归档"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">归档</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link open-algolia-search"
+                             href="#search"
+                            
+                            title="搜索"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">搜索</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="#about"
+                            
+                            title="关于"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">关于</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/atom.xml"
+                            
+                            title="RSS"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            (无标题)
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time itemprop="datePublished" datetime="2018-02-11T17:41:20+08:00">
+	
+		    2月 11, 2018
+    	
+    </time>
+    
+</div>
+
+    
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <p>Python中高阶函数可接受其他的函数作为参数。</p>
+<h2 id="常用高阶函数"><a href="#常用高阶函数" class="headerlink" title="常用高阶函数"></a>常用高阶函数</h2><h2 id="map-function-list"><a href="#map-function-list" class="headerlink" title="map(function, list) "></a>map(function, list) </h2><p>让list的每一个元素依次调用function函数，并获取返回值存入一个新的list中。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">format_name</span><span class="params">(s)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> s.capitalize() <span class="comment">#将首字母大写，其余小写</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> map(format_name, [<span class="string">'adam'</span>, <span class="string">'LISA'</span>, <span class="string">'barT'</span>])</span><br></pre></td></tr></table></figure></p>
+<p>结果为: [‘Adam’, ‘Lisa’, ‘Bart’]</p>
+<h2 id="reduce-f-list-optional"><a href="#reduce-f-list-optional" class="headerlink" title="reduce(f, list, optional)"></a>reduce(f, list, optional)</h2><p>函数f必须包含两个参数，optional可选，如果存在则表示初值为optional<br>reduce()对list的每个元素反复调用函数f，并返回最终结果值。</p>
+<figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">def f(x, y):</span><br><span class="line">    <span class="keyword">return</span> x + y</span><br><span class="line"></span><br><span class="line">reduce(f, [<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">9</span>])</span><br><span class="line"></span><br><span class="line"><span class="meta">#先计算头两个元素：f(1, 3)，结果为4；</span></span><br><span class="line"><span class="meta">#再把结果和第3个元素计算：f(4, 5)，结果为9；</span></span><br><span class="line"><span class="meta">#再把结果和第4个元素计算：f(9, 7)，结果为16；</span></span><br><span class="line"><span class="meta">#再把结果和第5个元素计算：f(16, 9)，结果为25；</span></span><br><span class="line"><span class="meta">#由于没有更多的元素了，计算结束，返回结果25。</span></span><br></pre></td></tr></table></figure>
+<h2 id="filter-f-list"><a href="#filter-f-list" class="headerlink" title="filter(f, list)"></a>filter(f, list)</h2><p>函数 f 的作用是对每个元素进行判断，返回 True或 False，filter()根据判断结果自动过滤掉不符合条件的元素，返回由符合条件元素组成的新list。</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">is_odd</span><span class="params">(x)</span></span><span class="symbol">:</span></span><br><span class="line">    <span class="keyword">return</span> x % <span class="number">2</span> == <span class="number">1</span></span><br><span class="line"></span><br><span class="line">filter(is_odd, [<span class="number">1</span>, <span class="number">4</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">9</span>, <span class="number">12</span>, <span class="number">17</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment">#结果　[1, 7, 9, 17]</span></span><br></pre></td></tr></table></figure>
+<h2 id="自定义排序函数-sorted-list-optional"><a href="#自定义排序函数-sorted-list-optional" class="headerlink" title="自定义排序函数 sorted(list, optional)"></a>自定义排序函数 sorted(list, optional)</h2><figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sorted([<span class="number">36</span>, <span class="number">5</span>, <span class="number">12</span>, <span class="number">9</span>, <span class="number">21</span>])</span><br><span class="line"></span><br><span class="line"># [<span class="number">5</span>, <span class="number">9</span>, <span class="number">12</span>, <span class="number">21</span>, <span class="number">36</span>]</span><br></pre></td></tr></table></figure>
+<p>sorted()也是一个高阶函数，它可以接收一个比较函数来实现自定义排序，比较函数的定义是，传入两个待比较的元素 x, y，如果 x 应该排在 y 的前面，返回 -1，如果 x 应该排在 y 的后面，返回 1。如果 x 和 y 相等，返回 0。</p>
+<p>如果我们要实现倒序排序，只需要编写一个reversed_cmp函数：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">reversed_cmp</span><span class="params">(x, y)</span></span><span class="symbol">:</span></span><br><span class="line">    <span class="keyword">if</span> x &gt; <span class="symbol">y:</span></span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span></span><br><span class="line">    <span class="keyword">if</span> x &lt; <span class="symbol">y:</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line">sorted([<span class="number">36</span>, <span class="number">5</span>, <span class="number">12</span>, <span class="number">9</span>, <span class="number">21</span>], reversed_cmp)</span><br><span class="line"></span><br><span class="line"><span class="comment">#[36, 21, 12, 9, 5]</span></span><br></pre></td></tr></table></figure>
+<p>sorted()也可以对字符串进行排序，字符串默认按照ASCII大小来比较：</p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sorted([<span class="string">'bob'</span>, <span class="string">'about'</span>, <span class="string">'Zoo'</span>, <span class="string">'Credit'</span>])</span><br><span class="line"># [<span class="string">'Credit'</span>, <span class="string">'Zoo'</span>, <span class="string">'about'</span>, <span class="string">'bob'</span>]</span><br></pre></td></tr></table></figure>
+<p>对字符串排序时，有时候忽略大小写排序更符合习惯。<br>请利用sorted()高阶函数，实现忽略大小写排序的算法。<br><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">def cmp_ignore_case(s1, s2):</span><br><span class="line">    s1 = s1.lower()</span><br><span class="line">    s2 = s2.lower()</span><br><span class="line">    <span class="keyword">if</span> s1 &gt; s2:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">    <span class="keyword">if</span> s1 &lt; s2:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line">print sorted([<span class="string">'bob'</span>, <span class="string">'about'</span>, <span class="string">'Zoo'</span>, <span class="string">'Credit'</span>], cmp_ignore_case) </span><br><span class="line"></span><br><span class="line"># [<span class="string">'about'</span>, <span class="string">'bob'</span>, <span class="string">'Credit'</span>, <span class="string">'Zoo'</span>]</span><br></pre></td></tr></table></figure></p>
+<h2 id="返回函数"><a href="#返回函数" class="headerlink" title="返回函数"></a>返回函数</h2><p>请编写一个函数calc_prod(lst)，它接收一个list，返回一个函数，返回函数可以计算参数的乘积。<br>内部编写的函数可使用外部的函数变量<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">calc_prod</span><span class="params">(lst)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">response</span><span class="params">()</span>:</span></span><br><span class="line">        sum = <span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> lst:</span><br><span class="line">            sum *= i</span><br><span class="line">        <span class="keyword">return</span> sum</span><br><span class="line">    <span class="keyword">return</span> response</span><br><span class="line"></span><br><span class="line">f = calc_prod([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>])</span><br><span class="line"><span class="keyword">print</span> f()</span><br></pre></td></tr></table></figure></p>
+<p>print f()打印的是函数运行的结果，也就是返回值。<br>print f打印的是函数在内存空间中的地址</p>
+<h2 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h2><p>在函数内部定义的函数和外部定义的函数是一样的，只是他们无法被外部访问。<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">calc_sum</span><span class="params">(lst)</span></span><span class="symbol">:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">lazy_sum</span><span class="params">()</span></span><span class="symbol">:</span></span><br><span class="line">        <span class="keyword">return</span> sum(lst)</span><br><span class="line">    <span class="keyword">return</span> lazy_sum</span><br></pre></td></tr></table></figure></p>
+<p>这种内层函数引用了外层函数的变量（参数也算变量），然后返回内层函数的情况，称为闭包（Closure）。<br>闭包的特点是返回的函数还引用了外层函数的局部变量，所以，要正确使用闭包，就要确保引用的局部变量在函数返回后不能变。返回函数不要引用任何循环变量，或者后续会发生变化的变量。</p>
+<h2 id="匿名函数：关键字-lambda"><a href="#匿名函数：关键字-lambda" class="headerlink" title="匿名函数：关键字 lambda"></a>匿名函数：关键字 lambda</h2><p>高阶函数可以接收函数做参数，有时候我们不需要显式地定义函数，直接传入匿名函数更方便。</p>
+<p>关键字lambda 表示匿名函数，冒号前面的 x 表示函数参数。</p>
+<p>匿名函数有个限制，就是只能有一个表达式，不写return，返回值就是该表达式的结果。<br><figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">map(lambda <span class="keyword">x</span>: <span class="keyword">x</span> * <span class="keyword">x</span>, [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>])</span><br><span class="line"># [<span class="number">1</span>, <span class="number">4</span>, <span class="number">9</span>, <span class="number">16</span>, <span class="number">25</span>, <span class="number">36</span>, <span class="number">49</span>, <span class="number">64</span>, <span class="number">81</span>]</span><br><span class="line"># 匿名函数 lambda <span class="keyword">x</span>: <span class="keyword">x</span> * <span class="keyword">x</span> 实际上就是：</span><br><span class="line">def f(<span class="keyword">x</span>):</span><br><span class="line">    return <span class="keyword">x</span> * <span class="keyword">x</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#利用匿名函数简化以下代码：</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">is_not_empty</span><span class="params">(s)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> s <span class="keyword">and</span> len(s.strip()) &gt; <span class="number">0</span></span><br><span class="line">filter(is_not_empty, </span><br><span class="line">[<span class="string">'test'</span>, <span class="keyword">None</span>, <span class="string">''</span>, <span class="string">'str'</span>, <span class="string">'  '</span>, <span class="string">'END'</span>])</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> filter(</span><br><span class="line">    <span class="keyword">lambda</span> s: s <span class="keyword">and</span> len(s.strip())&gt;<span class="number">0</span>,</span><br><span class="line">    [<span class="string">'test'</span>, <span class="keyword">None</span>, <span class="string">''</span>, <span class="string">'str'</span>, <span class="string">'  '</span>, <span class="string">'END'</span>])</span><br></pre></td></tr></table></figure>
+<h2 id="偏函数"><a href="#偏函数" class="headerlink" title="偏函数"></a>偏函数</h2><p>当一个函数有很多参数时，调用者就需要提供多个参数。如果减少参数个数，就可以简化调用者的负担。</p>
+<p>例如，int(str, option)函数可以把字符串转换为整数，第二个参数option可选，如果设置了的话就可以设置函数按多少进制转换，默认的函数是十进制转换。</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;</span>&gt; int(<span class="string">'12345'</span>)</span><br><span class="line"><span class="number">12345</span></span><br><span class="line"><span class="meta">&gt;&gt;</span>&gt; int(<span class="string">'12345'</span>, base=<span class="number">8</span>)</span><br><span class="line"><span class="number">5349</span></span><br><span class="line"><span class="meta">&gt;&gt;</span>&gt; int(<span class="string">'12345'</span>, <span class="number">16</span>)</span><br><span class="line"><span class="number">74565</span></span><br></pre></td></tr></table></figure>
+<p>假设要转换大量的二进制字符串，每次都传入int(x, base=2)非常麻烦，于是可以定义一个int2()的函数，默认把base=2传进去。</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">int2</span><span class="params">(x, base=<span class="number">2</span>)</span></span><span class="symbol">:</span></span><br><span class="line">    <span class="keyword">return</span> int(x, base)</span><br></pre></td></tr></table></figure>
+<p>而从python来说，提供了一种定义好的方法，帮助我们创建一个偏函数的，不需要我们自己定义一个新函数，可以直接使用下面的代码创建一个新的函数：</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">import functools</span><br><span class="line">int2 = functools.<span class="keyword">partial</span>(<span class="keyword">int</span>, <span class="keyword">base</span>=<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+<p>在sorted这个高阶函数中传入自定义排序函数可以实现忽略大小写排序。可用functools.partial把这个复杂调用变成一个简单的函数：<br><figure class="highlight ceylon"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> functools</span><br><span class="line"></span><br><span class="line">sorted<span class="number">_</span>ignore<span class="number">_</span><span class="keyword">case</span> = functools.partial(sorted, </span><br><span class="line">cmp=lambda s<span class="number">1</span>, s<span class="number">2</span>: cmp(s<span class="number">1</span>.upper(), s<span class="number">2</span>.upper()))</span><br><span class="line"></span><br><span class="line">print sorted<span class="number">_</span>ignore<span class="number">_</span><span class="keyword">case</span>([<span class="string">'bob'</span>, <span class="string">'about'</span>, <span class="string">'Zoo'</span>, <span class="string">'Credit'</span>])</span><br></pre></td></tr></table></figure></p>
+
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/02/11/Go语言学习笔记（一）：Linux下的安装与配置/" data-tooltip="(无标题)" aria-label="上一篇: (无标题)">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/02/11/Python学习笔记(二)  装饰器decorator/" data-tooltip="(无标题)" aria-label="下一篇: (无标题)">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2018/02/11/Python学习笔记(一)　高阶函数，偏函数，闭包/" title="分享到 Facebook">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2018/02/11/Python学习笔记(一)　高阶函数，偏函数，闭包/" title="分享到 Twitter">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2018/02/11/Python学习笔记(一)　高阶函数，偏函数，闭包/" title="分享到 Google+">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2018 CytQ. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/02/11/Go语言学习笔记（一）：Linux下的安装与配置/" data-tooltip="(无标题)" aria-label="上一篇: (无标题)">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/02/11/Python学习笔记(二)  装饰器decorator/" data-tooltip="(无标题)" aria-label="下一篇: (无标题)">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2018/02/11/Python学习笔记(一)　高阶函数，偏函数，闭包/" title="分享到 Facebook">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2018/02/11/Python学习笔记(一)　高阶函数，偏函数，闭包/" title="分享到 Twitter">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2018/02/11/Python学习笔记(一)　高阶函数，偏函数，闭包/" title="分享到 Google+">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+    <i id="btn-close-shareoptions" class="fa fa-close"></i>
+    <ul class="share-options">
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2018/02/11/Python学习笔记(一)　高阶函数，偏函数，闭包/">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i><span>分享到 Facebook</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2018/02/11/Python学习笔记(一)　高阶函数，偏函数，闭包/">
+                    <i class="fa fa-twitter" aria-hidden="true"></i><span>分享到 Twitter</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2018/02/11/Python学习笔记(一)　高阶函数，偏函数，闭包/">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i><span>分享到 Google+</span>
+                </a>
+            </li>
+        
+    </ul>
+</div>
+
+            
+        </div>
+        
+
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <h4 id="about-card-name">CytQ</h4>
+        
+            <div id="about-card-bio"><p>author.bio</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>author.job</p>
+
+            </div>
+        
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-peofhqjkzcghmndknakluequy1y6owxdwpaqyju9ntl9zxnk7rdolb3rjjoj.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+
+
+
+    </body>
+</html>
