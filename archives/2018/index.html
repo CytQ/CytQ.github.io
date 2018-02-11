@@ -184,6 +184,77 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2018/02/11/Android重构记录及其模块化/">
+                            (无标题)
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-02-11T17:15:22+08:00">
+	
+		    2月 11, 2018
+    	
+    </time>
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <p><strong>本文仅为个人观点，不完全符合模块化的标准定义及其拓展。思路类似，仅此而已。不可当做模块化的标准理解</strong></p>
+<p><strong>如果各位对于本博客中提到的任何思路或者架构有任何看法，欢迎讨论。以下仅是这3天的个人考虑，基于个人能力及视野的限制，很有可能不完善，欢迎批评指正，共同进步</strong></p>
+<p><strong>转载请注明出处：<a href="http://blog.csdn.net/jonstank2013?viewmode=contents" target="_blank" rel="noopener">http://blog.csdn.net/jonstank2013?viewmode=contents</a></strong></p>
+<p>##项目基础情况##<br>项目人群：百万日活<br>整体大小：类数量未记，Size 500+M</p>
+<p>##起因##<br>这几天正在重构公司的项目，因为本月16日看项目源码时发现项目的内部架构极其冗余（4年前的项目，延伸至今），不管是从业务的拓展还是现有架构的维护上的体验都极其恶劣。一个接触该项目的新人很难在没有需求文档的情况下理清整体的业务流程及架构。而由于业务需求太多导致团队没有足够的时间去做全新的重构。</p>
+<p><strong>以下为原架构的示例图：</strong><br><img src="http://img.blog.csdn.net/20170224100151701?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSm9uc1RhbmsyMDEz/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="原始架构"></p>
+<p>这种架构也就是最原始的Activity-Fragment-Manager模式，Activity或者Fragment通过接口与各Manager沟通联系。这种模式的弊端在于Activity承担了太多的工作，随着项目的进行Activity会越来越大，导致其越来越难以维护。单从MainActivity来说，就足有2500多行。所有的业务代码和逻辑代码全都冗余在一块，甚至还包含了很多Lisenter和Callback的定义，而这些都绝对不应该是Activity的功能。为了更好的维护（当项目变得非常庞大时），我们可以从Activity中把逻辑功能分离处理，交由另外的一个逻辑管理类处理，而逻辑管理类再和其他的工具类联系。这样就可以极大的增加代码的可维护性。</p>
+<p>而上面提到的逻辑、业务分离的方式实际上也就是MVP/MVVM的方式。</p>
+<p>##事件总线##<br>项目中还存在着事件总线（一个自定义的EventManager），跟EventBus类似，只是更轻量级。<br>EventManager的功能为Subscribe，Send。实际上也就是一旦Event发生了事件，那么EventManager就会通知所有订阅了该事件的对象处理该事件，实现“何处订阅，何处处理”。<br>从一个第三方通用库的角度来说，这种方式是绝对可行且意义非凡的。但对于一个模块化或者MVP/MVVM来说，它的一些通用配置就有点多余了。<br>例如”何处订阅，何处处理“，在Activity-Managers-Callback的模式中，可以有多个不同的对象订阅同一个事件，发生Event后这些对象都会受到通知。但这会造成一个非常大的弊端，也就是代码的维护性非常差。因为开发者不会知道究竟是谁订阅了这个事件，而这个事件又从哪发送到了哪去解决，一旦发生问题，非常难以调试及定位。<br>而在MVP中，所有的逻辑操作都应在Presenter中处理并分发，也就是说EventBus只应与Presenter进行联系。它不行也绝对不能与其他的类绑定，因为这会违背架构的定义，以及破坏架构的原则。</p>
+<p>因此EventManager在MVP中就变成了一个简化版的Rxbus。Rxbus相关信息可见我之前的博客：<a href="http://blog.csdn.net/jonstank2013/article/details/50574871" target="_blank" rel="noopener">http://blog.csdn.net/jonstank2013/article/details/50574871</a></p>
+<p>Github地址为：<a href="https://github.com/CytQ/Rxbus" target="_blank" rel="noopener">https://github.com/CytQ/Rxbus</a></p>
+<p><strong>Rxbus和EventBus在事件的处理上有着很明显的不同</strong></p>
+<p>EventBus是针对Event做订阅，一旦发生事件，EventBus会通知所有订阅的对象进行处理。<br>而Rxbus订阅的则是事件总线，一旦事件总线上存在事件（也就是Event被触发），那么所有订阅了事件总线的对象都会收到Event的通知。</p>
+<p>根据他们俩的性质，可以很明确的了解到，EventBus可以针对所有情况，不管是Activity-Manager-Callback模式还是MVP/MVVM。而Rxbus就有了局限性，它只能使用于MVP/MVVM等业务逻辑分离的情况。<br>但除此之外，Rxbus还具有一些EventBus不具有的特性，那就是他可以使用Rxjava带来的一系列好处。例如快速切换线程，一行代码即可。而在EventBus中，如果想要对Event切换处理线程，那么就必须人为的控制一个线程管理类或者线程池。</p>
+<p>而将Rxbus应用于MVP中，只需处理好他的订阅及取消就可以了。因为同一时间最好只能存在一个Presenter处理逻辑事件。而如果存在多个Presenter，对效率的影响也不高，一个函数调用而已。</p>
+<p><strong>现存在我Git中的Rxbus功能不是特别完善，但我会接下来的时间里不断的拓展它，让他更能符合开发的实际情况。例如多个Presenter同时存在时，如何正确的分发Event</strong></p>
+<p>##定义新架构##<br>因此在经过考虑之后，我提出了以下的重构建议。<br><img src="http://img.blog.csdn.net/20170224114905196?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSm9uc1RhbmsyMDEz/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="NewArchitecture"></p>
+<p>MVP结合Rxjava构建全响应式架构。将逻辑代码从View层中完全剥离出来，交由Presenter处理。同时将之前存在的大量Manager和工具类交给DataManager管理。Presenter与Model之间、Presenter与Rxbus使用Observable交流。</p>
+<p><strong>而在具体实现时，在View与Presenter之间再独立一层Contract，使View依赖于Contract中的Presenter，而Presenter依赖于Contract中的View。从而实现接口隔离：对象应关联于接口，而不应该是其具体实现类。另外还可解决一个Case：业务代码难以理清（一个新人只需了解Contract中相关的定义即可快速了解View和Presenter的功能，一目了然）</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainContract</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">interface</span> <span class="title">Presenter</span> <span class="keyword">extends</span> <span class="title">BasePresenter</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">interface</span> <span class="title">View</span> <span class="keyword">extends</span> <span class="title">BaseView</span>&lt;<span class="title">Presenter</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">void</span> <span class="title">showMsg</span><span class="params">(String eventName)</span></span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">BasePresenter</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">subscribe</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">unSubscribe</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">BaseView</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">setPresenter</span><span class="params">(T presenter)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这种方案可以很好的解决Activity代码冗余，整体架构耦合性高的问题。缺点在于需要控制很多的Presenter及Contract，代码的流程变复杂。但我认为在项目过大时，这种缺点比之其优势来说，不值一提。</p>
+<p>##发现新问题##<br>在评审并通过上述新架构方案后，我开始尝试部分重构。而前天与昨天，就遇到了一个以前重构小项目时从来没遇到的问题：依赖项实在是太多。</p>
+<p>因为依赖项众多以及需要针对每一个依赖项都做单独的模块处理（编译器不支持自动批量导入和修改），因此前天及昨天均花费了大量的时间在导入及Fix依赖类上，3个类简单类最后延伸为了150多个类，这还是我注释掉了很多业务代码的结果。总时间超过半天，这是完完全全的体力劳动，并且会极大的降低重构的效率，但对此又无可奈何。因为一个项目大了之后，势必会存在很多的业务代码及其管理类，即便架构设计得再完美，耦合性再低，也很难避免这种情况的发生。引入一个类，就意味着需要引入它的继承类、实现类、使用的工具类等等。</p>
+<p>##模块化思路##</p>
+<p>那么在编译器不能实现自动导入自动匹配的时候，我们是否可以采用一种编程协议去规范代码，让任何独立的功能都能快速或者直接模块化，让它与其他的功能模块松耦合，（可能？）从而避免或者减缓以上的情况。同时还可以避免65535，可支持动态加载（不更新APK的情况下完成新业务的下载及显示）</p>
+<p><img src="http://img.blog.csdn.net/20170224120252522?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSm9uc1RhbmsyMDEz/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="Module"></p>
+<p>这种高度模块化的结构还有一种优势，就是方便加载及快速卸载（MultiDex），还可以结合【动态加载】实现本地APP功能的快速更新（无需下载更新本地APK）。<br>【待定】如果我们以后开始一个新的项目时，可预见性的了解到该项目肯定会非常庞大或者易引起65535，不如考虑一下这种高度模块化的方式？提高项目灵活性的同时还可以为以后可能的重构铺路（假设性原则？假如会发生）</p>
+<p><strong>方法二：</strong>创建一个AS的插件，使其支持自动导入和自动Fix。但难度较高，需要判断很多条件</p>
+<p><strong>以上就是这段时间内重构项目时的经历及部分个人想法，如果以后有新的想法会及时更新本文。</strong></p>
+<p><strong>另外，如果各位对于本博客中提到的任何思路或者架构有任何看法，欢迎讨论。这是这3天的个人考虑，基于个人能力及视野的限制，很有可能不完善，欢迎各位批评指正，共同进步</strong></p>
+
+                    
+                        
+
+                    
+                    
+                        <p>
+                            <a href="/2018/02/11/Android重构记录及其模块化/#post-footer" class="postShorten-excerpt_link link">
+                                评论和共享
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2018/02/11/hello-world/">
                             Hello World
                         </a>
