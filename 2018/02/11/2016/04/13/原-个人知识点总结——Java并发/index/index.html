@@ -1,0 +1,923 @@
+
+<!DOCTYPE html>
+<html lang="">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hexo">
+    <title> - Hexo</title>
+    <meta name="author" content="John Doe">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="个人知识点总结——Java并发 | Hello Mr.Li                                                  	 		 			 			 			 		  		 		  ITStudieren 		  		 		Study, Note and Advance">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://imlzq.com/2018/02/11/2016/04/13/原-个人知识点总结——Java并发/index/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="个人知识点总结——Java并发 | Hello Mr.Li                                                  	 		 			 			 			 		  		 		  ITStudieren 		  		 		Study, Note and Advance">
+<meta property="og:updated_time" content="2018-02-11T08:42:33.528Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo">
+<meta name="twitter:description" content="个人知识点总结——Java并发 | Hello Mr.Li                                                  	 		 			 			 			 		  		 		  ITStudieren 		  		 		Study, Note and Advance">
+    
+    
+        
+    
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-pz4cc6y13wt2trzqa8l3n9v0yykr0sstdaheem7qj628nhjmhp9pfawvqawz.min.css">
+    <!--STYLES END-->
+    
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/ ">Hexo</a>
+    </div>
+    
+        
+            <a  class="header-right-picture "
+                href="#about">
+        
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/ "
+                            
+                            title="Home"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Home</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-categories"
+                            
+                            title="Categories"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Categories</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-tags"
+                            
+                            title="Tags"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Tags</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-archives"
+                            
+                            title="Archives"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Archives</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link open-algolia-search"
+                             href="#search"
+                            
+                            title="Search"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Search</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="#about"
+                            
+                            title="About"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">About</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/atom.xml"
+                            
+                            title="RSS"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            (no title)
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time itemprop="datePublished" datetime="2018-02-11T16:42:33+08:00">
+	
+		    Feb 11, 2018
+    	
+    </time>
+    
+</div>
+
+    
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>个人知识点总结——Java并发 | Hello Mr.Li</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Java并发实在是一个很深的问题，这里只简单记录一下Java并发的知识点。水太深，如果不花大量的时间感觉完全hold不住，但是目前的精力完全不够，兴趣也不在这">
+<meta property="og:type" content="article">
+<meta property="og:title" content="个人知识点总结——Java并发">
+<meta property="og:url" content="http://imlzq.com/2016/04/13/原-个人知识点总结——Java并发/index.html">
+<meta property="og:site_name" content="Hello Mr.Li">
+<meta property="og:description" content="Java并发实在是一个很深的问题，这里只简单记录一下Java并发的知识点。水太深，如果不花大量的时间感觉完全hold不住，但是目前的精力完全不够，兴趣也不在这">
+<meta property="og:updated_time" content="2016-05-14T11:14:19.346Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="个人知识点总结——Java并发">
+<meta name="twitter:description" content="Java并发实在是一个很深的问题，这里只简单记录一下Java并发的知识点。水太深，如果不花大量的时间感觉完全hold不住，但是目前的精力完全不够，兴趣也不在这">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="/img/headicon.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">ITStudieren</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">Study, Note and Advance</p>
+		
+	
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>Menu</li>
+						<li>Tags</li>
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">Home</a></li>
+				        
+							<li><a href="/archives">Articles</a></li>
+				        
+							<li><a href="/tags">Tags</a></li>
+				        
+							<li><a href="/aboutme">About me</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="https://github.com/itstudieren" title="github">github</a>
+					        
+								<a class="mail" target="_blank" href="/JonsTank2013@gmail.com" title="mail">mail</a>
+					        
+								<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Algorithm/" style="font-size: 16.67px;">Algorithm</a> <a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Chinese/" style="font-size: 10px;">Chinese</a> <a href="/tags/Design-Pattern/" style="font-size: 20px;">Design Pattern</a> <a href="/tags/Golang/" style="font-size: 10px;">Golang</a> <a href="/tags/Java/" style="font-size: 13.33px;">Java</a> <a href="/tags/Jvm/" style="font-size: 10px;">Jvm</a> <a href="/tags/MVP/" style="font-size: 10px;">MVP</a> <a href="/tags/Python/" style="font-size: 20px;">Python</a> <a href="/tags/Rxjava/" style="font-size: 13.33px;">Rxjava</a> <a href="/tags/Socket/" style="font-size: 10px;">Socket</a> <a href="/tags/Study-Note/" style="font-size: 20px;">Study Note</a> <a href="/tags/学习笔记/" style="font-size: 10px;">学习笔记</a> <a href="/tags/框架/" style="font-size: 10px;">框架</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+			</div>
+		</div>
+	</header>				
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">ITStudieren</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+			
+				<img lazy-src="/img/headicon.jpg" class="js-avatar">
+			
+			</div>
+			<hgroup>
+			  <h1 class="header-author">ITStudieren</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">Study, Note and Advance</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">Home</a></li>
+		        
+					<li><a href="/archives">Articles</a></li>
+		        
+					<li><a href="/tags">Tags</a></li>
+		        
+					<li><a href="/aboutme">About me</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/itstudieren" title="github">github</a>
+			        
+						<a class="mail" target="_blank" href="/JonsTank2013@gmail.com" title="mail">mail</a>
+			        
+						<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap"><article id="post-原-个人知识点总结——Java并发" class="article article-type-post" itemscope="" itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/04/13/原-个人知识点总结——Java并发/" class="article-date">
+  	<time datetime="2016-04-13T09:55:08.000Z" itemprop="datePublished">2016-04-13</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      个人知识点总结——Java并发
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
+	</div>
+
+
+        
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Java并发实在是一个很深的问题，这里只简单记录一下Java并发的知识点。水太深，如果不花大量的时间感觉完全hold不住，但是目前的精力完全不够，兴趣也不在这</p>
+<a id="more"></a>
+<h2 id="什么是线程安全性"><a href="#什么是线程安全性" class="headerlink" title="什么是线程安全性"></a>什么是线程安全性</h2><blockquote>
+<p>某个类的行为和其规范完全一致 </p>
+<p>  当多个线程访问某个类时，不管运行时环境采用何种调度方式或者这些线程将如何交替执行，并且在主调代码中不需要任何额外的同步或协同，这个类都能表现出正确的行为，那么就称这个类是线程安全的</p>
+</blockquote>
+<h2 id="原子操作-Atomic-Operation"><a href="#原子操作-Atomic-Operation" class="headerlink" title="原子操作(Atomic Operation)"></a>原子操作(Atomic Operation)</h2><p>原子操作是指不会被线程调度机制打断的操作，这种操作一旦开始，就会一直运行到结束，中间不会有任何的上下文切换，它是不可分割的。</p>
+<p>举一个常见的例子：a++，这个操作就不是一个原子性的操作，那么在多个线程访问调用的时候，a的最终结果就很有可能不是我们的预期值。因为实际上a++这个操作可以分为已下三步：获取a的值，更新a的值，写回a的值。</p>
+<h2 id="缓存一致性"><a href="#缓存一致性" class="headerlink" title="缓存一致性"></a>缓存一致性</h2><p>在共享内存的多处理器体系架构中，每个处理器都拥有自己的缓存，并且定期地与主内存进行协调，在不同的处理器架构中提供了不同级别的缓存一致性。</p>
+<p>这个缓存一致性可以通过volatile关键字来加深理解。</p>
+<h2 id="Volatile关键字"><a href="#Volatile关键字" class="headerlink" title="Volatile关键字"></a>Volatile关键字</h2><p>Volatile是一种较弱的同步机制，用来确保将变量的更新操作通知到其他线程，当把变量声明为volatile类型后，编译器与运行时都会注意到这个变量是共享的，因此不会将该变量上的操作一起重排序。volatile变量不会被缓存在寄存器或者对其他处理器不可见的地方，因此在读取volatile类型的变量时总会返回最新写入的值。 </p>
+<p>但是有一点是需要注意的，被volatile修饰的变量的的操作也应该是原子性的，不然同样会出先问题。 </p>
+<p>例如：</p>
+<pre><code>Volatile &lt;span class=&quot;hljs-keyword&quot;&gt;int&lt;/span&gt; a = &lt;span class=&quot;hljs-number&quot;&gt;0&lt;/span&gt;;
+
+&lt;span class=&quot;hljs-comment&quot;&gt;// 非原子性操作，使用volatile不能保证同步，改用Synchronized&lt;/span&gt;
+a++;`&lt;/pre&gt;
+
+而为什么Volatile能够实现这种功能呢？ 
+
+这个要从它的实现原理说起，在x86处理器下通过工具获取JIT编译器生成的汇编指令来看Volatile的写操作实际上做了什么吧。
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-attribute&quot;&gt;0x01a3de1d&lt;/span&gt;: &lt;span class=&quot;hljs-string&quot;&gt;movb $0x0,0x1104800(%esi);&lt;/span&gt;
+&lt;span class=&quot;hljs-attribute&quot;&gt;0x01a3de24&lt;/span&gt;: &lt;span class=&quot;hljs-string&quot;&gt;lock addl $0x0,(%esp);&lt;/span&gt;`&lt;/pre&gt;
+
+有Volatile变量修饰的共享变量进行写操作的时候会多第二行代码，lock指令修饰。 
+
+而lock指令会做什么事呢？
+</code></pre><ul>
+<li>将当前处理器缓存行的数据写回到系统内存</li>
+<li><p>该写回内存的操作会引起在其他CPU里缓存了该内存地址的数据无效</p>
+<p>在上面介绍缓存一致性的时候提到了，在共享内存的多处理器体系架构中，每个处理器都拥有自己的缓存，并且定期地与主内存进行协调，在不同的处理器架构中提供了不同级别的缓存一致性。 </p>
+<p>那么这个时候也就有了下面的事情： </p>
+<p>处理器为了提高处理速度，不直接和内存进行通讯，而是先将系统内存的数据读到内部缓存中再进行操作，但操作完成后不确定什么时候会写回到内存，如果对声明了Volatile变量进行些操作，JVM就会向处理器发送一条Lock前缀的指令，将这个变量所在缓存行的数据写回到系统内存。而由于缓存一致性协议，每个处理器会通过嗅探在总线上传播的数据在来检查自己缓存的值是不是国旗了，当处理器发现自己缓存行对应的内存地址被修改，就会将当前处理器的缓存行设置为无效状态。当处理器要对这个数据进行修改操作的时候，就会强制从系统内存中重新读取数据到处理器缓存里。 </p>
+<p>这也就是Volatile实现的原理。</p>
+<h2 id="重排序"><a href="#重排序" class="headerlink" title="重排序"></a>重排序</h2><p>刚才上面总结到了重排序的概念，那什么是重排序呢？</p>
+<p>简单的理解就是，当程序在执行的时候，如果JVM认为两行代码之间的结果互不影响，那么在执行的过程中可能就会产生一个乱序的结果。 </p>
+<p>例如：</p>
+<pre class="prettyprint">` a = <span class="hljs-number">3</span>; 
+ b = <span class="hljs-number">4</span>;`</pre>
+
+<p>正常情况下我们会觉得a = 3肯定是比b=4先执行的，因为它在b的上面，但是实际上并不是这样，因为b的运行结果并不依赖上一行a的结果，因此JVM就能够对两行代码进行一个重排序，可能a先执行，也可能b先执行</p>
+<p><strong>为什么要采用重排序？</strong> </p>
+<p>重排序通常是编译器或运行时环境为了优化程序性能而采取的。它可以分为两类：编译器重排序和运行时重排序。</p>
+<p>顺序一致性模型：理想的模型是，各种指令执行的顺序是唯一且有序的，这个顺序就是它们被编写在代码中的顺序，与处理器或其他因素无关</p>
+<p>顺序一致性模型的缺点：效率过低</p>
+<p>编译器重排序的典型就是通过调整指令顺序，在不改变程序语义的前提下，尽可能的减少寄存器的读取、存储次数、充分服用寄存器的存储值。</p>
+<p>假设第一条指令计算一个值赋给变量A并存放在寄存器中，第二条指令与A无关但需要占用寄存器（假设它将占用A所在的那个寄存器），第三条指令使用A的值且与第二条指令无关。那么如果按照顺序一致性模型，A在第一条指令执行过后被放入寄存器，在第二条指令执行时A不再存在，第三条指令执行时A重新被读入寄存器，而这个过程中，A的值没有发生变化。通常编译器都会交换第二和第三条指令的位置，这样第一条指令结束时A存在于寄存器中，接下来可以直接从寄存器中读取A的值，降低了重复读取的开销。</p>
+<h2 id="并发时的乱序问题"><a href="#并发时的乱序问题" class="headerlink" title="并发时的乱序问题"></a>并发时的乱序问题</h2><p>上面总结的重排序可以引起乱序，同样的，在并发时对局部变量进行操作也有可能会产生乱序的问题。因为在每个线程中都拥有一个独立的栈，也就是独立的线程空间，当它运行时，会从主内存中读取该变量的值并存放到自己的线程栈中，对变量操作完成后就会把值写回主内存空间。 </p>
+<p>但是这里就有一个问题了，那就是变量的写回操作发生的时间并不能够确定。就算是线程A比线程B先读取数据，仍然有可能线程B先把值写回主内存，最终同样会造成一个得到的结果并不是我们想要的值。</p>
+<h2 id="Happens-before（先行发生）"><a href="#Happens-before（先行发生）" class="headerlink" title="Happens-before（先行发生）"></a>Happens-before（先行发生）</h2><p>Java内存模型（JMM）为程序中所有的操作定义了一个偏序关系，称之为Happens-before。如果想要保证执行操作B的线程看到操作A的结果（无论A和B是否在同一个线程中执行），那么在A和B之间必须满足Happens-Before关系。如果两个操作时间缺乏Happens-Before关系，那么JVM可以对它们任意地重排序。</p>
+<p>当一个变量被多个线程读取并且至少被一个线程写入时，如果在读写操作之间没有按照Happens-Before来排序，那么就会产生数据竞争的问题。</p>
+<p>Happens-Before规则包括：</p>
+</li>
+<li><p><strong>程序顺序规则</strong>：如果程序中操作A在操作B之前，那么在线程中A操作将在B操作之前执行</p>
+</li>
+<li><strong>监视器锁规则</strong>：在监视器锁上的解锁操作必须在同一个监视器锁上的加锁操作之前执行</li>
+<li><strong>volatile变量规则</strong>：对volatile变量的写入操作必须在对该变量的读操作之前执行</li>
+<li><strong>线程启动规则</strong>：在线程上对Thread.Start的调用必须在该县城中执行任何操作之前执行</li>
+<li><strong>线程结束规则</strong>：县城中的任何操作都必须在其他线程检测到该线程已经结束之前执行，或者在Thread.join中成功返回，或者在调用THread.isAlive时返回false</li>
+<li><strong>中断规则</strong>：当一个线程在另一个线程上调用interrupt时，必须在被中断线程检测到interrupt调用之前执行</li>
+<li><strong>终结器规则</strong>：对象的构造函数必须在启动终结器之前执行</li>
+<li><p><strong>传递性</strong>：操作A在B之前，B在C之前，那么A就必须在C之前执行</p>
+<p>例如线程A：y=1 -》 lock M -》 x=1 -》unlock M </p>
+<p>线程B： lock M -》 i=x -》 unlock M -》 j=y</p>
+<p>当两个线程使用同一个锁进行同步时，在它们之间的happens-Before关系就是：A的unlock M执行完成之后才能执行B的lock M方法，如果这两个线程是在不同的锁上进行同步的，那么就不能推断它们之间的动作顺序，因为在这两个线程的操作之间并不存在Happens-Before关系</p>
+<h2 id="Lock-Synchronized-ReentrantLock（独占锁-悲观锁）"><a href="#Lock-Synchronized-ReentrantLock（独占锁-悲观锁）" class="headerlink" title="Lock / Synchronized / ReentrantLock（独占锁 / 悲观锁）"></a>Lock / Synchronized / ReentrantLock（独占锁 / 悲观锁）</h2><p><strong>Synchronized</strong> </p>
+<p>内置锁，当它用来修饰一个方法或者一个代码块的时候，能够保证在同一时刻最多只有一个线程执行该段代码，另一个线程必须等待当前线程执行完这个代码快以后才能执行该代码块（未执行之前，该线程被阻塞）。同时，它也是一个可重入锁（Lock均可重入）</p>
+<p>但是这里有一个很关键的地方：当一个线程访问object的一个synchronized(this)同步代码块时，另一个线程仍然可以访问该object中的非synchronized(this)同步代码块。</p>
+<p>之前在单例模式中总结到了双重检查锁定模式，但是由于双重检查锁定模式在一定情况下存在很严重的Bug，就没有在该博客中写出。这里就对双重检查锁定模式进行一个分析</p>
+<pre class="prettyprint">`<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Singleton <span class="hljs-title">getInstance</span>() {  
+        <span class="hljs-keyword">if</span> (singleton == <span class="hljs-keyword">null</span>) {    
+            <span class="hljs-keyword">synchronized</span> (Singleton.class) {    
+               <span class="hljs-keyword">if</span> (singleton == <span class="hljs-keyword">null</span>) {    
+                  singleton = <span class="hljs-keyword">new</span> Singleton();   
+               }    
+            }    
+        }    
+        <span class="hljs-keyword">return</span> singleton;   
+    } `</pre>
+
+<p>因为在new Singleton()的过程中，实际上是可以分为很多步的，可大致分为三件事情：</p>
+</li>
+<li><p>给Singleton的实例分配内存</p>
+</li>
+<li>调用Singleton的构造函数，初始化字段</li>
+<li><p>将singleton对象指向分配的内存空间（singleton != null）</p>
+<p>但是，Java编译器是允许处理器乱序执行的，所有有可能让第二步和第三步乱序执行，也就是说如果在第二步被乱序（安排到了最后一步执行），当他还没执行的时候切换到了线程B，这个时候就会因为singleton已经不为null而直接跳出if判断，这样的话在我们以后的代码运行过程中使用的就是一个未经构造函数初始化的一个对象。<strong>【现在好像有在JDK层面有改进因此可以正常使用，具体的不清楚，以后再修改】</strong></p>
+<p><strong>Lock</strong></p>
+<p>Lock是一个接口，它里面主要包含了下面的几个方法： </p>
+<p>P.S.源码里的注释太多，这里就不贴了</p>
+<p><pre class="prettyprint">`<span class="hljs-keyword">void</span> lock();<br><span class="hljs-keyword">void</span> lockInterruptibly();<br><span class="hljs-keyword">boolean</span> tryLock();<br><span class="hljs-keyword">boolean</span> tryLock(<span class="hljs-keyword">long</span> time, TimeUnit unit);<br><span class="hljs-keyword">void</span> unlock();<br>Condition newCondition();</pre></p>
+</li>
+</ul>
+<p>Lock它与内置加锁机制不同，它提供的是一种无条件的、可轮训的、定时的以及可中断的锁获取操作，所有的加锁和解锁的方法都是显式的。</p>
+<p>一句话总结：Synchronized算是Lock的简化版本，功能比之较少但是在程序执行完成后会自动释放锁，而Lock必须手动释放锁</p>
+<p><strong>ReentrantLock</strong> </p>
+<p>ReentrantLock它实现了Lock接口，并提供了与synchronized相同的互斥性和内存可见性。 </p>
+<p>那为什么还要提供一种机制跟内置锁十分相似的新加锁机制呢？ </p>
+<p>因为内置锁在一定情况下存在局限性，例如无法中断一个正在等待获取锁的进程，或者无法在请求获取一个锁时无限地等待下去，；无法实现非阻塞结构的加锁规则。</p>
+<p>而在ReentrantLock中，它可以实现轮询锁、定时锁、中断锁等多种加锁方式，这也让它的应用场景变的更多。</p>
+<p>同时在性能上：如果有越多的资源被耗费在锁的管理和调度上，那么应用程序得到的资源就越少。锁的实现方式越好，就需要越少的系统调用和上下文切换，并且在共享内存总线上的内存同步通信量也越少。 </p>
+<p>在Java5中，ReentrantLock的性能比内置锁高了很多，但是在Java6中内置锁采取了一种类似与ReentrantLock中使用的算法来管理内置锁，有效地提高了可伸缩性，因此在Java6中，它们的吞吐量就非常接近了。</p>
+<p>在公平性上，ReentrantLock可以创建一个非公平锁（默认）也可以创建一个公平锁。 </p>
+<p>公平锁：线程按照发出请求的顺序来获得锁（先到先得，不准插队） </p>
+<p>非公平锁：当一个线程请求非公平锁时，如果在发出请求的同时该锁的状态变为可用，那么就跳过队列中所有的等待队列立刻获得锁（也就是允许插队。申请的时候锁为可用状态就直接获取）</p>
+<p>而对于公平锁和非公平锁来说，它们的效率也是显而易见的： </p>
+<p>公平性将由于在挂起线程和恢复线程时存在的开销而极大的降低效率。 </p>
+<p>而非公平性由于是在请求时锁已经为可用状态就直接获取，不需要进行什么额外的操作，因此效率更高。 </p>
+<p>实际上：确保被阻塞的线程能最终获得锁就已经够用了，并且实际开销也小很多。</p>
+<p>当在一个激烈竞争的情况下，恢复一个被挂起的线程与这个线程真正开始运行之间存在着严重的延迟，这样的话就影响了效率。而如果我们采用非公平锁（也就是ReentrantLock的默认方式），线程A释放锁时，B被唤醒然后尝试获取锁，与此同时C也请求这个锁，那么C很有可能会在B被完全唤醒之前获得、使用以及释放这个锁。也就有可能会造成B获得锁的时刻并没有推迟，C也更早的获得了锁</p>
+<p>那什么时候应该使用公平锁呢？ </p>
+<p>当持有锁的时间相对较长，或者请求锁的平均时间间隔较长，那么就应该使用公平锁。</p>
+<p><strong>在Synchronize和ReentrantLock中如何选择</strong> </p>
+<p>上面总结了这么多，好像ReentrantLock的优点比Synchronize好太多，那为什么不直接取消掉Synchronize呢？我们自己该怎么选择呢？</p>
+<p>Synchronize很重要的几个优点就是：</p>
+<ul>
+<li>无需手动释放锁，程序自动完成。如果在使用Lock的过程中忘记在finally中释放锁，那么虽然代码表面上能正式运行，但是实际上已经出了大问题，还有可能伤到其他代码。所以一般仅仅是在做一些内置锁不能完成的需求时才考虑使用ReentrantLock，例如中断锁、轮询锁等等</li>
+<li>调试的问题：Synchronized在线程存储中能够给出在哪些调用帧中获得了哪些锁，并能够检测和识别发生死锁的进程。而ReentrantLock它只是一个对象，JVM不知道哪些线程持有这个。</li>
+</ul>
+<h2 id="非阻塞同步机制（乐观锁）"><a href="#非阻塞同步机制（乐观锁）" class="headerlink" title="非阻塞同步机制（乐观锁）"></a>非阻塞同步机制（乐观锁）</h2><p>加锁机制始终会存在一个挂起唤醒的操作，如果有多个线程同时请求锁，那么JVM就需要借助操作系统的功能，而在挂起和恢复线程等过程中存在着很大的开销，并且通常存在着较长时间的中断。如果在竞争激烈的时候，调度开销与工作开销的比值会非常高。</p>
+<p>此外，如果一个线程正在等待锁时，它不能做任何其他事情，同时如果被阻塞线程的优先级较高，而持有锁的线程优先级较低，那么问题更严重，也就是发生了优先级反转。即：高优先级的线程必须等到低优先级的线程释放锁，从而导致它的优先级会降低至低优先级线程的级别。</p>
+<p>而最近的很多并发算法研究都侧重于非阻塞同步的机制，例如：Lock-free算法</p>
+<h2 id="Lock-free算法（无锁）"><a href="#Lock-free算法（无锁）" class="headerlink" title="Lock-free算法（无锁）"></a>Lock-free算法（无锁）</h2><p>这个算法中主要使用到了一个CAS机制（Compare and swap），它包含了3个值，需要读写的内存位置V，需要进行比较的值A， 要写入的新值B。 </p>
+<p>它的原理就是：</p>
+<blockquote>
+<p>当且仅当V的值等于A时，CAS才会通过原子方式用新值B来更新V的值，否则不执行任何操作</p>
+</blockquote>
+<p>而当多个线程常识使用CAS同时更新同一个变量时，只有其中一个线程能更新变量的值，而其他的线程都将失败。但是失败的线程并不会被挂起，而是被告知在这次竞争中失败，并可以尝试再次尝试。由于一个线程在竞争CAS时失败不会阻塞，因此它可以决定是否重新尝试，或者执行一些恢复操作，再或者不执行任何操作，这种灵活性就大大减少了与锁相关的活跃性风险。</p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>并发的水实在太深，不花精力实在难以hold住，这里简单记录一下Java并发的知识点</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li>《Java并发编程实战》</li>
+<li><a href="http://ifeve.com/volatile/" target="_blank" rel="external">聊聊并发系列博客</a></li>
+<li><a href="http://www.jb51.net/article/49699.htm" target="_blank" rel="external">JAVA中JVM的重排序详细介绍</a> ——也就是Java中为什么要使用重排序<pre><code>&lt;div&gt;
+    作者：JonsTank2013 发表于2016/4/13 17:55:08 [原文链接](http://blog.csdn.net/jonstank2013/article/details/51145184)
+&lt;/div&gt;
+&lt;div&gt;
+阅读：2753 评论：0 [查看评论](http://blog.csdn.net/jonstank2013/article/details/51145184#comments)
+&lt;/div&gt;
+</code></pre></li>
+</ul>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/04/12/原-杂谈——Android从启动到程序运行发生的事情/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">杂谈——Android从启动到程序运行发生的事情</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share_jia">
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+<span class="jiathis_txt">分享到：</span>
+<a class="jiathis_button_tsina">新浪微博</a>
+<a class="jiathis_button_weixin">微信</a>
+<a class="jiathis_button_cqq">QQ好友</a>
+<a class="jiathis_button_ydnote">有道云笔记</a>
+<a class="jiathis_button_douban">豆瓣</a>
+
+<a href="http://www.jiathis.com/share?uid=2099928" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	shortUrl:false,
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=2099928" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+<div class="duoshuo">
+	<div class="ds-thread" data-thread-key="原-个人知识点总结——Java并发" data-title="个人知识点总结——Java并发" data-url="http://imlzq.com/2016/04/13/原-个人知识点总结——Java并发/"></div>
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"imlzq"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-right">
+		<span id="busuanzi_container_site_pv">
+    总访问量<span id="busuanzi_value_site_pv"></span>次
+</span>
+		<span id="busuanzi_container_page_pv">
+  			本文阅读量<span id="busuanzi_value_page_pv"></span>次
+  		</span>
+    		&copy; 2016 ITStudieren
+    	</div>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
+
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/02/11/2016/04/13/个人知识点总结——Java并发/index/" data-tooltip="(no title)" aria-label="PREVIOUS: (no title)">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/02/11/2016/04/12/杂谈——Android从启动到程序运行发生的事情/index/" data-tooltip="(no title)" aria-label="NEXT: (no title)">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2018/02/11/2016/04/13/原-个人知识点总结——Java并发/index/" title="Share on Facebook">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2018/02/11/2016/04/13/原-个人知识点总结——Java并发/index/" title="Share on Twitter">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2018/02/11/2016/04/13/原-个人知识点总结——Java并发/index/" title="Share on Google+">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2018 John Doe. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/02/11/2016/04/13/个人知识点总结——Java并发/index/" data-tooltip="(no title)" aria-label="PREVIOUS: (no title)">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/02/11/2016/04/12/杂谈——Android从启动到程序运行发生的事情/index/" data-tooltip="(no title)" aria-label="NEXT: (no title)">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2018/02/11/2016/04/13/原-个人知识点总结——Java并发/index/" title="Share on Facebook">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2018/02/11/2016/04/13/原-个人知识点总结——Java并发/index/" title="Share on Twitter">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2018/02/11/2016/04/13/原-个人知识点总结——Java并发/index/" title="Share on Google+">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+    <i id="btn-close-shareoptions" class="fa fa-close"></i>
+    <ul class="share-options">
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2018/02/11/2016/04/13/原-个人知识点总结——Java并发/index/">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i><span>Share on Facebook</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2018/02/11/2016/04/13/原-个人知识点总结——Java并发/index/">
+                    <i class="fa fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2018/02/11/2016/04/13/原-个人知识点总结——Java并发/index/">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                </a>
+            </li>
+        
+    </ul>
+</div>
+
+            
+        </div>
+        
+
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <h4 id="about-card-name">John Doe</h4>
+        
+            <div id="about-card-bio"><p>author.bio</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>author.job</p>
+
+            </div>
+        
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-peofhqjkzcghmndknakluequy1y6owxdwpaqyju9ntl9zxnk7rdolb3rjjoj.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+
+
+
+    </body>
+</html>

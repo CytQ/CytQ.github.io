@@ -1,0 +1,968 @@
+
+<!DOCTYPE html>
+<html lang="">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hexo">
+    <title> - Hexo</title>
+    <meta name="author" content="John Doe">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="Python学习笔记(一)　高阶函数，偏函数，闭包 | Hello Mr.Li                                                  	 		 			 			 			 		  		 		  ITStudieren 		  		 		Study, Note and Advance">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://imlzq.com/2018/02/11/2016/02/26/原-Python学习笔记-一-高阶函数，偏函数，闭包/index/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Python学习笔记(一)　高阶函数，偏函数，闭包 | Hello Mr.Li                                                  	 		 			 			 			 		  		 		  ITStudieren 		  		 		Study, Note and Advance">
+<meta property="og:updated_time" content="2018-02-11T08:42:33.509Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo">
+<meta name="twitter:description" content="Python学习笔记(一)　高阶函数，偏函数，闭包 | Hello Mr.Li                                                  	 		 			 			 			 		  		 		  ITStudieren 		  		 		Study, Note and Advance">
+    
+    
+        
+    
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-pz4cc6y13wt2trzqa8l3n9v0yykr0sstdaheem7qj628nhjmhp9pfawvqawz.min.css">
+    <!--STYLES END-->
+    
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/ ">Hexo</a>
+    </div>
+    
+        
+            <a  class="header-right-picture "
+                href="#about">
+        
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/ "
+                            
+                            title="Home"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Home</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-categories"
+                            
+                            title="Categories"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Categories</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-tags"
+                            
+                            title="Tags"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Tags</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-archives"
+                            
+                            title="Archives"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Archives</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link open-algolia-search"
+                             href="#search"
+                            
+                            title="Search"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Search</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="#about"
+                            
+                            title="About"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">About</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/atom.xml"
+                            
+                            title="RSS"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            (no title)
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time itemprop="datePublished" datetime="2018-02-11T16:42:33+08:00">
+	
+		    Feb 11, 2018
+    	
+    </time>
+    
+</div>
+
+    
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Python学习笔记(一)　高阶函数，偏函数，闭包 | Hello Mr.Li</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Python中高阶函数可接受其他的函数作为参数。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python学习笔记(一)　高阶函数，偏函数，闭包">
+<meta property="og:url" content="http://imlzq.com/2016/02/26/原-Python学习笔记-一-高阶函数，偏函数，闭包/index.html">
+<meta property="og:site_name" content="Hello Mr.Li">
+<meta property="og:description" content="Python中高阶函数可接受其他的函数作为参数。">
+<meta property="og:updated_time" content="2016-05-14T11:13:04.695Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python学习笔记(一)　高阶函数，偏函数，闭包">
+<meta name="twitter:description" content="Python中高阶函数可接受其他的函数作为参数。">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="/img/headicon.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">ITStudieren</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">Study, Note and Advance</p>
+		
+	
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>Menu</li>
+						<li>Tags</li>
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">Home</a></li>
+				        
+							<li><a href="/archives">Articles</a></li>
+				        
+							<li><a href="/tags">Tags</a></li>
+				        
+							<li><a href="/aboutme">About me</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="https://github.com/itstudieren" title="github">github</a>
+					        
+								<a class="mail" target="_blank" href="/JonsTank2013@gmail.com" title="mail">mail</a>
+					        
+								<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Algorithm/" style="font-size: 16.67px;">Algorithm</a> <a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Chinese/" style="font-size: 10px;">Chinese</a> <a href="/tags/Design-Pattern/" style="font-size: 20px;">Design Pattern</a> <a href="/tags/Golang/" style="font-size: 10px;">Golang</a> <a href="/tags/Java/" style="font-size: 13.33px;">Java</a> <a href="/tags/Jvm/" style="font-size: 10px;">Jvm</a> <a href="/tags/MVP/" style="font-size: 10px;">MVP</a> <a href="/tags/Python/" style="font-size: 20px;">Python</a> <a href="/tags/Rxjava/" style="font-size: 13.33px;">Rxjava</a> <a href="/tags/Socket/" style="font-size: 10px;">Socket</a> <a href="/tags/Study-Note/" style="font-size: 20px;">Study Note</a> <a href="/tags/学习笔记/" style="font-size: 10px;">学习笔记</a> <a href="/tags/框架/" style="font-size: 10px;">框架</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+			</div>
+		</div>
+	</header>				
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">ITStudieren</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+			
+				<img lazy-src="/img/headicon.jpg" class="js-avatar">
+			
+			</div>
+			<hgroup>
+			  <h1 class="header-author">ITStudieren</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">Study, Note and Advance</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">Home</a></li>
+		        
+					<li><a href="/archives">Articles</a></li>
+		        
+					<li><a href="/tags">Tags</a></li>
+		        
+					<li><a href="/aboutme">About me</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/itstudieren" title="github">github</a>
+			        
+						<a class="mail" target="_blank" href="/JonsTank2013@gmail.com" title="mail">mail</a>
+			        
+						<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap"><article id="post-原-Python学习笔记-一-高阶函数，偏函数，闭包" class="article article-type-post" itemscope="" itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/02/26/原-Python学习笔记-一-高阶函数，偏函数，闭包/" class="article-date">
+  	<time datetime="2016-02-26T14:12:18.000Z" itemprop="datePublished">2016-02-26</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Python学习笔记(一)　高阶函数，偏函数，闭包
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/">Python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Study-Note/">Study Note</a></li></ul>
+	</div>
+
+
+        
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Python中高阶函数可接受其他的函数作为参数。</p>
+<a id="more"></a>
+<h2 id="常用高阶函数"><a href="#常用高阶函数" class="headerlink" title="常用高阶函数"></a>常用高阶函数</h2><h2 id="map-function-list"><a href="#map-function-list" class="headerlink" title="map(function, list)"></a>map(function, list)</h2><p>让list的每一个元素依次调用function函数，并获取返回值存入一个新的list中。</p>
+<pre><code>&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;format_name&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(s)&lt;/span&gt;:&lt;/span&gt;
+    &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; s.capitalize() &lt;span class=&quot;hljs-comment&quot;&gt;#将首字母大写，其余小写&lt;/span&gt;
+
+&lt;span class=&quot;hljs-keyword&quot;&gt;print&lt;/span&gt; map(format_name, [&lt;span class=&quot;hljs-string&quot;&gt;&apos;adam&apos;&lt;/span&gt;, &lt;span class=&quot;hljs-string&quot;&gt;&apos;LISA&apos;&lt;/span&gt;, &lt;span class=&quot;hljs-string&quot;&gt;&apos;barT&apos;&lt;/span&gt;])`&lt;/pre&gt;
+
+结果为: [‘Adam’, ‘Lisa’, ‘Bart’]
+
+## reduce(f, list, optional)
+
+函数f必须包含两个参数，optional可选，如果存在则表示初值为optional 
+
+reduce()对list的每个元素反复调用函数f，并返回最终结果值。
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(x, y)&lt;/span&gt;:&lt;/span&gt;
+    &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; x + y
+
+reduce(f, [&lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;, &lt;span class=&quot;hljs-number&quot;&gt;3&lt;/span&gt;, &lt;span class=&quot;hljs-number&quot;&gt;5&lt;/span&gt;, &lt;span class=&quot;hljs-number&quot;&gt;7&lt;/span&gt;, &lt;span class=&quot;hljs-number&quot;&gt;9&lt;/span&gt;])
+
+&lt;span class=&quot;hljs-comment&quot;&gt;#先计算头两个元素：f(1, 3)，结果为4；&lt;/span&gt;
+&lt;span class=&quot;hljs-comment&quot;&gt;#再把结果和第3个元素计算：f(4, 5)，结果为9；&lt;/span&gt;
+&lt;span class=&quot;hljs-comment&quot;&gt;#再把结果和第4个元素计算：f(9, 7)，结果为16；&lt;/span&gt;
+&lt;span class=&quot;hljs-comment&quot;&gt;#再把结果和第5个元素计算：f(16, 9)，结果为25；&lt;/span&gt;
+&lt;span class=&quot;hljs-comment&quot;&gt;#由于没有更多的元素了，计算结束，返回结果25。&lt;/span&gt;`&lt;/pre&gt;
+
+## filter(f, list)
+
+函数 f 的作用是对每个元素进行判断，返回 True或 False，filter()根据判断结果自动过滤掉不符合条件的元素，返回由符合条件元素组成的新list。
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;is_odd&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(x)&lt;/span&gt;:&lt;/span&gt;
+    &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; x % &lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt; == &lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;
+
+filter(is_odd, [&lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;, &lt;span class=&quot;hljs-number&quot;&gt;4&lt;/span&gt;, &lt;span class=&quot;hljs-number&quot;&gt;6&lt;/span&gt;, &lt;span class=&quot;hljs-number&quot;&gt;7&lt;/span&gt;, &lt;span class=&quot;hljs-number&quot;&gt;9&lt;/span&gt;, &lt;span class=&quot;hljs-number&quot;&gt;12&lt;/span&gt;, &lt;span class=&quot;hljs-number&quot;&gt;17&lt;/span&gt;])
+
+&lt;span class=&quot;hljs-comment&quot;&gt;#结果　[1, 7, 9, 17]&lt;/span&gt;`&lt;/pre&gt;
+
+## 自定义排序函数 sorted(list, optional)
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-tag&quot;&gt;sorted&lt;/span&gt;(&lt;span class=&quot;hljs-attr_selector&quot;&gt;[36, 5, 12, 9, 21]&lt;/span&gt;)
+
+# &lt;span class=&quot;hljs-attr_selector&quot;&gt;[5, 9, 12, 21, 36]&lt;/span&gt;`&lt;/pre&gt;
+
+sorted()也是一个高阶函数，它可以接收一个比较函数来实现自定义排序，比较函数的定义是，传入两个待比较的元素 x, y，如果 x 应该排在 y 的前面，返回 -1，如果 x 应该排在 y 的后面，返回 1。如果 x 和 y 相等，返回 0。
+
+如果我们要实现倒序排序，只需要编写一个reversed_cmp函数：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;reversed_cmp&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(x, y)&lt;/span&gt;:&lt;/span&gt;
+    &lt;span class=&quot;hljs-keyword&quot;&gt;if&lt;/span&gt; x &amp;gt; y:
+        &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; -&lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;
+    &lt;span class=&quot;hljs-keyword&quot;&gt;if&lt;/span&gt; x &amp;lt; y:
+        &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;
+    &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;hljs-number&quot;&gt;0&lt;/span&gt;
+
+sorted([&lt;span class=&quot;hljs-number&quot;&gt;36&lt;/span&gt;, &lt;span class=&quot;hljs-number&quot;&gt;5&lt;/span&gt;, &lt;span class=&quot;hljs-number&quot;&gt;12&lt;/span&gt;, &lt;span class=&quot;hljs-number&quot;&gt;9&lt;/span&gt;, &lt;span class=&quot;hljs-number&quot;&gt;21&lt;/span&gt;], reversed_cmp)
+
+&lt;span class=&quot;hljs-comment&quot;&gt;#[36, 21, 12, 9, 5]&lt;/span&gt;`&lt;/pre&gt;
+
+sorted()也可以对字符串进行排序，字符串默认按照ASCII大小来比较：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`sorted([&lt;span class=&quot;hljs-string&quot;&gt;&apos;bob&apos;&lt;/span&gt;, &lt;span class=&quot;hljs-string&quot;&gt;&apos;about&apos;&lt;/span&gt;, &lt;span class=&quot;hljs-string&quot;&gt;&apos;Zoo&apos;&lt;/span&gt;, &lt;span class=&quot;hljs-string&quot;&gt;&apos;Credit&apos;&lt;/span&gt;])
+&lt;span class=&quot;hljs-array&quot;&gt;# &lt;/span&gt;[&lt;span class=&quot;hljs-string&quot;&gt;&apos;Credit&apos;&lt;/span&gt;, &lt;span class=&quot;hljs-string&quot;&gt;&apos;Zoo&apos;&lt;/span&gt;, &lt;span class=&quot;hljs-string&quot;&gt;&apos;about&apos;&lt;/span&gt;, &lt;span class=&quot;hljs-string&quot;&gt;&apos;bob&apos;&lt;/span&gt;]`&lt;/pre&gt;
+
+对字符串排序时，有时候忽略大小写排序更符合习惯。 
+
+请利用sorted()高阶函数，实现忽略大小写排序的算法。
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;cmp_ignore_case&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(s1, s2)&lt;/span&gt;:&lt;/span&gt;
+    s1 = s1.lower()
+    s2 = s2.lower()
+    &lt;span class=&quot;hljs-keyword&quot;&gt;if&lt;/span&gt; s1 &amp;gt; s2:
+        &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;
+    &lt;span class=&quot;hljs-keyword&quot;&gt;if&lt;/span&gt; s1 &amp;lt; s2:
+        &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; -&lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;
+    &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;hljs-number&quot;&gt;0&lt;/span&gt;
+
+&lt;span class=&quot;hljs-keyword&quot;&gt;print&lt;/span&gt; sorted([&lt;span class=&quot;hljs-string&quot;&gt;&apos;bob&apos;&lt;/span&gt;, &lt;span class=&quot;hljs-string&quot;&gt;&apos;about&apos;&lt;/span&gt;, &lt;span class=&quot;hljs-string&quot;&gt;&apos;Zoo&apos;&lt;/span&gt;, &lt;span class=&quot;hljs-string&quot;&gt;&apos;Credit&apos;&lt;/span&gt;], cmp_ignore_case) 
+
+&lt;span class=&quot;hljs-comment&quot;&gt;# [&apos;about&apos;, &apos;bob&apos;, &apos;Credit&apos;, &apos;Zoo&apos;]&lt;/span&gt;`&lt;/pre&gt;
+
+## 返回函数
+
+请编写一个函数calc_prod(lst)，它接收一个list，返回一个函数，返回函数可以计算参数的乘积。 
+
+内部编写的函数可使用外部的函数变量
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;calc_prod&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(lst)&lt;/span&gt;:&lt;/span&gt;
+    &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;:&lt;/span&gt;
+        sum = &lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;
+        &lt;span class=&quot;hljs-keyword&quot;&gt;for&lt;/span&gt; i &lt;span class=&quot;hljs-keyword&quot;&gt;in&lt;/span&gt; lst:
+            sum *= i
+        &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; sum
+    &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; response
+
+f = calc_prod([&lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;, &lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt;, &lt;span class=&quot;hljs-number&quot;&gt;3&lt;/span&gt;, &lt;span class=&quot;hljs-number&quot;&gt;4&lt;/span&gt;])
+&lt;span class=&quot;hljs-keyword&quot;&gt;print&lt;/span&gt; f()`&lt;/pre&gt;
+
+print f()打印的是函数运行的结果，也就是返回值。 
+
+print f打印的是函数在内存空间中的地址
+
+## 闭包
+
+在函数内部定义的函数和外部定义的函数是一样的，只是他们无法被外部访问。
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;calc_sum&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(lst)&lt;/span&gt;:&lt;/span&gt;
+    &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;lazy_sum&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;:&lt;/span&gt;
+        &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; sum(lst)
+    &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; lazy_sum`&lt;/pre&gt;
+
+这种内层函数引用了外层函数的变量（参数也算变量），然后返回内层函数的情况，称为闭包（Closure）。 
+
+闭包的特点是返回的函数还引用了外层函数的局部变量，所以，要正确使用闭包，就要确保引用的局部变量在函数返回后不能变。返回函数不要引用任何循环变量，或者后续会发生变化的变量。
+
+## 匿名函数：关键字 lambda
+
+高阶函数可以接收函数做参数，有时候我们不需要显式地定义函数，直接传入匿名函数更方便。
+
+关键字lambda 表示匿名函数，冒号前面的 x 表示函数参数。
+
+匿名函数有个限制，就是只能有一个表达式，不写return，返回值就是该表达式的结果。
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`map(&lt;span class=&quot;hljs-keyword&quot;&gt;lambda&lt;/span&gt; x: x * x, [&lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;, &lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt;, &lt;span class=&quot;hljs-number&quot;&gt;3&lt;/span&gt;, &lt;span class=&quot;hljs-number&quot;&gt;4&lt;/span&gt;, &lt;span class=&quot;hljs-number&quot;&gt;5&lt;/span&gt;, &lt;span class=&quot;hljs-number&quot;&gt;6&lt;/span&gt;, &lt;span class=&quot;hljs-number&quot;&gt;7&lt;/span&gt;, &lt;span class=&quot;hljs-number&quot;&gt;8&lt;/span&gt;, &lt;span class=&quot;hljs-number&quot;&gt;9&lt;/span&gt;])
+&lt;span class=&quot;hljs-comment&quot;&gt;# [1, 4, 9, 16, 25, 36, 49, 64, 81]&lt;/span&gt;
+&lt;span class=&quot;hljs-comment&quot;&gt;# 匿名函数 lambda x: x * x 实际上就是：&lt;/span&gt;
+&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(x)&lt;/span&gt;:&lt;/span&gt;
+    &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; x * x`&lt;/pre&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-comment&quot;&gt;#利用匿名函数简化以下代码：&lt;/span&gt;
+&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;is_not_empty&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(s)&lt;/span&gt;:&lt;/span&gt;
+    &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; s &lt;span class=&quot;hljs-keyword&quot;&gt;and&lt;/span&gt; len(s.strip()) &amp;gt; &lt;span class=&quot;hljs-number&quot;&gt;0&lt;/span&gt;
+filter(is_not_empty, 
+[&lt;span class=&quot;hljs-string&quot;&gt;&apos;test&apos;&lt;/span&gt;, &lt;span class=&quot;hljs-keyword&quot;&gt;None&lt;/span&gt;, &lt;span class=&quot;hljs-string&quot;&gt;&apos;&apos;&lt;/span&gt;, &lt;span class=&quot;hljs-string&quot;&gt;&apos;str&apos;&lt;/span&gt;, &lt;span class=&quot;hljs-string&quot;&gt;&apos;  &apos;&lt;/span&gt;, &lt;span class=&quot;hljs-string&quot;&gt;&apos;END&apos;&lt;/span&gt;])
+
+&lt;span class=&quot;hljs-keyword&quot;&gt;print&lt;/span&gt; filter(
+    &lt;span class=&quot;hljs-keyword&quot;&gt;lambda&lt;/span&gt; s: s &lt;span class=&quot;hljs-keyword&quot;&gt;and&lt;/span&gt; len(s.strip())&amp;gt;&lt;span class=&quot;hljs-number&quot;&gt;0&lt;/span&gt;,
+    [&lt;span class=&quot;hljs-string&quot;&gt;&apos;test&apos;&lt;/span&gt;, &lt;span class=&quot;hljs-keyword&quot;&gt;None&lt;/span&gt;, &lt;span class=&quot;hljs-string&quot;&gt;&apos;&apos;&lt;/span&gt;, &lt;span class=&quot;hljs-string&quot;&gt;&apos;str&apos;&lt;/span&gt;, &lt;span class=&quot;hljs-string&quot;&gt;&apos;  &apos;&lt;/span&gt;, &lt;span class=&quot;hljs-string&quot;&gt;&apos;END&apos;&lt;/span&gt;])`&lt;/pre&gt;
+
+## 偏函数
+
+当一个函数有很多参数时，调用者就需要提供多个参数。如果减少参数个数，就可以简化调用者的负担。
+
+例如，int(str, option)函数可以把字符串转换为整数，第二个参数option可选，如果设置了的话就可以设置函数按多少进制转换，默认的函数是十进制转换。
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`&amp;gt;&amp;gt;&amp;gt; &lt;span class=&quot;hljs-keyword&quot;&gt;int&lt;/span&gt;(&lt;span class=&quot;hljs-string&quot;&gt;&apos;12345&apos;&lt;/span&gt;)
+&lt;span class=&quot;hljs-number&quot;&gt;12345&lt;/span&gt;
+&amp;gt;&amp;gt;&amp;gt; &lt;span class=&quot;hljs-keyword&quot;&gt;int&lt;/span&gt;(&lt;span class=&quot;hljs-string&quot;&gt;&apos;12345&apos;&lt;/span&gt;, &lt;span class=&quot;hljs-keyword&quot;&gt;base&lt;/span&gt;=&lt;span class=&quot;hljs-number&quot;&gt;8&lt;/span&gt;)
+&lt;span class=&quot;hljs-number&quot;&gt;5349&lt;/span&gt;
+&amp;gt;&amp;gt;&amp;gt; &lt;span class=&quot;hljs-keyword&quot;&gt;int&lt;/span&gt;(&lt;span class=&quot;hljs-string&quot;&gt;&apos;12345&apos;&lt;/span&gt;, &lt;span class=&quot;hljs-number&quot;&gt;16&lt;/span&gt;)
+&lt;span class=&quot;hljs-number&quot;&gt;74565&lt;/span&gt;`&lt;/pre&gt;
+
+假设要转换大量的二进制字符串，每次都传入int(x, base=2)非常麻烦，于是可以定义一个int2()的函数，默认把base=2传进去。
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;int2&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(x, base=&lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt;)&lt;/span&gt;:&lt;/span&gt;
+    &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; int(x, base)`&lt;/pre&gt;
+
+而从python来说，提供了一种定义好的方法，帮助我们创建一个偏函数的，不需要我们自己定义一个新函数，可以直接使用下面的代码创建一个新的函数：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`import functools
+int2 = functools.&lt;span class=&quot;hljs-keyword&quot;&gt;partial&lt;/span&gt;(&lt;span class=&quot;hljs-keyword&quot;&gt;int&lt;/span&gt;, &lt;span class=&quot;hljs-keyword&quot;&gt;base&lt;/span&gt;=&lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt;)`&lt;/pre&gt;
+
+在sorted这个高阶函数中传入自定义排序函数可以实现忽略大小写排序。可用functools.partial把这个复杂调用变成一个简单的函数：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-keyword&quot;&gt;import&lt;/span&gt; functools
+
+sorted_ignore_case = functools.partial(sorted, 
+cmp=&lt;span class=&quot;hljs-keyword&quot;&gt;lambda&lt;/span&gt; s1, s2: cmp(s1.upper(), s2.upper()))
+
+&lt;span class=&quot;hljs-keyword&quot;&gt;print&lt;/span&gt; sorted_ignore_case([&lt;span class=&quot;hljs-string&quot;&gt;&apos;bob&apos;&lt;/span&gt;, &lt;span class=&quot;hljs-string&quot;&gt;&apos;about&apos;&lt;/span&gt;, &lt;span class=&quot;hljs-string&quot;&gt;&apos;Zoo&apos;&lt;/span&gt;, &lt;span class=&quot;hljs-string&quot;&gt;&apos;Credit&apos;&lt;/span&gt;])
+
+        &lt;div&gt;
+            作者：JonsTank2013 发表于2016/2/26 22:12:18 [原文链接](http://blog.csdn.net/jonstank2013/article/details/50752775)
+        &lt;/div&gt;
+        &lt;div&gt;
+        阅读：162 评论：0 [查看评论](http://blog.csdn.net/jonstank2013/article/details/50752775#comments)
+        &lt;/div&gt;
+</code></pre>
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/02/26/原-Python学习笔记-二-装饰器decorator/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Python学习笔记(二)  装饰器decorator
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/02/26/原-Go语言学习笔记（一）：Linux下的安装与配置/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Go语言学习笔记（一）：Linux下的安装与配置</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share_jia">
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+<span class="jiathis_txt">分享到：</span>
+<a class="jiathis_button_tsina">新浪微博</a>
+<a class="jiathis_button_weixin">微信</a>
+<a class="jiathis_button_cqq">QQ好友</a>
+<a class="jiathis_button_ydnote">有道云笔记</a>
+<a class="jiathis_button_douban">豆瓣</a>
+
+<a href="http://www.jiathis.com/share?uid=2099928" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	shortUrl:false,
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=2099928" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+<div class="duoshuo">
+	<div class="ds-thread" data-thread-key="原-Python学习笔记-一-高阶函数，偏函数，闭包" data-title="Python学习笔记(一)　高阶函数，偏函数，闭包" data-url="http://imlzq.com/2016/02/26/原-Python学习笔记-一-高阶函数，偏函数，闭包/"></div>
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"imlzq"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-right">
+		<span id="busuanzi_container_site_pv">
+    总访问量<span id="busuanzi_value_site_pv"></span>次
+</span>
+		<span id="busuanzi_container_page_pv">
+  			本文阅读量<span id="busuanzi_value_page_pv"></span>次
+  		</span>
+    		&copy; 2016 ITStudieren
+    	</div>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
+
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/02/11/2016/02/26/原-Python学习笔记-二-装饰器decorator/index/" data-tooltip="(no title)" aria-label="PREVIOUS: (no title)">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/02/11/2016/02/26/原-Go语言学习笔记（一）：Linux下的安装与配置/index/" data-tooltip="(no title)" aria-label="NEXT: (no title)">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2018/02/11/2016/02/26/原-Python学习笔记-一-高阶函数，偏函数，闭包/index/" title="Share on Facebook">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2018/02/11/2016/02/26/原-Python学习笔记-一-高阶函数，偏函数，闭包/index/" title="Share on Twitter">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2018/02/11/2016/02/26/原-Python学习笔记-一-高阶函数，偏函数，闭包/index/" title="Share on Google+">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2018 John Doe. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/02/11/2016/02/26/原-Python学习笔记-二-装饰器decorator/index/" data-tooltip="(no title)" aria-label="PREVIOUS: (no title)">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/02/11/2016/02/26/原-Go语言学习笔记（一）：Linux下的安装与配置/index/" data-tooltip="(no title)" aria-label="NEXT: (no title)">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2018/02/11/2016/02/26/原-Python学习笔记-一-高阶函数，偏函数，闭包/index/" title="Share on Facebook">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2018/02/11/2016/02/26/原-Python学习笔记-一-高阶函数，偏函数，闭包/index/" title="Share on Twitter">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2018/02/11/2016/02/26/原-Python学习笔记-一-高阶函数，偏函数，闭包/index/" title="Share on Google+">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+    <i id="btn-close-shareoptions" class="fa fa-close"></i>
+    <ul class="share-options">
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2018/02/11/2016/02/26/原-Python学习笔记-一-高阶函数，偏函数，闭包/index/">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i><span>Share on Facebook</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2018/02/11/2016/02/26/原-Python学习笔记-一-高阶函数，偏函数，闭包/index/">
+                    <i class="fa fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2018/02/11/2016/02/26/原-Python学习笔记-一-高阶函数，偏函数，闭包/index/">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                </a>
+            </li>
+        
+    </ul>
+</div>
+
+            
+        </div>
+        
+
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <h4 id="about-card-name">John Doe</h4>
+        
+            <div id="about-card-bio"><p>author.bio</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>author.job</p>
+
+            </div>
+        
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-peofhqjkzcghmndknakluequy1y6owxdwpaqyju9ntl9zxnk7rdolb3rjjoj.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+
+
+
+    </body>
+</html>

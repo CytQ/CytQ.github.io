@@ -1,0 +1,822 @@
+
+<!DOCTYPE html>
+<html lang="">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hexo">
+    <title> - Hexo</title>
+    <meta name="author" content="John Doe">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="关于Android和Java的ClassLoader相关知识盘点 | Hello Mr.Li                                 	                      	 		 			 			 			 		  		 		  CytQ 		  		 		Catch your time">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://imlzq.com/2018/02/11/2016/07/29/classloaders/index/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="关于Android和Java的ClassLoader相关知识盘点 | Hello Mr.Li                                 	                      	 		 			 			 			 		  		 		  CytQ 		  		 		Catch your time">
+<meta property="og:image" content="http://imlzq.com/img/headicon.jpg">
+<meta property="og:image" content="http://imlzq.com/img/headicon.jpg">
+<meta property="og:updated_time" content="2018-02-11T08:42:33.533Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo">
+<meta name="twitter:description" content="关于Android和Java的ClassLoader相关知识盘点 | Hello Mr.Li                                 	                      	 		 			 			 			 		  		 		  CytQ 		  		 		Catch your time">
+<meta name="twitter:image" content="http://imlzq.com/img/headicon.jpg">
+    
+    
+        
+    
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-pz4cc6y13wt2trzqa8l3n9v0yykr0sstdaheem7qj628nhjmhp9pfawvqawz.min.css">
+    <!--STYLES END-->
+    
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/ ">Hexo</a>
+    </div>
+    
+        
+            <a  class="header-right-picture "
+                href="#about">
+        
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/ "
+                            
+                            title="Home"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Home</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-categories"
+                            
+                            title="Categories"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Categories</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-tags"
+                            
+                            title="Tags"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Tags</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-archives"
+                            
+                            title="Archives"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Archives</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link open-algolia-search"
+                             href="#search"
+                            
+                            title="Search"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Search</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="#about"
+                            
+                            title="About"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">About</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/atom.xml"
+                            
+                            title="RSS"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            (no title)
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time itemprop="datePublished" datetime="2018-02-11T16:42:33+08:00">
+	
+		    Feb 11, 2018
+    	
+    </time>
+    
+</div>
+
+    
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>关于Android和Java的ClassLoader相关知识盘点 | Hello Mr.Li</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="已经很久没有写博客，就再利用这段时间把该以前总结过的又再总结一次吧，好多东西光记在脑子里也不行。那首先就用Android的ClassLoader开个头，接着就再总结一下Volley, Retrofit, OKHttp, Rxjava, HashMap，Gson,Fresco，动态加载，热点修复以及算法吧。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于Android和Java的ClassLoader相关知识盘点">
+<meta property="og:url" content="http://imlzq.com/2016/07/29/classloaders/index.html">
+<meta property="og:site_name" content="Hello Mr.Li">
+<meta property="og:description" content="已经很久没有写博客，就再利用这段时间把该以前总结过的又再总结一次吧，好多东西光记在脑子里也不行。那首先就用Android的ClassLoader开个头，接着就再总结一下Volley, Retrofit, OKHttp, Rxjava, HashMap，Gson,Fresco，动态加载，热点修复以及算法吧。">
+<meta property="og:updated_time" content="2016-08-06T07:23:20.164Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="关于Android和Java的ClassLoader相关知识盘点">
+<meta name="twitter:description" content="已经很久没有写博客，就再利用这段时间把该以前总结过的又再总结一次吧，好多东西光记在脑子里也不行。那首先就用Android的ClassLoader开个头，接着就再总结一下Volley, Retrofit, OKHttp, Rxjava, HashMap，Gson,Fresco，动态加载，热点修复以及算法吧。">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+	
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img src="/img/headicon.jpg" class="js-avatar" style="width: 100%;height: 100%;opacity: 1;">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">CytQ</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">Catch your time</p>
+		
+	
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>Menu</li>
+						<li>Tags</li>
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">Home</a></li>
+				        
+							<li><a href="/archives">Articles</a></li>
+				        
+							<li><a href="/tags">Tags</a></li>
+				        
+							<li><a href="/aboutme">About me</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="https://github.com/itstudieren" title="github">github</a>
+					        
+								<a class="mail" target="_blank" href="/JonsTank2013@gmail.com" title="mail">mail</a>
+					        
+								<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Algorithm/" style="font-size: 14px;">Algorithm</a> <a href="/tags/Android/" style="font-size: 20px;">Android</a> <a href="/tags/Chinese/" style="font-size: 18px;">Chinese</a> <a href="/tags/Design-Pattern/" style="font-size: 16px;">Design Pattern</a> <a href="/tags/English/" style="font-size: 10px;">English</a> <a href="/tags/Github/" style="font-size: 10px;">Github</a> <a href="/tags/Golang/" style="font-size: 10px;">Golang</a> <a href="/tags/Java/" style="font-size: 12px;">Java</a> <a href="/tags/Jvm/" style="font-size: 10px;">Jvm</a> <a href="/tags/MVP/" style="font-size: 10px;">MVP</a> <a href="/tags/Others/" style="font-size: 10px;">Others</a> <a href="/tags/Preface/" style="font-size: 10px;">Preface</a> <a href="/tags/Python/" style="font-size: 16px;">Python</a> <a href="/tags/Rxjava/" style="font-size: 14px;">Rxjava</a> <a href="/tags/Socket/" style="font-size: 10px;">Socket</a> <a href="/tags/Study-Note/" style="font-size: 16px;">Study Note</a> <a href="/tags/学习笔记/" style="font-size: 10px;">学习笔记</a> <a href="/tags/框架/" style="font-size: 10px;">框架</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+			</div>
+		</div>
+	</header>				
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">CytQ</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+			
+				<img src="/img/headicon.jpg" class="js-avatar" style="width: 100%;height: 100%;opacity: 1;">
+			
+			</div>
+			<hgroup>
+			  <h1 class="header-author">CytQ</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">Catch your time</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">Home</a></li>
+		        
+					<li><a href="/archives">Articles</a></li>
+		        
+					<li><a href="/tags">Tags</a></li>
+		        
+					<li><a href="/aboutme">About me</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/itstudieren" title="github">github</a>
+			        
+						<a class="mail" target="_blank" href="/JonsTank2013@gmail.com" title="mail">mail</a>
+			        
+						<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap"><article id="post-classloaders" class="article article-type-post" itemscope="" itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/07/29/classloaders/" class="article-date">
+  	<time datetime="2016-07-29T15:33:56.000Z" itemprop="datePublished">2016-07-29</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      关于Android和Java的ClassLoader相关知识盘点
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Chinese/">Chinese</a></li></ul>
+	</div>
+
+
+        
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>已经很久没有写博客，就再利用这段时间把该以前总结过的又再总结一次吧，好多东西光记在脑子里也不行。那首先就用Android的ClassLoader开个头，接着就再总结一下Volley, Retrofit, OKHttp, Rxjava, HashMap，Gson,Fresco，动态加载，热点修复以及算法吧。</p>
+<a id="more"></a>
+<h2 id="Java中的Classloader"><a href="#Java中的Classloader" class="headerlink" title="Java中的Classloader"></a>Java中的Classloader</h2><p><strong>分类</strong></p>
+<ul>
+<li>Classloader：这个类是一个抽象类，除了Bootstrap classloader之外所有的classloader都继承它</li>
+<li>Bootstrap Classloader：这个加载器是由C++编写的，在Java虚拟机启动后初始化，主要负责加载核心类库。它并不是Classloader的子类，而是由JVM自己实现的一个加载器，嵌在JVM当中</li>
+<li>Extension Classloader：它是由Bootstrap classloader加载而来，同时也是它的子类，由Java编写，主要负责加载扩展的Javaclass</li>
+<li>System Classloader：它也是由java编写，主要负责加载应用程序自身的类</li>
+</ul>
+<p><strong>程序加载的流程</strong><br>当运行一个程序的时候，JVM启动，然后加载Bootstrap Classloader，该ClassLoader加载Java核心API，也就在这个时候加载了ExtClassloader和AppClassloader，之后就调用ExtClassloader去加载拓展API，最后AppClassloader加载CLASSPATH目录下定义的classes</p>
+<h2 id="双亲委派模式"><a href="#双亲委派模式" class="headerlink" title="双亲委派模式"></a>双亲委派模式</h2><p>当我们需要使用到一个类时，就会加载该类（也就是动态加载）。<br>首先JVM就会使用当前线程的类加载向上递归，也就是找到它的父类，如果父类能够加载，那么就由父类来加载，依次递归，如果不能，就再下传给子类。</p>
+<p><strong>为什么会存在双亲委派模式</strong><br>在Java中，我们判断两个类是不是同一个类，实际上就是判断他们两个是不是由同一个类加载器加载而来的。如果同一个类Ａ，被两个不同的加载器加载，那么就会生成两份A的字节码，而Java就会认为这两个A并不是同一个类。java判断两个类一样的条件：　classloader id + package id + class id。</p>
+<p>因此，双亲委派模式的意义就出来了：为了防止内存中出现多份同样的字节码。类A和类B都想加载system类，如果没有双亲委派的话，那么它们分别使用自己的加载器去加载就会产生两份一模一样的字节码。而如果使用了双亲委派模式，首先就会尝试将System类交给Bootstrap类加载，A使用它加载完毕后，当B再来请求加载时，BootStrap就可以直接返回内存中已经加载了的System类了</p>
+<p>P.S : 在开发中是否还遇到过这样的一种情况？类A想通过类型强转的方式转换为类B，但是编译报错，提示不能转换，这个其实也就是因为他们是由不同的类加载器加载而来，存在一个壁垒</p>
+<h2 id="Android中的Classloader"><a href="#Android中的Classloader" class="headerlink" title="Android中的Classloader"></a>Android中的Classloader</h2><p>Android虚拟机dalvik，现在已经换成ART，也是一种虚拟机，类似于JVM，他们也都实现了双亲委派模式用来防止出现多份重复的字节码，同样由于Android自身的一些特性以及虚拟机的选择，它们是存在一些区别的</p>
+<p>Android下面的字节码文件在编译完成后会再被打包成dex类的文件，同时经过dexopt的优化（优化Class文件中的各种函数表，变量表等等）形成odex文件，它本质也还是class文件，因此加载它的话肯定就需要特殊的类加载器来加载咯</p>
+<p>首先，最开始也是我们的Classloader抽象类，它有一个子类叫做BaseDexClassloader，而这个类呢又是DexClassloader和PathClassloader的父类。当然同时也存在着SystemLoader, BootClassloader这些其他的加载器。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseDexClassLoader</span> <span class="keyword">extends</span> <span class="title">ClassLoader</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">BaseDexClassLoader</span><span class="params">(String dexPath, File optimizedDirectory, String libraryPath, ClassLoader parent)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"Stub!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> Class&lt;?&gt; findClass(String name) <span class="keyword">throws</span> ClassNotFoundException &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"Stub!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> URL <span class="title">findResource</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"Stub!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> Enumeration&lt;URL&gt; <span class="title">findResources</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"Stub!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">findLibrary</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"Stub!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">synchronized</span> Package <span class="title">getPackage</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"Stub!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"Stub!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">ClassLoader</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * The 'System' ClassLoader - the one that is responsible for loading</span><br><span class="line">     * classes from the classpath. It is not equal to the bootstrap class loader -</span><br><span class="line">     * that one handles the built-in classes.</span><br><span class="line">     *</span><br><span class="line">     * Because of a potential class initialization race between ClassLoader and</span><br><span class="line">     * java.lang.System, reproducible when using JDWP with "suspend=y", we defer</span><br><span class="line">     * creation of the system class loader until first use. We use a static</span><br><span class="line">     * inner class to get synchronization at init time without having to sync on</span><br><span class="line">     * every access.</span><br><span class="line">     *</span><br><span class="line">     * <span class="doctag">@see</span> #getSystemClassLoader()</span><br><span class="line">     */</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">SystemClassLoader</span> </span>&#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> ClassLoader loader = ClassLoader.createSystemClassLoader();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>上面的这个是SystemClassloader，用来加载classpath中的类的。熟悉的延迟加载单例模式</p>
+<h2 id="DexClassLoader"><a href="#DexClassLoader" class="headerlink" title="DexClassLoader"></a>DexClassLoader</h2><p>这个类是用来加载一些还没有被安装的字节码文件的。因此不管是动态加载还是热点修复，都是使用这个类加载器来加载从服务器获得的apk中的文件。关于动态加载和热点修复在以后的博客中会有介绍，其实本来好早之前就打算写一个动态加载的库的，github上我库都建好了，但是临时来了点事就没做了，找个时间补回来</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">DexClassLoader</span><span class="params">(String dexPath, String optimizedDirectory, String libraryPath, ClassLoader parent)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>((String)<span class="keyword">null</span>, (File)<span class="keyword">null</span>, (String)<span class="keyword">null</span>, (ClassLoader)<span class="keyword">null</span>);</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"Stub!"</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="PathClassloader"><a href="#PathClassloader" class="headerlink" title="PathClassloader"></a>PathClassloader</h2><p>这个类就是用来加载所有已经被安装被安装好了的字节码文件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PathClassLoader</span> <span class="keyword">extends</span> <span class="title">BaseDexClassLoader</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">PathClassLoader</span><span class="params">(String dexPath, ClassLoader parent)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>((String)<span class="keyword">null</span>, (File)<span class="keyword">null</span>, (String)<span class="keyword">null</span>, (ClassLoader)<span class="keyword">null</span>);</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"Stub!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">PathClassLoader</span><span class="params">(String dexPath, String libraryPath, ClassLoader parent)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>((String)<span class="keyword">null</span>, (File)<span class="keyword">null</span>, (String)<span class="keyword">null</span>, (ClassLoader)<span class="keyword">null</span>);</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"Stub!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/07/30/HotFix/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          热点修复
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/07/19/博客迁移通知/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">博客迁移通知</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share_jia">
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+<span class="jiathis_txt">分享到：</span>
+<a class="jiathis_button_tsina">新浪微博</a>
+<a class="jiathis_button_weixin">微信</a>
+<a class="jiathis_button_cqq">QQ好友</a>
+<a class="jiathis_button_ydnote">有道云笔记</a>
+<a class="jiathis_button_douban">豆瓣</a>
+
+<a href="http://www.jiathis.com/share?uid=2099928" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	shortUrl:false,
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=2099928" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+<div class="duoshuo">
+	<div class="ds-thread" data-thread-key="classloaders" data-title="关于Android和Java的ClassLoader相关知识盘点" data-url="http://imlzq.com/2016/07/29/classloaders/"></div>
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"imlzq"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-right">
+		<span id="busuanzi_container_site_pv">
+    总访问量<span id="busuanzi_value_site_pv"></span>次
+</span>
+		<span id="busuanzi_container_page_pv">
+  			本文阅读量<span id="busuanzi_value_page_pv"></span>次
+  		</span>
+    		&copy; 2016 CytQ
+    	</div>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: false,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+  </div>
+</body>
+</html>
+
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/02/11/2016/08/06/principle-gson/index/" data-tooltip="(no title)" aria-label="PREVIOUS: (no title)">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/02/11/2016/07/30/HotFix/index/" data-tooltip="(no title)" aria-label="NEXT: (no title)">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2018/02/11/2016/07/29/classloaders/index/" title="Share on Facebook">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2018/02/11/2016/07/29/classloaders/index/" title="Share on Twitter">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2018/02/11/2016/07/29/classloaders/index/" title="Share on Google+">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2018 John Doe. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/02/11/2016/08/06/principle-gson/index/" data-tooltip="(no title)" aria-label="PREVIOUS: (no title)">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/02/11/2016/07/30/HotFix/index/" data-tooltip="(no title)" aria-label="NEXT: (no title)">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2018/02/11/2016/07/29/classloaders/index/" title="Share on Facebook">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2018/02/11/2016/07/29/classloaders/index/" title="Share on Twitter">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2018/02/11/2016/07/29/classloaders/index/" title="Share on Google+">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+    <i id="btn-close-shareoptions" class="fa fa-close"></i>
+    <ul class="share-options">
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2018/02/11/2016/07/29/classloaders/index/">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i><span>Share on Facebook</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2018/02/11/2016/07/29/classloaders/index/">
+                    <i class="fa fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2018/02/11/2016/07/29/classloaders/index/">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                </a>
+            </li>
+        
+    </ul>
+</div>
+
+            
+        </div>
+        
+
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <h4 id="about-card-name">John Doe</h4>
+        
+            <div id="about-card-bio"><p>author.bio</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>author.job</p>
+
+            </div>
+        
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-peofhqjkzcghmndknakluequy1y6owxdwpaqyju9ntl9zxnk7rdolb3rjjoj.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+
+
+
+    </body>
+</html>

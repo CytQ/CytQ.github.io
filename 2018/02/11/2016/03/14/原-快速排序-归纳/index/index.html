@@ -1,0 +1,909 @@
+
+<!DOCTYPE html>
+<html lang="">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hexo">
+    <title> - Hexo</title>
+    <meta name="author" content="John Doe">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="快速排序_归纳 | Hello Mr.Li                                                  	 		 			 			 			 		  		 		  ITStudieren 		  		 		Study, Note and Advance">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://imlzq.com/2018/02/11/2016/03/14/原-快速排序-归纳/index/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="快速排序_归纳 | Hello Mr.Li                                                  	 		 			 			 			 		  		 		  ITStudieren 		  		 		Study, Note and Advance">
+<meta property="og:updated_time" content="2018-02-11T08:42:33.516Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo">
+<meta name="twitter:description" content="快速排序_归纳 | Hello Mr.Li                                                  	 		 			 			 			 		  		 		  ITStudieren 		  		 		Study, Note and Advance">
+    
+    
+        
+    
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-pz4cc6y13wt2trzqa8l3n9v0yykr0sstdaheem7qj628nhjmhp9pfawvqawz.min.css">
+    <!--STYLES END-->
+    
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/ ">Hexo</a>
+    </div>
+    
+        
+            <a  class="header-right-picture "
+                href="#about">
+        
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/ "
+                            
+                            title="Home"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Home</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-categories"
+                            
+                            title="Categories"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Categories</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-tags"
+                            
+                            title="Tags"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Tags</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-archives"
+                            
+                            title="Archives"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Archives</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link open-algolia-search"
+                             href="#search"
+                            
+                            title="Search"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Search</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="#about"
+                            
+                            title="About"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">About</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/atom.xml"
+                            
+                            title="RSS"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            (no title)
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time itemprop="datePublished" datetime="2018-02-11T16:42:33+08:00">
+	
+		    Feb 11, 2018
+    	
+    </time>
+    
+</div>
+
+    
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>快速排序_归纳 | Hello Mr.Li</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="算法思路
+选取一个初始值
+将所有比该初始值大的数置于初始值的右边，所有比该初始值小的数置于初始值的左边
+循环以上操作，直到完成排序为止。
+
+初级算法实现首先，第一轮循环时分为两步。 
+第一步：从最右边向左依次遍历，查找比初始值小的数，找到之后，更改arr[left]的值, 同时 left ++，即把小的数扔到左边去 
+第二步：从最左边向右依次遍历，查找比初始值大的数，找到之后，更改arr[rig">
+<meta property="og:type" content="article">
+<meta property="og:title" content="快速排序_归纳">
+<meta property="og:url" content="http://imlzq.com/2016/03/14/原-快速排序-归纳/index.html">
+<meta property="og:site_name" content="Hello Mr.Li">
+<meta property="og:description" content="算法思路
+选取一个初始值
+将所有比该初始值大的数置于初始值的右边，所有比该初始值小的数置于初始值的左边
+循环以上操作，直到完成排序为止。
+
+初级算法实现首先，第一轮循环时分为两步。 
+第一步：从最右边向左依次遍历，查找比初始值小的数，找到之后，更改arr[left]的值, 同时 left ++，即把小的数扔到左边去 
+第二步：从最左边向右依次遍历，查找比初始值大的数，找到之后，更改arr[rig">
+<meta property="og:updated_time" content="2016-05-14T11:15:35.068Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="快速排序_归纳">
+<meta name="twitter:description" content="算法思路
+选取一个初始值
+将所有比该初始值大的数置于初始值的右边，所有比该初始值小的数置于初始值的左边
+循环以上操作，直到完成排序为止。
+
+初级算法实现首先，第一轮循环时分为两步。 
+第一步：从最右边向左依次遍历，查找比初始值小的数，找到之后，更改arr[left]的值, 同时 left ++，即把小的数扔到左边去 
+第二步：从最左边向右依次遍历，查找比初始值大的数，找到之后，更改arr[rig">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="/img/headicon.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">ITStudieren</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">Study, Note and Advance</p>
+		
+	
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>Menu</li>
+						<li>Tags</li>
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">Home</a></li>
+				        
+							<li><a href="/archives">Articles</a></li>
+				        
+							<li><a href="/tags">Tags</a></li>
+				        
+							<li><a href="/aboutme">About me</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="https://github.com/itstudieren" title="github">github</a>
+					        
+								<a class="mail" target="_blank" href="/JonsTank2013@gmail.com" title="mail">mail</a>
+					        
+								<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Algorithm/" style="font-size: 16.67px;">Algorithm</a> <a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Chinese/" style="font-size: 10px;">Chinese</a> <a href="/tags/Design-Pattern/" style="font-size: 20px;">Design Pattern</a> <a href="/tags/Golang/" style="font-size: 10px;">Golang</a> <a href="/tags/Java/" style="font-size: 13.33px;">Java</a> <a href="/tags/Jvm/" style="font-size: 10px;">Jvm</a> <a href="/tags/MVP/" style="font-size: 10px;">MVP</a> <a href="/tags/Python/" style="font-size: 20px;">Python</a> <a href="/tags/Rxjava/" style="font-size: 13.33px;">Rxjava</a> <a href="/tags/Socket/" style="font-size: 10px;">Socket</a> <a href="/tags/Study-Note/" style="font-size: 20px;">Study Note</a> <a href="/tags/学习笔记/" style="font-size: 10px;">学习笔记</a> <a href="/tags/框架/" style="font-size: 10px;">框架</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+			</div>
+		</div>
+	</header>				
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">ITStudieren</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+			
+				<img lazy-src="/img/headicon.jpg" class="js-avatar">
+			
+			</div>
+			<hgroup>
+			  <h1 class="header-author">ITStudieren</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">Study, Note and Advance</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">Home</a></li>
+		        
+					<li><a href="/archives">Articles</a></li>
+		        
+					<li><a href="/tags">Tags</a></li>
+		        
+					<li><a href="/aboutme">About me</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/itstudieren" title="github">github</a>
+			        
+						<a class="mail" target="_blank" href="/JonsTank2013@gmail.com" title="mail">mail</a>
+			        
+						<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap"><article id="post-原-快速排序-归纳" class="article article-type-post" itemscope="" itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/03/14/原-快速排序-归纳/" class="article-date">
+  	<time datetime="2016-03-14T09:22:13.000Z" itemprop="datePublished">2016-03-14</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      快速排序_归纳
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li></ul>
+	</div>
+
+
+        
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <a id="more"></a>
+<h2 id="算法思路"><a href="#算法思路" class="headerlink" title="算法思路"></a>算法思路</h2><ol>
+<li>选取一个初始值</li>
+<li>将所有比该初始值大的数置于初始值的右边，所有比该初始值小的数置于初始值的左边</li>
+<li>循环以上操作，直到完成排序为止。</li>
+</ol>
+<h2 id="初级算法实现"><a href="#初级算法实现" class="headerlink" title="初级算法实现"></a>初级算法实现</h2><p>首先，第一轮循环时分为两步。 </p>
+<p>第一步：从最右边向左依次遍历，查找比初始值小的数，找到之后，更改arr[left]的值, 同时 left ++，即把小的数扔到左边去 </p>
+<p>第二步：从最左边向右依次遍历，查找比初始值大的数，找到之后，更改arr[right]的值, 同时 right –，即把大的数扔到右边去。 </p>
+<p>第三步：判断整个数组的排序是否结束，如果没有结束，就依次循环排序 </p>
+<p>这里 left++ 及 right– 的意思是，由于这一轮排序我们只需要让初始值左边的数均小于初始值，右边的数均大于初始值，因此找到符合条件的数后直接扔到初始值的左边或者右边，而不需要理会扔过去后的大小排序问题，这一轮我们只负责初始值的排序及定位。而在扔过去了之后，此次循环中那一位就不用再判断了，因此++或–。当left与right相等时，表示到了中间点，将其赋值为初始值即可。</p>
+<pre><code>&lt;span class=&quot;hljs-keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;hljs-class&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;Quicksort&lt;/span&gt; {&lt;/span&gt;
+    &lt;span class=&quot;hljs-keyword&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;hljs-keyword&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;hljs-keyword&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;hljs-keyword&quot;&gt;int&lt;/span&gt; MAXSIZE = &lt;span class=&quot;hljs-number&quot;&gt;30&lt;/span&gt;;
+    &lt;span class=&quot;hljs-keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;hljs-keyword&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;hljs-keyword&quot;&gt;int&lt;/span&gt;[] arr = &lt;span class=&quot;hljs-keyword&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;hljs-keyword&quot;&gt;int&lt;/span&gt;[MAXSIZE];
+
+    &lt;span class=&quot;hljs-keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;hljs-keyword&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;hljs-keyword&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;main&lt;/span&gt;(String[] args) {
+
+        &lt;span class=&quot;hljs-keyword&quot;&gt;for&lt;/span&gt; (&lt;span class=&quot;hljs-keyword&quot;&gt;int&lt;/span&gt; i = &lt;span class=&quot;hljs-number&quot;&gt;0&lt;/span&gt;; i &amp;lt; MAXSIZE; i++) {
+            arr[i] = &lt;span class=&quot;hljs-keyword&quot;&gt;new&lt;/span&gt; Random().nextInt(MAXSIZE);
+        }
+
+        System.out.println(&lt;span class=&quot;hljs-string&quot;&gt;&quot;修改前&quot;&lt;/span&gt;);
+        &lt;span class=&quot;hljs-keyword&quot;&gt;for&lt;/span&gt; (&lt;span class=&quot;hljs-keyword&quot;&gt;int&lt;/span&gt; i : arr) {
+            System.out.print(i + &lt;span class=&quot;hljs-string&quot;&gt;&quot; &quot;&lt;/span&gt;);
+        }
+        System.out.println(&lt;span class=&quot;hljs-string&quot;&gt;&quot;&quot;&lt;/span&gt;);
+
+        &lt;span class=&quot;hljs-keyword&quot;&gt;new&lt;/span&gt; Quicksort().sortMethodOne(&lt;span class=&quot;hljs-number&quot;&gt;0&lt;/span&gt;, arr.length - &lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;);
+
+        System.out.println(&lt;span class=&quot;hljs-string&quot;&gt;&quot;修改后&quot;&lt;/span&gt;);
+        &lt;span class=&quot;hljs-keyword&quot;&gt;for&lt;/span&gt; (&lt;span class=&quot;hljs-keyword&quot;&gt;int&lt;/span&gt; i : arr) {
+            System.out.print(i + &lt;span class=&quot;hljs-string&quot;&gt;&quot; &quot;&lt;/span&gt;);
+        }
+    }
+
+    &lt;span class=&quot;hljs-javadoc&quot;&gt;/**
+     * 
+     *&lt;span class=&quot;hljs-javadoctag&quot;&gt; @param&lt;/span&gt; arr
+     *            目标数组
+     *&lt;span class=&quot;hljs-javadoctag&quot;&gt; @param&lt;/span&gt; min
+     *            排序的数组的起始位
+     *&lt;span class=&quot;hljs-javadoctag&quot;&gt; @param&lt;/span&gt; max
+     *            排序的数组的结束位
+     */&lt;/span&gt;
+    &lt;span class=&quot;hljs-keyword&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;hljs-keyword&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;sortMethodOne&lt;/span&gt;(&lt;span class=&quot;hljs-keyword&quot;&gt;int&lt;/span&gt; min, &lt;span class=&quot;hljs-keyword&quot;&gt;int&lt;/span&gt; max) {
+        &lt;span class=&quot;hljs-comment&quot;&gt;// 一个临时变量，用于记录数组左边的位置&lt;/span&gt;
+        &lt;span class=&quot;hljs-keyword&quot;&gt;int&lt;/span&gt; left = min;
+
+        &lt;span class=&quot;hljs-comment&quot;&gt;// 一个临时变量，用于记录数组右边的位置&lt;/span&gt;
+        &lt;span class=&quot;hljs-keyword&quot;&gt;int&lt;/span&gt; right = max;
+
+        &lt;span class=&quot;hljs-comment&quot;&gt;// tempNumber很重要，用于记录初始点的数值，并在每次循环判断中将对应位置的值与之进行比较&lt;/span&gt;
+        &lt;span class=&quot;hljs-keyword&quot;&gt;int&lt;/span&gt; tempNumber = arr[left];
+
+        &lt;span class=&quot;hljs-keyword&quot;&gt;while&lt;/span&gt; (left &amp;lt; right) {
+            &lt;span class=&quot;hljs-comment&quot;&gt;// 第一步：先从右边向左遍历，找到一个比tempNumber小的数&lt;/span&gt;
+            &lt;span class=&quot;hljs-keyword&quot;&gt;while&lt;/span&gt; (left &amp;lt; right &amp;amp;&amp;amp; arr[right] &amp;gt;= tempNumber) {
+                right--;
+            }
+            &lt;span class=&quot;hljs-comment&quot;&gt;// 找到后将arr[right]赋值给arr[left]&lt;/span&gt;
+            arr[left] = arr[right];
+
+            &lt;span class=&quot;hljs-comment&quot;&gt;// 第二步：从左向右遍历，找到一个比tempNumber大的数&lt;/span&gt;
+            &lt;span class=&quot;hljs-keyword&quot;&gt;while&lt;/span&gt; (left &amp;lt; right &amp;amp;&amp;amp; arr[left] &amp;lt;= tempNumber) {
+                left++;
+            }
+            &lt;span class=&quot;hljs-comment&quot;&gt;// 找到后将arr[left]赋值给arr[right]&lt;/span&gt;
+            arr[right] = arr[left];
+        }
+
+        &lt;span class=&quot;hljs-comment&quot;&gt;// 中间数赋值&lt;/span&gt;
+        arr[left] = tempNumber;
+
+        &lt;span class=&quot;hljs-comment&quot;&gt;// 遍历整理左边的数&lt;/span&gt;
+        &lt;span class=&quot;hljs-keyword&quot;&gt;if&lt;/span&gt; (left &amp;gt; min) {
+            sortMethodOne(min, left - &lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;);
+        }
+
+        &lt;span class=&quot;hljs-comment&quot;&gt;// 遍历整理右边的数&lt;/span&gt;
+        &lt;span class=&quot;hljs-keyword&quot;&gt;if&lt;/span&gt; (right &amp;lt; max) {
+            sortMethodOne(left + &lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;, max);
+        }
+    }
+}
+</code></pre><h2 id="算法优化"><a href="#算法优化" class="headerlink" title="算法优化"></a>算法优化</h2><p><strong>方法一：　三数取中间值</strong> </p>
+<p>思路：取最左边的数A，中间位置的数B，最右边的数C，将他们进行一个排序，取中间的值作为初始值。 </p>
+<p>例如： </p>
+<p>int[] temp = { 9, 5, 6, 8, 4, 3, 2, 7, 1 }交换后的结果为{ 1, 5, 6, 8, 4, 3, 2, 7, 9 },这样的话就相当于是只交换了1和9的位置，而我们又依次循环了很多次，效率比起来的话肯定就太低了。从概率上来讲，通过三数取中间值的效率是最高的，可以避免取到的初始值一开始就为极端数的情况，一定程度上可以提升运行的效率。</p>
+<p><strong>方法二：　双向遍历</strong> </p>
+<p><strong>方法三：　减少交换次数</strong></p>
+<p>优化方法在这里只是一个提点，具体如何实现以及其他的优化可以视情况而定，多个优化方法也可以视情况整合，这个就看自己了。</p>
+<pre><code>&lt;div&gt;
+    作者：JonsTank2013 发表于2016/3/14 17:22:13 [原文链接](http://blog.csdn.net/jonstank2013/article/details/50888208)
+&lt;/div&gt;
+&lt;div&gt;
+阅读：152 评论：0 [查看评论](http://blog.csdn.net/jonstank2013/article/details/50888208#comments)
+&lt;/div&gt;
+</code></pre>
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/03/15/原-二叉树，-二叉查找树，二分查找算法/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          二叉树， 二叉查找树，二分查找算法
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/03/02/原-MVP-深引用方式的简单实现/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">MVP 深引用方式的简单实现</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share_jia">
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+<span class="jiathis_txt">分享到：</span>
+<a class="jiathis_button_tsina">新浪微博</a>
+<a class="jiathis_button_weixin">微信</a>
+<a class="jiathis_button_cqq">QQ好友</a>
+<a class="jiathis_button_ydnote">有道云笔记</a>
+<a class="jiathis_button_douban">豆瓣</a>
+
+<a href="http://www.jiathis.com/share?uid=2099928" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	shortUrl:false,
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=2099928" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+<div class="duoshuo">
+	<div class="ds-thread" data-thread-key="原-快速排序-归纳" data-title="快速排序_归纳" data-url="http://imlzq.com/2016/03/14/原-快速排序-归纳/"></div>
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"imlzq"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-right">
+		<span id="busuanzi_container_site_pv">
+    总访问量<span id="busuanzi_value_site_pv"></span>次
+</span>
+		<span id="busuanzi_container_page_pv">
+  			本文阅读量<span id="busuanzi_value_page_pv"></span>次
+  		</span>
+    		&copy; 2016 ITStudieren
+    	</div>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
+
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/02/11/2016/03/14/快速排序-归纳/index/" data-tooltip="(no title)" aria-label="PREVIOUS: (no title)">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/02/11/2016/03/02/原-MVP-深引用方式的简单实现/index/" data-tooltip="(no title)" aria-label="NEXT: (no title)">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2018/02/11/2016/03/14/原-快速排序-归纳/index/" title="Share on Facebook">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2018/02/11/2016/03/14/原-快速排序-归纳/index/" title="Share on Twitter">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2018/02/11/2016/03/14/原-快速排序-归纳/index/" title="Share on Google+">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2018 John Doe. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/02/11/2016/03/14/快速排序-归纳/index/" data-tooltip="(no title)" aria-label="PREVIOUS: (no title)">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/02/11/2016/03/02/原-MVP-深引用方式的简单实现/index/" data-tooltip="(no title)" aria-label="NEXT: (no title)">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2018/02/11/2016/03/14/原-快速排序-归纳/index/" title="Share on Facebook">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2018/02/11/2016/03/14/原-快速排序-归纳/index/" title="Share on Twitter">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2018/02/11/2016/03/14/原-快速排序-归纳/index/" title="Share on Google+">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+    <i id="btn-close-shareoptions" class="fa fa-close"></i>
+    <ul class="share-options">
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2018/02/11/2016/03/14/原-快速排序-归纳/index/">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i><span>Share on Facebook</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2018/02/11/2016/03/14/原-快速排序-归纳/index/">
+                    <i class="fa fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2018/02/11/2016/03/14/原-快速排序-归纳/index/">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                </a>
+            </li>
+        
+    </ul>
+</div>
+
+            
+        </div>
+        
+
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <h4 id="about-card-name">John Doe</h4>
+        
+            <div id="about-card-bio"><p>author.bio</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>author.job</p>
+
+            </div>
+        
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-peofhqjkzcghmndknakluequy1y6owxdwpaqyju9ntl9zxnk7rdolb3rjjoj.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+
+
+
+    </body>
+</html>
