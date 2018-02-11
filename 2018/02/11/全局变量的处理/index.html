@@ -11,6 +11,8 @@
     
     
     
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
     <meta name="description" content="很多时候APP会莫名其妙的崩溃，尤其是一些配置很低的收集，重现场景就是在APP切换到后台后，闲置了一段时间后再继续使用时，就会崩溃。　　导致上述崩溃发生的一个可能罪魁祸首就是全局变量，在内存不足的时候，系统会回收一部分闲置的资源，由于APP被切换到了后台，所以之前存放的全局变量很容易被回收，这是再切换到前台继续使用，在使用某个全局变量的时候，就会因为全局变量的值为空而崩溃。　　要解决这个问题，">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="Hello! CytQ">

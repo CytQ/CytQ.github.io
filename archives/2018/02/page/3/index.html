@@ -11,6 +11,8 @@
     
     
     
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
     <meta property="og:type" content="blog">
 <meta property="og:title" content="Hello! CytQ">
 <meta property="og:url" content="http://yoursite.com/archives/2018/02/page/3/index.html">
@@ -176,6 +178,54 @@
                         ">
                 
     <section class="postShorten-group main-content-wrap">
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2018/02/11/设计模式_Builder模式/">
+                            (无标题)
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-02-11T17:38:39+08:00">
+	
+		    2月 11, 2018
+    	
+    </time>
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <p>Builder模式是一步一步创建一个复杂对象的创建型模式，他允许用户在不知道内部构造细节的情况下，可以更精细地控制对象的构造流程。该模式是为了将一个复杂对象的构建与他的表示分离，使得同样的构建过程可以创建不同的表示。</p>
+<p>使用场景<br>-<br>例如，在创建一个对象时，如果该对象的构造方法需要多个参数，而多个参数势必会增加开发者调用该构造方法时的难度，一两个参数还好，如果说参数有5个，甚至是更多的时候，开发者在调用方法的时候就需要一个个的比对参数的作用，而如果中途构造方法的参数改变了，就需要改动很多个地方，也就是增加了维护及拓展的难度。</p>
+<p>而使用Builder模式，可以直接通过setMethodName()来设置参数，而如果setMethodName()返回的是Builder本身，还可以实现链式创建。这让代码变得更为的清晰，同时也容易维护及拓展。</p>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Builder setName(<span class="keyword">String</span> name) &#123;</span><br><span class="line">	<span class="built_in">this</span>.name = name;</span><br><span class="line">	<span class="keyword">return</span> builder;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> Builder setAge(<span class="keyword">String</span> name) &#123;</span><br><span class="line">	<span class="built_in">this</span>.name = name;</span><br><span class="line">	<span class="keyword">return</span> builder;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> <span class="type">TestBuilder</span>().setName(<span class="string">"haha"</span>).setAge(<span class="number">20</span>);</span><br></pre></td></tr></table></figure>
+<p>上面介绍的这个使用场景是Builder模式使用在创建对象时，在Android中，AlertDialog.Builder就采用了这种方式，具体的各位可以查看一下相关的源码。<br>除了这个使用场景之外，Builder模式也可以用于正常的开发中，不仅仅是构造方法，但是由于它们的思路是一样的，这里就不再赘述，毕竟思想最重要 : )</p>
+<p>额外的<br>-<br>Builder模式可以将一个对象的创建分为必要参数和可选参数，这样也增加了一个组件或者是一个函数的用途。在Builder的构造方法中填入必要的参数，而可选的参数就可以使用setMethodName()这种方法来动态的添加，这在Android中相当重要，可以多使用使用</p>
+
+                    
+                        
+
+                    
+                    
+                        <p>
+                            <a href="/2018/02/11/设计模式_Builder模式/#post-footer" class="postShorten-excerpt_link link">
+                                评论和共享
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
     
     
     <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
