@@ -1,0 +1,845 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hello! CytQ">
+    <title>BroadcastReceiver —— 广播全解析 - Hello! CytQ</title>
+    <meta name="author" content="CytQ">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="广播是Android的四大组件之一，在Android的源码中也大量存在并使用了它，此外它也是一种常见的跨进程通信方式，由此可见它的重要性。 这里就对广播的底层实现进行一个解析 本文中间包含了广播的代码细节，可以直接查看最后的“一句话总结”">
+<meta name="keywords" content="Android">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="BroadcastReceiver —— 广播全解析">
+<meta property="og:url" content="http://imlzq.com/2016/06/08/BroadcastReceiver/index.html">
+<meta property="og:site_name" content="Hello! CytQ">
+<meta property="og:description" content="广播是Android的四大组件之一，在Android的源码中也大量存在并使用了它，此外它也是一种常见的跨进程通信方式，由此可见它的重要性。 这里就对广播的底层实现进行一个解析 本文中间包含了广播的代码细节，可以直接查看最后的“一句话总结”">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-02-12T10:19:49.356Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="BroadcastReceiver —— 广播全解析">
+<meta name="twitter:description" content="广播是Android的四大组件之一，在Android的源码中也大量存在并使用了它，此外它也是一种常见的跨进程通信方式，由此可见它的重要性。 这里就对广播的底层实现进行一个解析 本文中间包含了广播的代码细节，可以直接查看最后的“一句话总结”">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="http://imlzq.com/assets/images/headicon.png"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-pz4cc6y13wt2trzqa8l3n9v0yykr0sstdaheem7qj628nhjmhp9pfawvqawz.min.css">
+    <!--STYLES END-->
+    
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+<header id="header" data-behavior="5">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/ ">Hello! CytQ</a>
+    </div>
+    
+        
+            <a  class="header-right-icon "
+                href="#about">
+        
+        
+            <i class="fa fa-lg fa-global.avatar"></i>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="5">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a href="/#about">
+                    <img class="sidebar-profile-picture" src="/assets/images/headicon.png" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">CytQ</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>Software Engineer<br>Android、移动安全、逆向、漏洞挖掘</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/ "
+                            
+                            title="Home"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Home</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-tags"
+                            
+                            title="Tags"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Tags</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-archives"
+                            
+                            title="Archives"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Archives</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link open-algolia-search"
+                             href="#search"
+                            
+                            title="Search"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Search</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="#about"
+                            
+                            title="About"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">About</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="mailto:cytlzq@gmail.com" target="_blank" rel="noopener" title="Mail">
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-envelope-o" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Mail</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/atom.xml"
+                            
+                            title="RSS"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="5"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            BroadcastReceiver —— 广播全解析
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time itemprop="datePublished" datetime="2016-06-08T00:00:00+08:00">
+	
+		    Jun 08, 2016
+    	
+    </time>
+    
+</div>
+
+    
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <p>广播是Android的四大组件之一，在Android的源码中也大量存在并使用了它，此外它也是一种常见的跨进程通信方式，由此可见它的重要性。</p>
+<p>这里就对广播的底层实现进行一个解析</p>
+<p><strong>本文中间包含了广播的代码细节，可以直接查看最后的“一句话总结”</strong></p>
+<a id="more"></a>    
+<h2 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h2><p>首先，广播可以分为动态和静态注册两种方式。</p>
+<p>动态注册的含义也就是在代码中注册广播，程序关闭是无效，在同等优先级下它会比静态注册的广播先调用</p>
+<p>静态注册是指在AndroidManifest文件中注册的广播，由于APK在安装时静态注册的广播的信息会被PMS扫描并被添加到系统的表中，因此它在程序关闭时依然有效，例如开机自启就是属于检测自启的动作，如果发生该广播，就会启动自身的APP</p>
+<p>上面的两种分类属于大分类，又可以将他们细分为普通广播、粘性广播、有序广播等等。</p>
+<p><strong>有序广播</strong><br>使用sendOrderedBroadcast发送广播，高优先级的会先收到广播，然后由它决定是否处理、下传或者是终止该广播的传递</p>
+<p><strong>粘性广播</strong><br>使用sendStickyBroadcast发送广播。如果发送时当前系统中并没有对应的广播接收器，那么它仍然会驻留在系统中，一旦有对应的广播接收器注册，那么就立即发送给它。</p>
+<p>而如果它发送了多条，多条都没人接收的话怎么办呢？系统就会保存最后一条广播，因为这样就可以避免粘性广播在系统中的冗余。使用removeStickyBroadcast可以移除该Intent。</p>
+<p>其实广播本来就是为了解耦，而粘性广播则更加解耦，因为接收方甚至可以完全不存在，这肯定是它的一个优势</p>
+<h2 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h2><p>onReceive是在主线程中被调用的，因此要注意不能在onReceive中出现耗时操作。如果一定要有，那么就最好开一个线程或者是交给service去处理</p>
+<p>此外，只有当接受到了广播后，BroadcastReceiver这个类才会被实例化，不管它是动态还是静态注册的。<br>当内存不足时，receiver也会被系统回收掉，所以如果有长时间的任务，最好交给其他的来做，例如service</p>
+<h2 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h2><p><strong>动态注册</strong></p>
+<ul>
+<li>创建一个BroadcastReceiver</li>
+<li>创建IntentFilter，并指定Action</li>
+<li>registerReceiver(receivcer, intentFilter)</li>
+<li>sendBroadcast(new Intent(“haha”));</li>
+<li>unregisterReceiver(receiver);</li>
+</ul>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">BroadcastReceiver </span>receiver = new <span class="keyword">BroadcastReceiver() </span>&#123;</span><br><span class="line">           @Override</span><br><span class="line">           public void onReceive(<span class="built_in">Context</span> <span class="built_in">context</span>, Intent intent) &#123;</span><br><span class="line">               Toast.makeText(MainActivity.this, <span class="string">"Receive"</span>, Toast.LENGTH_SHORT).<span class="keyword">show();</span></span><br><span class="line"><span class="keyword"> </span>          &#125;</span><br><span class="line">       &#125;<span class="comment">;</span></span><br><span class="line"></span><br><span class="line">       IntentFilter intentFilter = new IntentFilter()<span class="comment">;</span></span><br><span class="line">       intentFilter.<span class="keyword">addAction("haha");</span></span><br><span class="line"><span class="keyword"></span></span><br><span class="line"><span class="keyword"> </span>      registerReceiver(receiver, intentFilter)<span class="comment">;</span></span><br><span class="line"></span><br><span class="line">	sendBroadcast(new Intent(<span class="string">"haha"</span>))<span class="comment">;</span></span><br><span class="line">	unregisterReceiver(receiver)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<p>这样也就完成了一个广播的动态注册，但是需要注册的一点，广播注册之后一定要记得取消，一般是在onDestory中取消，其他的根据实际情况取消也是可以的。</p>
+<p><strong>静态注册</strong><br>直接在AndroidManifest文件中添加</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">receiver</span> <span class="attr">android:name</span>=<span class="string">".MyReceiver"</span>&gt;</span>  </span><br><span class="line">        <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span>  </span><br><span class="line">            <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">"android.intent.action.MY_BROADCAST"</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">category</span> <span class="attr">android:name</span>=<span class="string">"android.intent.category.DEFAULT"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">receiver</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h2><p>我们从动态注册的广播入手</p>
+<figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">registerReceiver(<span class="name">receiver</span>, intentFilter)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<p>这一行代码就是注册广播，那它做了什么呢？点进去看</p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Intent registerReceiver(</span><br><span class="line">        BroadcastReceiver receiver, IntentFilter filter) &#123;</span><br><span class="line">        <span class="function"><span class="keyword">return</span> mBase.<span class="title">registerReceiver</span><span class="params">(receiver, filter)</span></span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Intent registerReceiver(</span><br><span class="line">        BroadcastReceiver receiver, IntentFilter filter,</span><br><span class="line">        String broadcastPermission, Handler scheduler) &#123;</span><br><span class="line">        <span class="keyword">return</span> mBase.registerReceiver(receiver, filter, broadcastPermission,</span><br><span class="line">                scheduler);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** <span class="doctag">@hide</span> */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Intent registerReceiverAsUser(</span><br><span class="line">        BroadcastReceiver receiver, UserHandle user, IntentFilter filter,</span><br><span class="line">        String broadcastPermission, Handler scheduler) &#123;</span><br><span class="line">        <span class="keyword">return</span> mBase.registerReceiverAsUser(receiver, user, filter, broadcastPermission,</span><br><span class="line">                scheduler);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>这里我们就进入到了ContextWrapper文件中，而第三个方法我们暂时不用管他，因为它是被@hide标记了的，只关心前面两个方法。而前面的两个方法又分别调用了mBase也就是一个Context中对应的方法</p>
+<p>对于ContextWarapper来说，它只是Context的一个代理类，也就是说它是为Context服务的，一些小工作也就是不是核心的东西Context都是交给它来做的。而一些核心工作最终又返还给Context来处理。这样就可以在一定程度上实现解耦以及工作职责的分离，Context完全不需要考虑那些它本来不需要也不想知道的事情。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Proxying implementation of Context that simply delegates all of its calls to</span></span><br><span class="line"><span class="comment"> * another Context.  Can be subclassed to modify behavior without changing</span></span><br><span class="line"><span class="comment"> * the original Context.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">ContextWrapper</span> <span class="keyword">extends</span> <span class="title">Context</span> </span>&#123;</span><br></pre></td></tr></table></figure>
+<p>Context:</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">public</span> <span class="selector-tag">abstract</span> <span class="selector-tag">Intent</span> <span class="selector-tag">registerReceiver</span>(<span class="variable">@Nullable</span> BroadcastReceiver receiver,IntentFilter filter);</span><br></pre></td></tr></table></figure>
+<p>我们的Context也是一个抽象类，它的具体实现是在ContextImpl中的。Context里面实际上就是一些资源的获取的工作，它还有几个子类就是Activity，Application和Service</p>
+<p>ContextImpl:</p>
+<figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line"><span class="keyword">public</span> Intent registerReceiver(BroadcastReceiver receiver, IntentFilter <span class="built_in">filter</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> registerReceiver(receiver, <span class="built_in">filter</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Override</span><br><span class="line"><span class="keyword">public</span> Intent registerReceiver(BroadcastReceiver receiver, IntentFilter <span class="built_in">filter</span>,</span><br><span class="line">        <span class="keyword">String</span> broadcastPermission, Handler scheduler) &#123;</span><br><span class="line">    <span class="keyword">return</span> registerReceiverInternal(receiver, getUserId(),</span><br><span class="line">            <span class="built_in">filter</span>, broadcastPermission, scheduler, getOuterContext());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Override</span><br><span class="line"><span class="keyword">public</span> Intent registerReceiverAsUser(BroadcastReceiver receiver, UserHandle user,</span><br><span class="line">        IntentFilter <span class="built_in">filter</span>, <span class="keyword">String</span> broadcastPermission, Handler scheduler) &#123;</span><br><span class="line">    <span class="keyword">return</span> registerReceiverInternal(receiver, user.getIdentifier(),</span><br><span class="line">            <span class="built_in">filter</span>, broadcastPermission, scheduler, getOuterContext());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> Intent registerReceiverInternal(BroadcastReceiver receiver, <span class="built_in">int</span> userId,</span><br><span class="line">        IntentFilter <span class="built_in">filter</span>, <span class="keyword">String</span> broadcastPermission,</span><br><span class="line">        Handler scheduler, Context context) &#123;</span><br><span class="line">    IIntentReceiver rd = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">if</span> (receiver != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (mPackageInfo != <span class="keyword">null</span> &amp;&amp; context != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (scheduler == <span class="keyword">null</span>) &#123;</span><br><span class="line">                scheduler = mMainThread.getHandler();</span><br><span class="line">            &#125;</span><br><span class="line">            rd = mPackageInfo.getReceiverDispatcher(</span><br><span class="line">                receiver, context, scheduler,</span><br><span class="line">                mMainThread.getInstrumentation(), <span class="keyword">true</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (scheduler == <span class="keyword">null</span>) &#123;</span><br><span class="line">                scheduler = mMainThread.getHandler();</span><br><span class="line">            &#125;</span><br><span class="line">            rd = <span class="keyword">new</span> LoadedApk.ReceiverDispatcher(</span><br><span class="line">                    receiver, context, scheduler, <span class="keyword">null</span>, <span class="keyword">true</span>).getIIntentReceiver();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> ActivityManagerNative.getDefault().registerReceiver(</span><br><span class="line">                mMainThread.getApplicationThread(), mBasePackageName,</span><br><span class="line">                rd, <span class="built_in">filter</span>, broadcastPermission, userId);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (RemoteException e) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>好了，这下就一目了然，我们只有两个参数的registerReceiver最终也是调用了四个参数的方法，而后面的两个参数broadcastPermission以及Handler直接被设置为空。</p>
+<p>最终的一个工作都是交给registerReceiverInternal来做的。首当其冲的就是这个IIntentReceiver类，这个类是做什么的呢？它实际上就是一个binder实体，通过这个东西我们就可以实现跨进程的信息传递了.它是由ReceiveDispather来管理的</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">rd = mPackageInfo.getReceiverDispatcher(</span><br><span class="line">                    receiver, <span class="built_in">context</span>, scheduler,</span><br><span class="line">                    mMainThread.getInstrumentation(), <span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">public IIntentReceiver getReceiverDispatcher(BroadcastReceiver r,</span><br><span class="line">            Context <span class="built_in">context</span>, Handler handler,</span><br><span class="line">            Instrumentation instrumentation, boolean registered) &#123;</span><br><span class="line">        synchronized (mReceivers) &#123;</span><br><span class="line">            LoadedApk.ReceiverDispatcher rd = null;</span><br><span class="line">            ArrayMap&lt;BroadcastReceiver, LoadedApk.ReceiverDispatcher&gt; <span class="built_in">map</span> = null;</span><br><span class="line">            <span class="keyword">if</span> (registered) &#123;</span><br><span class="line">                <span class="built_in">map</span> = mReceivers.<span class="built_in">get</span>(<span class="built_in">context</span>);</span><br><span class="line">                <span class="keyword">if</span> (<span class="built_in">map</span> != null) &#123;</span><br><span class="line">                    rd = <span class="built_in">map</span>.<span class="built_in">get</span>(r);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (rd == null) &#123;</span><br><span class="line">                rd = <span class="built_in">new</span> ReceiverDispatcher(r, <span class="built_in">context</span>, handler,</span><br><span class="line">                        instrumentation, registered);</span><br><span class="line">                <span class="keyword">if</span> (registered) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (<span class="built_in">map</span> == null) &#123;</span><br><span class="line">                        <span class="built_in">map</span> = <span class="built_in">new</span> ArrayMap&lt;BroadcastReceiver, LoadedApk.ReceiverDispatcher&gt;();</span><br><span class="line">                        mReceivers.<span class="built_in">put</span>(<span class="built_in">context</span>, <span class="built_in">map</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="built_in">map</span>.<span class="built_in">put</span>(r, rd);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                rd.validate(<span class="built_in">context</span>, handler);</span><br><span class="line">            &#125;</span><br><span class="line">            rd.mForgotten = <span class="literal">false</span>;</span><br><span class="line">            <span class="built_in">return</span> rd.getIIntentReceiver();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>最后，它返回了一个ActivityManagerNative.getDefault().registerReceiver()方法，继续跟进可以知道ActivityManagerNative.getDefault()实际上就是获取一个唯一的IActivityManager实例，它是一个单例模式。</p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Retrieve the system's default/global activity manager.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">public</span> <span class="function">IActivityManager <span class="title">getDefault</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">return</span> gDefault.<span class="title">get</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"> <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton&lt;IActivityManager&gt; gDefault = <span class="keyword">new</span> Singleton&lt;IActivityManager&gt;() &#123;</span><br><span class="line">        <span class="keyword">protected</span> <span class="function">IActivityManager <span class="title">create</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            IBinder b = ServiceManager.getService(<span class="string">"activity"</span>);</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">false</span>) &#123;</span><br><span class="line">                Log.v(<span class="string">"ActivityManager"</span>, <span class="string">"default service binder = "</span> + b);</span><br><span class="line">            &#125;</span><br><span class="line">            IActivityManager am = asInterface(b);</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">false</span>) &#123;</span><br><span class="line">                Log.v(<span class="string">"ActivityManager"</span>, <span class="string">"default service = "</span> + am);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> am;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> T mInstance;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="function">T <span class="title">create</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="function">T <span class="title">get</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (mInstance == <span class="keyword">null</span>) &#123;</span><br><span class="line">                mInstance = create();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> mInstance;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那么它返回的IActivityManager到底是谁呢？其实就是ActivityManagerService，简称AMS。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">public <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ActivityManagerService</span> <span class="keyword">extends</span> <span class="title">ActivityManagerNative</span></span></span><br><span class="line"><span class="class">        <span class="title">implements</span> <span class="title">Watchdog</span>.<span class="title">Monitor</span>, <span class="title">BatteryStatsImpl</span>.<span class="title">BatteryCallback</span> </span>&#123;</span><br></pre></td></tr></table></figure>
+<p>在我的博客<strong>杂谈——Android从启动到程序运行发生的事情</strong>中详解介绍到了AMS的功能，它实际上就是一个管理器，管理着非常多的东西，在系统中的作用极大。所有的Activity操作都是由Activity向他发出一个申请，它进行处理（比如向Zygote发送命令创建一个新的ActivityThread）之后返给Activity，Activity再交给Instrumentation来继续完成（例如生命周期的操作），而我们的注册广播和解除注册广播也是交给它来完成的。</p>
+<p>由于对应的代码有点长，这里就不贴出来了，只是总括一下它以及sendBrodcast和unregister里面完成的东西。</p>
+<h2 id="一句话总结"><a href="#一句话总结" class="headerlink" title="一句话总结"></a>一句话总结</h2><p>当一个广播进行发送时，它会被发送到AMS中并由它完成广播的传递，而AMS利用Binder机制，也就是上面的IIntentReceiver将他们传递到各个应用进程，应用进程再调用recevier的onReceive()的方法，这也就完成了一次广播的传递。</p>
+<p>而对于注册广播来说，存在一个LoadApk对象，这个对象里面会包含关于本APK动态注册的所有receiver的哈希表，每当我们注册一个receiver，那么他就会被添加进入这个LoadApk的哈希表中。同时在我们注册的时候会记录用户对哪些receiver感兴趣，同一个Receiver可以注册多个IntentFilter，同样的也会使用一个ReceiverList来存储所有的IntentFilter信息。</p>
+<p>所以当一个消息发来的时候，AMS会合并静态注册的表以及动态注册的表，同等优先级下动态注册的receiver在靠前的位置。匹配IntentFilter并查找对应的receiver哈希表，找到该Receiver，并利用Binder机制进行分发。</p>
+<p>最后再安利一个网址，<strong><a href="https://android.googlesource.com/?format=HTML" target="_blank" rel="noopener">https://android.googlesource.com/?format=HTML</a></strong>，有很多代码Google处于安全性并没有直接暴露给开发者，所以在AndroidStudio中并不能查看到，例如上面的IIntentReceiver，如要想要查看的话就需要科学上网到上面的这个网址</p>
+
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/Android/">Android</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/02/24/Android重构记录及其模块化/" data-tooltip="Android重构记录及其模块化" aria-label="PREVIOUS: Android重构记录及其模块化">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/06/06/Gson/" data-tooltip="Gson" aria-label="NEXT: Gson">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2016/06/08/BroadcastReceiver/" title="Share on Weibo">
+                    <i class="fa fa-weibo" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2016/06/08/BroadcastReceiver/&amp;title=BroadcastReceiver —— 广播全解析" title="Share on QQ">
+                    <i class="fa fa-qq" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2016/06/08/BroadcastReceiver/" title="Share on Qzone">
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2016/06/08/BroadcastReceiver/" title="Share on Renren">
+                    <i class="fa fa-renren" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#gitment">
+                         <i class="fa fa-comment-o"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="gitment"></div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2018 CytQ. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/02/24/Android重构记录及其模块化/" data-tooltip="Android重构记录及其模块化" aria-label="PREVIOUS: Android重构记录及其模块化">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/06/06/Gson/" data-tooltip="Gson" aria-label="NEXT: Gson">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2016/06/08/BroadcastReceiver/" title="Share on Weibo">
+                    <i class="fa fa-weibo" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2016/06/08/BroadcastReceiver/&amp;title=BroadcastReceiver —— 广播全解析" title="Share on QQ">
+                    <i class="fa fa-qq" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2016/06/08/BroadcastReceiver/" title="Share on Qzone">
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2016/06/08/BroadcastReceiver/" title="Share on Renren">
+                    <i class="fa fa-renren" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#gitment">
+                         <i class="fa fa-comment-o"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="5">
+    <i id="btn-close-shareoptions" class="fa fa-close"></i>
+    <ul class="share-options">
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2016/06/08/BroadcastReceiver/">
+                    <i class="fa fa-weibo" aria-hidden="true"></i><span>Share on Weibo</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2016/06/08/BroadcastReceiver/&amp;title=BroadcastReceiver —— 广播全解析">
+                    <i class="fa fa-qq" aria-hidden="true"></i><span>Share on QQ</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2016/06/08/BroadcastReceiver/">
+                    <i class="fa fa-star" aria-hidden="true"></i><span>Share on Qzone</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2016/06/08/BroadcastReceiver/">
+                    <i class="fa fa-renren" aria-hidden="true"></i><span>Share on Renren</span>
+                </a>
+            </li>
+        
+    </ul>
+</div>
+
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/headicon.png" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">CytQ</h4>
+        
+            <div id="about-card-bio"><p>Software Engineer<br>Android、移动安全、逆向、漏洞挖掘</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>17本科，现任职百度</p>
+
+            </div>
+        
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                Beijing
+            </div>
+        
+    </div>
+</div>
+
+        
+            <div id="algolia-search-modal" class="modal-container">
+    <div class="modal">
+        <div class="modal-header">
+            <span class="close-button"><i class="fa fa-close"></i></span>
+            <a href="https://algolia.com" target="_blank" rel="noopener" class="searchby-algolia text-color-light link-unstyled">
+                <span class="searchby-algolia-text text-color-light text-small">by</span>
+                <img class="searchby-algolia-logo" src="https://www.algolia.com/static_assets/images/press/downloads/algolia-light.svg">
+            </a>
+            <i class="search-icon fa fa-search"></i>
+            <form id="algolia-search-form">
+                <input type="text" id="algolia-search-input" name="search"
+                    class="form-control input--large search-input" placeholder="Search "
+                    />
+            </form>
+        </div>
+        <div class="modal-body">
+            <div class="no-result text-color-light text-center">no post found</div>
+            <div class="results">
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/11/22/序言/">
+                            <h3 class="media-heading">序言</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Nov 22, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/11/23/Volley-Lrucache-DiskLrucache/">
+                            <h3 class="media-heading">三级缓存 + AndroidStudio导出jar包 + upload to github</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Nov 23, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>　　想了半天都没想出来写什么作为第一篇博客比较好，突然发现这次项目的版本控制是github，三级缓存和屏幕适配又是一个跑不掉的话题，就以这些话题开始我的博客之旅吧，同时总结一下在AndroidStudio中如何导出jar包。    </p>
+<pre><code>([参考郭霖的blog](http://blog.csdn.net/guolin_blog/article/details/28863651))
+([参考李晨玮的blog](http://www.cnblogs.com/lichenwei)/)
+
+不管是提升用户体验还是提升APP的流畅度，三级缓存都是必不可少的，在这里就先总结一下三级缓存的使用。
+</code></pre><p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/11/23/screensuit/">
+                            <h3 class="media-heading">三种屏幕适配的方式</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Nov 23, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>​    第一篇博客总结了三级缓存／AndroidStudio打包jar包／上传基本文件到github,　第二篇就接着总结一下三种屏幕适配的方式。</p>
+<p>在这里也推荐一下<a href="http://blog.csdn.net/lmj623565791?viewmode=contents" target="_blank" rel="noopener">张鸿洋</a>的博客，关注挺久了，和<a href="http://blog.csdn.net/guolin_blog" target="_blank" rel="noopener">郭霖</a>的都很好。</p>
+<p>第一种方式，dimens中设置不同dp值，来达到适配的目的<br>第二种方式，利用第三方百分比库<br>第三种方式，利用第三方库：AutoLayout </p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/11/24/全局变量的处理/">
+                            <h3 class="media-heading">全局变量的处理</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Nov 24, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>　　很多时候APP会莫名其妙的崩溃，尤其是一些配置很低的收集，重现场景就是在APP切换到后台后，闲置了一段时间后再继续使用时，就会崩溃。<br>　　导致上述崩溃发生的一个可能罪魁祸首就是全局变量，在内存不足的时候，系统会回收一部分闲置的资源，由于APP被切换到了后台，所以之前存放的全局变量很容易被回收，这是再切换到前台继续使用，在使用某个全局变量的时候，就会因为全局变量的值为空而崩溃。<br>　　要解决这个问题，就一定要使用序列化技术。</p>
+<p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/11/25/Android自动填写验证码/">
+                            <h3 class="media-heading">Android自动填写验证码</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Nov 25, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>　　第四篇博客就来总结下项目中使用到的一个提升用户体验的功能：　Android自动填写验证码<br>　　从字面上来看，很明显的可以看出它的实现流程：监听-&gt;有改变-&gt;获取信息-&gt;改变ui</p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/12/01/引导页_视差显示/">
+                            <h3 class="media-heading">引导页_视差显示</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Dec 1, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>当用户下载完APP后，第一次启动时通常会有一个引导页，而这个引导页对于引导用户或介绍本产品有着很好的作用。一般三种方式实现：</p>
+<ol>
+<li>Viewpager<br>这种方式很简单，易实现，但是在观赏性上来说很差，没有任何动画</li>
+<li>视差显示<br>这种方式是基于ViewPager的，通过自定义其中的类，或者调整其中的方法来达到显示的效果。<br>　在ViewPager中，有一个接口叫做PageTransformer，其中有一个方法transformPage,我们通过在这个方法中编写逻辑就可以实现视差显示。而之所以叫做视差显示，是因为实现这种方式是对不同的控件设置不同的速度来达到的。例如，ViewPager移动了10dp,　图片A移动了15dp, 图片B移动了7.5dp，这就产生了一个视差。</li>
+<li>Html5<br>这种方式也是最近使用得越来越多的方式，通过加载h5来实现引导页的炫目效果。</li>
+</ol></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/12/01/手势/">
+                            <h3 class="media-heading">手势</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Dec 1, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>这里介绍的只是一个简单的DEMO，根据官方的API还可以进行自定义手势的编写，具体的内容就以后遇到了再说，在本项目中也只起一个开后门的验证作用,毕竟一个没有后门的APP不是一个好APP。</p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/12/07/Json数据的解析_Gson/">
+                            <h3 class="media-heading">Json数据的解析_Gson</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Dec 7, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>一些简单的JSON格式解析可以直接使用JSONObject和JSONArray来解析，但是面对比较复杂或者是数据量较大的JSON数据时就需要使用fastJSON和Gson来解析了，这样的效率和效果都更好。</p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/12/08/ViewPager取消预加载/">
+                            <h3 class="media-heading">ViewPager取消预加载</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Dec 8, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>ViewPager在设计的时候有一个预加载的机制，也就是如果你处于当前这个page界面时,会预先加载下一个page。但是有的时候设计到网络请求，就需要取消掉这个预加载。</p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/12/20/Note-&gt;Rxjava/">
+                            <h3 class="media-heading">RxJava学习笔记</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Dec 20, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>学习自扔物线的文章<a href="http://gank.io/post/560e15be2dca930e00da1083。" target="_blank" rel="noopener">http://gank.io/post/560e15be2dca930e00da1083。</a></p>
+<p>粗略学习了最近越来越火的RxJava，进行一个简单的学习总结，这篇博客只涉及使用，不涉及原理</p>
+<blockquote>
+<p>Github：<br><a href="https://github.com/ReactiveX/RxJava" target="_blank" rel="noopener">https://github.com/ReactiveX/RxJava</a><br><a href="https://github.com/ReactiveX/RxAndroid" target="_blank" rel="noopener">https://github.com/ReactiveX/RxAndroid</a> </p>
+</blockquote>
+<p>使用方式:</p>
+<blockquote>
+<p>compile ‘io.reactivex:rxjava:1.0.14’<br>compile ‘io.reactivex:rxandroid:1.0.1’ </p>
+</blockquote>
+<p>我的相关博文：<br><a href="http://blog.csdn.net/jonstank2013/article/details/50574871" target="_blank" rel="noopener">RxJava使用示例（一）： 实现Rxbus代替eventbus</a><br><a href="http://blog.csdn.net/jonstank2013/article/details/50981404" target="_blank" rel="noopener">RxJava实现原理探索</a></p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+            </div>
+        </div>
+        <div class="modal-footer">
+            <p class="results-count text-medium"
+                data-message-zero="no post found"
+                data-message-one="1 post found"
+                data-message-other="{n} posts found">
+                45 posts found
+            </p>
+        </div>
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-peofhqjkzcghmndknakluequy1y6owxdwpaqyju9ntl9zxnk7rdolb3rjjoj.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+        <script type="text/javascript">
+            (function() {
+                function render() {
+                    new Gitment({
+                        id: 'http://imlzq.com/2016/06/08/BroadcastReceiver/',
+                        owner: 'CytQ',
+                        repo: 'BlogComments',
+                        oauth: {
+                            client_id: 'eddb24a604957d55b0fc',
+                            client_secret: '5c1a27d80b9c1978faa1d488b34d606b77529b77',
+                        }
+                    }).render('gitment');
+                }
+                var gc = document.createElement('script');
+                gc.type = 'text/javascript';
+                gc.src = '//imsun.github.io/gitment/dist/gitment.browser.js';
+                gc.charset = 'UTF-8';
+                gc.onload = render;
+                gc.async = true;
+                document.querySelector('body').appendChild(gc);
+                var gcs = document.createElement('link');
+                gcs.href = '//imsun.github.io/gitment/style/default.css';
+                gcs.type = 'text/css';
+                gcs.rel = 'stylesheet';
+                gcs.media = 'screen,print';
+                document.querySelector('head').appendChild(gcs);
+            })();
+	    </script>
+    
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment-with-locales.min.js"></script>
+    <script src="//cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
+    <script>
+        var algoliaClient = algoliasearch('Z7A3XW4R2I', '12db1ad54372045549ef465881c17e743');
+        var algoliaIndex = algoliaClient.initIndex('my-hexo-blog');
+    </script>
+
+
+    </body>
+</html>
