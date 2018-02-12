@@ -1,0 +1,482 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hello! CytQ">
+    <title>x86汇编示例、代码梳理和演示 - Hello! CytQ</title>
+    <meta name="author" content="CytQ">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="x86跟ARM在一些指令集上有区别，但是大致逻辑一直。下面是以一个有栈溢出漏洞的vc6.0编写的C程序做示例。">
+<meta name="keywords" content="漏洞,汇编">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="x86汇编示例、代码梳理和演示">
+<meta property="og:url" content="http://imlzq.com/2018/01/30/x86汇编示例、代码梳理和演示/index.html">
+<meta property="og:site_name" content="Hello! CytQ">
+<meta property="og:description" content="x86跟ARM在一些指令集上有区别，但是大致逻辑一直。下面是以一个有栈溢出漏洞的vc6.0编写的C程序做示例。">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="http://bos.nj.bpc.baidu.com/v1/agroup/3ccc297a5046230c0a2a2833f5eac13e28464aa1">
+<meta property="og:image" content="http://bos.nj.bpc.baidu.com/v1/agroup/67b739dbe7196b2b63df67c16a5281a842d3c0c2">
+<meta property="og:image" content="http://bos.nj.bpc.baidu.com/v1/agroup/1c27973a000662e8ff0cb4d636da661eec1c70dd">
+<meta property="og:image" content="http://bos.nj.bpc.baidu.com/v1/agroup/f7d7dd01054ec84e5505ecc96a496b3ecc8cbaa3">
+<meta property="og:image" content="http://bos.nj.bpc.baidu.com/v1/agroup/14e5790bbe380bcd7eb7674ee1a3ec5db3a7a139">
+<meta property="og:image" content="http://bos.nj.bpc.baidu.com/v1/agroup/52c078db92a32c0de0d7ed69f5b098a5d33cd938">
+<meta property="og:image" content="http://bos.nj.bpc.baidu.com/v1/agroup/9db03478a7c26d09e292d5de2ccaee55fba888e1">
+<meta property="og:image" content="http://bos.nj.bpc.baidu.com/v1/agroup/1bea2f9369aa419f2e49f5e324c9028f5aea8491">
+<meta property="og:image" content="http://bos.nj.bpc.baidu.com/v1/agroup/751d9617eecf24590d26c53e20cecb53d6b48ec8">
+<meta property="og:image" content="http://bos.nj.bpc.baidu.com/v1/agroup/cc3d43d6bcea77d2a5d5d621d0edd619ff520561">
+<meta property="og:updated_time" content="2018-02-12T04:19:16.976Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="x86汇编示例、代码梳理和演示">
+<meta name="twitter:description" content="x86跟ARM在一些指令集上有区别，但是大致逻辑一直。下面是以一个有栈溢出漏洞的vc6.0编写的C程序做示例。">
+<meta name="twitter:image" content="http://bos.nj.bpc.baidu.com/v1/agroup/3ccc297a5046230c0a2a2833f5eac13e28464aa1">
+    
+    
+        
+    
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-pz4cc6y13wt2trzqa8l3n9v0yykr0sstdaheem7qj628nhjmhp9pfawvqawz.min.css">
+    <!--STYLES END-->
+    
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/ ">Hello! CytQ</a>
+    </div>
+    
+        
+            <a  class="header-right-picture "
+                href="#about">
+        
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/ "
+                            
+                            title="首页"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">首页</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-categories"
+                            
+                            title="分类"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">分类</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-tags"
+                            
+                            title="标签"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">标签</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-archives"
+                            
+                            title="归档"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">归档</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link open-algolia-search"
+                             href="#search"
+                            
+                            title="搜索"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">搜索</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="#about"
+                            
+                            title="关于"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">关于</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/atom.xml"
+                            
+                            title="RSS"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            x86汇编示例、代码梳理和演示
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time itemprop="datePublished" datetime="2018-01-30T00:00:00+08:00">
+	
+		    1月 30, 2018
+    	
+    </time>
+    
+</div>
+
+    
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <p>x86跟ARM在一些指令集上有区别，但是大致逻辑一直。下面是以一个有栈溢出漏洞的vc6.0编写的C程序做示例。</p>
+<a id="more"></a>    
+<p><strong>C中，函数调用的逻辑为：</strong></p>
+<p>##1. 函数参数入栈<br>如func(int a, int b, int c)<br>会将三个参数从右到左依次入栈。也就是<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">push c</span><br><span class="line">push b</span><br><span class="line">push a</span><br></pre></td></tr></table></figure></p>
+<p>##2.函数的返回地址入栈<br>让程序知道执行完当前程序后怎么处理下一步。在汇编中的表现形式和3合并</p>
+<p>##3.代码区跳转<br>跳转到被调用函数的入口地址，方便执行。<br>它和2的表现为<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">call 函数地址</span><br></pre></td></tr></table></figure></p>
+<p>##4.栈帧调整<br>这里会有3步</p>
+<pre><code>1. 保存当前的栈帧：push ebp
+2. 设置新栈帧的底部：move ebp, esp
+3. 抬高esp，也就是分配栈帧空间： sub esp, xx
+</code></pre><p>##5. 【本函数调用完后】降低栈帧，释放空间<br>add esp, xx</p>
+<p><strong>这样也就完成了一个函数的整体调用，具体的看下面的截图和其中的注释</strong></p>
+<blockquote>
+<p>对于下面的局部变量申明，有一点需要注意的。<br>比如第一张图，var_444 = -444h，这个负号是因为它比当前的ebp先入栈。对于当前函数来说，高于ebp是正数，低于的就是负数。ebp可以理解为0这个基线，-444h就能找到它的指定位置</p>
+</blockquote>
+<p><img src="http://bos.nj.bpc.baidu.com/v1/agroup/3ccc297a5046230c0a2a2833f5eac13e28464aa1" alt="x86汇编1"><br><img src="http://bos.nj.bpc.baidu.com/v1/agroup/67b739dbe7196b2b63df67c16a5281a842d3c0c2" alt="x86汇编2"><br><img src="http://bos.nj.bpc.baidu.com/v1/agroup/1c27973a000662e8ff0cb4d636da661eec1c70dd" alt="x86汇编3"><br><img src="http://bos.nj.bpc.baidu.com/v1/agroup/f7d7dd01054ec84e5505ecc96a496b3ecc8cbaa3" alt="x86汇编4"><br><img src="http://bos.nj.bpc.baidu.com/v1/agroup/14e5790bbe380bcd7eb7674ee1a3ec5db3a7a139" alt="x86汇编5"><br><img src="http://bos.nj.bpc.baidu.com/v1/agroup/52c078db92a32c0de0d7ed69f5b098a5d33cd938" alt="x86汇编6"><br><img src="http://bos.nj.bpc.baidu.com/v1/agroup/9db03478a7c26d09e292d5de2ccaee55fba888e1" alt="x86汇编7"><br><img src="http://bos.nj.bpc.baidu.com/v1/agroup/1bea2f9369aa419f2e49f5e324c9028f5aea8491" alt="x86汇编8"></p>
+<p>对于verify_password函数来说，它的栈帧为（从下到上）：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> buff[<span class="number">0</span>~<span class="number">3</span>]</span><br><span class="line"><span class="keyword">char</span> buff[<span class="number">4</span>~<span class="number">7</span>]</span><br><span class="line"><span class="keyword">int</span> ret</span><br><span class="line">上一个栈帧的EBP</span><br><span class="line">verify_password函数的返回地址</span><br><span class="line">形参password</span><br></pre></td></tr></table></figure></p>
+<p>此时的EBP指针指向”上一个栈帧的EBP”, ESP指向”char buff[0~3]”。</p>
+<p>##绕过密码检测<br>对于ret来说，int值为4个字节，所以只需要在strcpy时让buff越界四位，那么buff[8]，buff[9], buff[10], buff[11]就会覆盖ret的值。这里有个tips，对于字符串而言，末尾会自动加入一个NULL结束符，所以只要我们输入任意的8个字符，如12345678，就能通过这个密码程序（正确的密码是1234567）。<br>ret的值其实来源于strcmp的返回值，根据字符串的串顺序，如果password&gt;1234567如12345678），那么ret=0x00000001，这个时候我们就可以用NULL覆盖的方法让它变为0x00000000。而如果password&lt;1234567（如12345668），函数返回-1，此时ret=0xFFFFFF00，这时候用NULL就覆盖不了了</p>
+<p>下图为输入1234567后栈顶保存的数据，它指向0018FB44这个地址，而这个地址的内容为（ASCII码）31,32,33,34,35,36,37。也就是数字的1234567.最后的00，是存放字符串的NULL的<br><img src="http://bos.nj.bpc.baidu.com/v1/agroup/751d9617eecf24590d26c53e20cecb53d6b48ec8" alt="图片"></p>
+<p><img src="http://bos.nj.bpc.baidu.com/v1/agroup/cc3d43d6bcea77d2a5d5d621d0edd619ff520561" alt="图片"></p>
+
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/汇编/">汇编</a> <a class="tag tag--primary tag--small t-link" href="/tags/漏洞/">漏洞</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/02/01/STACK OVERFLOW/" data-tooltip="栈溢出" aria-label="上一篇: 栈溢出">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/11/07/汇编基础及个人理解/" data-tooltip="汇编基础及个人理解" aria-label="下一篇: 汇编基础及个人理解">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2018/01/30/x86汇编示例、代码梳理和演示/" title="分享到 Facebook">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2018/01/30/x86汇编示例、代码梳理和演示/" title="分享到 Twitter">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2018/01/30/x86汇编示例、代码梳理和演示/" title="分享到 Google+">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2018 CytQ. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/02/01/STACK OVERFLOW/" data-tooltip="栈溢出" aria-label="上一篇: 栈溢出">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/11/07/汇编基础及个人理解/" data-tooltip="汇编基础及个人理解" aria-label="下一篇: 汇编基础及个人理解">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2018/01/30/x86汇编示例、代码梳理和演示/" title="分享到 Facebook">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2018/01/30/x86汇编示例、代码梳理和演示/" title="分享到 Twitter">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2018/01/30/x86汇编示例、代码梳理和演示/" title="分享到 Google+">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+    <i id="btn-close-shareoptions" class="fa fa-close"></i>
+    <ul class="share-options">
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2018/01/30/x86汇编示例、代码梳理和演示/">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i><span>分享到 Facebook</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2018/01/30/x86汇编示例、代码梳理和演示/">
+                    <i class="fa fa-twitter" aria-hidden="true"></i><span>分享到 Twitter</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2018/01/30/x86汇编示例、代码梳理和演示/">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i><span>分享到 Google+</span>
+                </a>
+            </li>
+        
+    </ul>
+</div>
+
+            
+        </div>
+        
+
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <h4 id="about-card-name">CytQ</h4>
+        
+            <div id="about-card-bio"><p>author.bio</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>author.job</p>
+
+            </div>
+        
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-peofhqjkzcghmndknakluequy1y6owxdwpaqyju9ntl9zxnk7rdolb3rjjoj.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+
+
+
+    </body>
+</html>

@@ -1,0 +1,578 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hello! CytQ">
+    <title>802.11协议簇及KRACK攻击 - Hello! CytQ</title>
+    <meta name="author" content="CytQ">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="最近暴露的KRACK攻击可以理解为钻了协议的空子，故本文就对其内部原理及实现做大致的剖析。因802.11协议簇所涉极广，暂做部分解析。详情可参考：知乎：无线技术大讲堂， 维基百科 顺便学习一下wifi相关协议">
+<meta name="keywords" content="漏洞,蓝牙">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="802.11协议簇及KRACK攻击">
+<meta property="og:url" content="http://imlzq.com/2017/11/07/802.11协议簇及KRACK攻击/index.html">
+<meta property="og:site_name" content="Hello! CytQ">
+<meta property="og:description" content="最近暴露的KRACK攻击可以理解为钻了协议的空子，故本文就对其内部原理及实现做大致的剖析。因802.11协议簇所涉极广，暂做部分解析。详情可参考：知乎：无线技术大讲堂， 维基百科 顺便学习一下wifi相关协议">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="http://bos.nj.bpc.baidu.com/v1/agroup/b7487b5c93477b6632d9fb0f452e70a65e7c7d70">
+<meta property="og:updated_time" content="2018-02-12T04:20:37.698Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="802.11协议簇及KRACK攻击">
+<meta name="twitter:description" content="最近暴露的KRACK攻击可以理解为钻了协议的空子，故本文就对其内部原理及实现做大致的剖析。因802.11协议簇所涉极广，暂做部分解析。详情可参考：知乎：无线技术大讲堂， 维基百科 顺便学习一下wifi相关协议">
+<meta name="twitter:image" content="http://bos.nj.bpc.baidu.com/v1/agroup/b7487b5c93477b6632d9fb0f452e70a65e7c7d70">
+    
+    
+        
+    
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-pz4cc6y13wt2trzqa8l3n9v0yykr0sstdaheem7qj628nhjmhp9pfawvqawz.min.css">
+    <!--STYLES END-->
+    
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/ ">Hello! CytQ</a>
+    </div>
+    
+        
+            <a  class="header-right-picture "
+                href="#about">
+        
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/ "
+                            
+                            title="首页"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">首页</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-categories"
+                            
+                            title="分类"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">分类</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-tags"
+                            
+                            title="标签"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">标签</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-archives"
+                            
+                            title="归档"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">归档</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link open-algolia-search"
+                             href="#search"
+                            
+                            title="搜索"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">搜索</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="#about"
+                            
+                            title="关于"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">关于</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/atom.xml"
+                            
+                            title="RSS"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            802.11协议簇及KRACK攻击
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time itemprop="datePublished" datetime="2017-11-07T00:00:00+08:00">
+	
+		    11月 07, 2017
+    	
+    </time>
+    
+</div>
+
+    
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <p>最近暴露的KRACK攻击可以理解为钻了协议的空子，故本文就对其内部原理及实现做大致的剖析。因802.11协议簇所涉极广，暂做部分解析。详情可参考：<a href="https://zhuanlan.zhihu.com/dot11" target="_blank" rel="noopener">知乎：无线技术大讲堂</a>， <a href="https://en.wikipedia.org/wiki/IEEE_802.11" target="_blank" rel="noopener">维基百科</a></p>
+<p>顺便学习一下wifi相关协议</p>
+<a id="more"></a>    
+<p>#802.11协议簇</p>
+<blockquote>
+<p>无线局域网络(Wireless local network)是一种数据传输的系统，采用分布式无线电广播ISM (Industrial, Scientific, Medical) 频段将一个区域里面(如学校，家庭)的两个或者多个支持无线协议的设备连接起来的系统。进行无线射频传输的协议有多种，但是目前无线局域网络最为广泛使用的标准是IEEE 802.11协议标准</p>
+</blockquote>
+<p>802.11协议在1997年提出，之后的版本均在其上做修改及完善。<br>修改内容包括：</p>
+<ul>
+<li>IEEE 802.11，1997年，原始标准（2Mbit/s，工作在2.4GHz）。</li>
+<li>IEEE802.11a，1999年，物理层补充（54Mbit/s，工作在5GHz）。</li>
+<li>IEEE 802.11b，1999年，物理层补充（11Mbit/s工作在2.4GHz）。</li>
+<li>IEEE 802.11c，符合802.1D的媒体接入控制层桥接（MAC Layer Bridging）。</li>
+<li>IEEE 802.11d，根据各国无线电规定做的调整。</li>
+<li>IEEE802.11e，对服务质量（Quality of Service,QoS）的支持。</li>
+<li>IEEE 802.11f，基站的互连性（IAPP,Inter-Access Point Protocol），2006年2月被IEEE批准撤销。</li>
+<li>IEEE802.11g，2003年，物理层补充（54Mbit/s，工作在2.4GHz）。</li>
+<li>IEEE802.11h，2004年，无线覆盖半径的调整，室内（indoor）和室外（outdoor）信道（5GHz频段）。</li>
+<li>IEEE802.11i，2004年，无线网络的安全方面的补充。</li>
+<li>IEEE802.11j，2004年，根据日本规定做的升级。</li>
+<li>IEEE 802.11l，预留及准备不使用。</li>
+<li>IEEE 802.11m，维护标准；互斥及极限。</li>
+<li>IEEE 802.11n，2009年9月通过正式标准，WLAN的传输速率由802.11a及802.11g提供的54Mbps、108Mbps，提高到350Mbps甚至到475Mbps。</li>
+<li>IEEE 802.11p,2010年，这个通讯协定主要用在车用电子的无线通讯上。它设定上是从IEEE 802.11来扩充延伸，来符合智慧型运输系统（Intelligent Transportation Systems，ITS）的相关应用。应用的层面包括高速率的车辆之间以及车辆与5.9千兆赫（5.85-5.925千兆赫）波段的标准ITS路边基础设施之间的资料数据交换。</li>
+<li>IEEE 802.11k，2008年，该协议规范规定了无线局域网络频谱测量规范。该规范的制订体现了无线局域网络对频谱资源智能化使用的需求。</li>
+<li>IEEE 802.11r，2008年，快速基础服务转移，主要是用来解决客户端在不同无线网络AP间切换时的延迟问题。</li>
+<li>IEEE802.11s,2007年9月.拓扑发现、路径选择与转发、信道定位、安全、流量管理和网络管理。网状网络带来一些新的术语。</li>
+<li>IEEE 802.11w，2009年，针对802.11管理帧的保护。</li>
+<li>IEEE 802.11x，包括802.11a/b/g等三个标准。[1] </li>
+<li>IEEE 802.11y，2008年，针对美国3650–3700 MHz 的规定。</li>
+<li>IEEE 802.11ac，802.11n之后的版本。工作在5G频段，理论上可以提供高达每秒1Gbit的数据传输能力。</li>
+</ul>
+<p>##WIFI、WLAN、802.11</p>
+<ul>
+<li>WLAN（Wireless Local area network）是个概念，网络技术术语。使用ISM(Industrial、Scientific、Medical)无线电广播频段通信</li>
+<li>802.11是官方制定的标准</li>
+<li>WIFI(WirelessFidelity，无线保真)是任何一个基于802.11标准的WLAN产品(“wireless local area network (WLAN) products that are based on the IEEE 802.11 standard.”)，目的是改善基于IEEE802.11标准的无线网路产品之间的互通性。说白了也就是wifi=采用802.11技术的WLAN</li>
+</ul>
+<p>##IEEE 802.11i<br>无线安全标准，WPA是其子集。<br>定义了RSN（Robust Security Network）概念从而增强WLAN的数据加密和认证性能，并且针对WEP加密机制的各种缺陷做了多方面的改进。<br>IEEE 802.11主要的标准范畴分为媒介层(MAC)与物理层(PHY)，套用过来，前者就是OSI的数据链路层中的媒体访问控制子层，后者直接就对应OSI的物理层。<br>IEEE 802.11a/b/g，主要是以PHY层的不同作为区分，所以它们的区别直接表现在工作频段及数据传输率、最大传输距离这些指标上。而工作在媒介层的标准——IEEE 802.11e/f/i则被整个IEEE 802.11族所共用。</p>
+<blockquote>
+<p>IEEE 802.11i采用802.1x接入控制，实现无线局域网的认证与密钥管理，并通过EAP-Key的四向握手过程与组密钥握手过程，创建、更新加密密钥，实现802.11i中定义的鲁棒安全网络（Robust Security Network，RSN）的要求。</p>
+</blockquote>
+<p>###加密机制（待详细拓展）<br><strong>TKIP（Temporal Key Integrity Protocol，时间密钥完整性协议）：</strong><br>采用WEP机制里的RC4作为核心加密算法，可以通过在现有的设备上升级固件和驱动程序的方法达到提高WLAN安全的目的。</p>
+<p><strong>CCMP（Counter-Mode/CBC-MAC Protocol）：</strong><br>基于AES（Advanced Encryption Standard）加密算法和CCM（Counter-Mode/CBC-MAC）认证方式，使得WLAN的安全程度大大提高，是实现RSN的强制性要求。<br>CCMP主要由两个算法组成，分别是CTR mode以及CBC-MAC mode。</p>
+<p>CTR mode为加密算法，CBC-MAC用于讯息完整性的运算。<br>CTR：Advanced Encryption Standard (AES) in Counter Mode。<br>CBC-MAC：Cipher Block Chaining Message Authentication Code。</p>
+<p><strong>WRAP（Wireless Robust Authenticated Protocol）：</strong><br>基于AES加密算法和OCB（Offset Codebook），是一种可选的加密机制。</p>
+<p>###The 4-Way Handshake：四向握手</p>
+<p>在四向握手之前会有一些无线发现的过程。4次握手之后是组密钥协商过程。而握手的目的则是为了身份认证（其实也就是使用伪随机函数来创建和分发动态加密密钥的过程）。<br>以下的AP为Wireless access point（无线接入点），STA即连接无线网络的终端设备。</p>
+<p><strong>有几个关键名词，先对他们进行基本介绍</strong></p>
+<p>####PSK(Pre-Shared Key, 预共享密钥)<br>口令(passphrase)经PSK映射转换算法处理后得到的结果</p>
+<p>####PMK(Pairwise Master Key, 成对主密钥)<br>成对主密钥。最高等级的密钥，由PSK生成。在WPA2中可以看做是ssid和口令的哈希值（也就是wifi的名称和密码，口令不同于密码，但可这样快速理解）</p>
+<p>####PTK（The Pairwise Transient Key）<br>成对临时密钥。最终用于加密单播数据流的加密密钥<br>采用伪随机函数PRF（pseudo-random function）来生成PTK。<br>PTK的计算方法可以看作是计算PMK、ANonce、SNonce、AP的MAC地址（AA），STA的MAC地址（SPA）这一个5元数组的哈希值。<br>PTK = PRF（PMK + ANonce + SNonce + AA + SPA）</p>
+<p>####GTK（The Group Temporal Key）<br>组临时密钥。用于加密广播和组播数据流的加密密钥</p>
+<p>####MIC<br>消息完整性编码。它是PTK的前16个字节，如果双方的MIC一致，就说明PMK生成的一致，也就说明双方拥有的口令一致（也就是密码对了），那么AP就能确认STA的身份。</p>
+<blockquote>
+<p>The actual messages exchanged during the handshake are depicted in the figure and explained below (all messages are sent as EAPOL-Key frames):</p>
+<ol>
+<li>The AP sends a nonce-value to the STA (ANonce). The client now has all the attributes to construct the PTK.</li>
+<li>The STA sends its own nonce-value (SNonce) to the AP together with a Message Integrity Code (MIC), including authentication, which is really a Message Authentication and Integrity Code (MAIC).</li>
+<li>The AP constructs and sends the GTK and a sequence number together with another MIC. This sequence number will be used in the next multicast or broadcast frame, so that the receiving STA can perform basic replay detection.</li>
+<li>The STA sends a confirmation to the AP.</li>
+</ol>
+</blockquote>
+<p>在握手过程中，所有信息都以EAPOL帧发送(Extensible Authentication Protocol Over LAN，基于局域网的扩展认证协议)。</p>
+<ol>
+<li>AP（认证方）发起，发送一个ANonce到STA（终端）。ANonce作为重放保护，必须时这个PMK之前没用过的值</li>
+<li>STA在收到信息后结合ANonce和自行构造的SNonce构造PTK，然后发送SNonce和MIC（消息验证码）到AP。</li>
+<li>AP也利用（ANonce和SNonce）构造PTK，并且验证STA发过来的MIC等信息。验证成功后生成GTK并发送消息。消息包括GTK、告诉STA安装PTK和GTK、接收顺序计数器RSC（receive sequence counter， 即当前GTK的顺序号），并让STA允许检测重播的广播信息</li>
+<li>STA接收到AP返还的消息，验证MIC，安装密钥，返还确认信息给AP。AP在收到确认后，验证MIC，安装相同的密钥。此时，双方都安装了相同的PTK和GTK。</li>
+</ol>
+<p>之后通信双方就可以使用进行安全的通信了。<br><img src="http://bos.nj.bpc.baidu.com/v1/agroup/b7487b5c93477b6632d9fb0f452e70a65e7c7d70" alt="4-way handshake"><br>图片摘自<a href="https://en.wikipedia.org/wiki/IEEE_802.11i-2004" target="_blank" rel="noopener">维基百科</a></p>
+<p><strong>所以总结一下流程也就是：AP和STA在交换随机数的同时进行数据校验，并用这个随机数以及自身已知的一些数据构建PTK、GTK。</strong></p>
+<p>##常见的WIFI类型</p>
+<p>###WEP<br>WEP（Wired Equivalent Privacy，有线等效保密协议）是对在两台设备间无线传输的数据进行加密的方式，用以防止非法用户窃听或侵入无线网络。它使用RC4（Rivest Cipher）对分组信息进行加密，并使用 CRC-32 验证达到资料的正确性。</p>
+<p><strong>攻击、破解</strong><br>它使用加密密钥包括收发双发预先确定的40位或者104位通用密钥、发送方为每个分组信息所确定的24位加密密钥IV(initialization vector)。但是为了当IV密钥告诉给通信对象，IV不经加密就直接嵌入到分组信息中发送出去。如果通过无限窃听，手机到包含特定IV密钥的分组信息并对其进行解析，那么连隐秘的通用密钥都可能呗计算出来</p>
+<p>###WPA/WPA2<br>WPA（WIFI-Protected Access），有WPA和WPA2两个标准，它是根据WEP中找到的几个严重漏洞产生的.WPA实现了IEEE 802.11i标准的大部分，是在802.11i完备之前替代WEP的过渡方案。WPA2具备完整的标准体系，但其不能被应用在某些老旧型号的网卡上。</p>
+<p>#KRACK（Key Reinstallation Attack）</p>
+<blockquote>
+<p>KRACK (Key Reinstallation Attack) is a severe replay attack (a type of exploitable flaw) on the Wi-Fi Protected Access protocol that secures Wi-Fi connections. It was discovered in 2016 by the Belgian researchers Mathy Vanhoef and Frank Piessens of the University of Leuven.Vanhoef’s research group published details of the attack in October 2017.By repeatedly resetting the nonce transmitted in the third step of the WPA2 handshake, an attacker can gradually match encrypted packets seen before and learn the full keychain used to encrypt the traffic.<br>The weakness is in the Wi-Fi standard itself, and not in individual products or implementations. Therefore, any correct implementation of WPA2 is likely to be vulnerable. The vulnerability affects all major software platforms, including Microsoft Windows, macOS, iOS, Android, Windows Phone and Linux.<br>The widely used open-source implementation wpa_supplicant, utilized by Linux, Android, and OpenBSD, is especially susceptible as it can be manipulated to install an all-zeros encryption key, effectively nullifying WPA2 protection in a man-in-the-middle attack.<br>The attack targets the four-way handshake used to establish a nonce (a kind of “shared secret”) in the WPA2 protocol. The standard for WPA2 anticipates occasional WiFi disconnections, and allows reconnection using the same value for the third handshake (for quick reconnection and continuity). Because the standard does not require a different key to be used in this type of reconnection, which could be needed at any time, a replay attack is possible.<br>An attacker can repeatedly re-send the third handshake of another device’s communication to manipulate or reset the WPA2 encryption key. Each reset causes data to be encrypted using the same values, so blocks with the same content can be seen and matched, working backwards to identify parts of the keychain which were used to encrypt that block of data. Repeated resets gradually expose more of the keychain until eventually the whole key is known, and the attacker can read the target’s entire traffic on that connection.</p>
+</blockquote>
+<p><a href="https://en.wikipedia.org/wiki/KRACK" target="_blank" rel="noopener">摘自维基百科</a></p>
+<p>KRACK在2016年被研究者发现并于2017年10月公布攻击细节。<br>小道消息：据说斯诺登2010年泄露NSA机密文档介绍的BADDECISION项目貌似就是KRACK攻击 : )</p>
+<p>##影响</p>
+<blockquote>
+<p>In this demonstration, the attacker is able to decrypt all data that the victim transmits. For an attacker this is easy to accomplish, because our key reinstallation attack is exceptionally devastating against Linux and Android 6.0 or higher. This is because Android and Linux can be tricked into (re)installing an all-zero encryption key. </p>
+</blockquote>
+<p>摘自<a href="https://www.krackattacks.com/" target="_blank" rel="noopener">krackattacks.com</a></p>
+<p>攻击者可以多次重放四向握手的第三次握手，强制重装受害者已经在用的WPA密钥，即可以把原来正确真实的WPA密码用一个全零的加密密钥替换掉，之后再建立一个同名但密码全零的AP，就能使STA连接到这个钓鱼AP上，从而完全获得用户的网络数据。</p>
+<p>##Tip1<br>WPA2的标准中若WiFi偶尔断开连接，则允许重新使用相同的值进行第三次握手（用于建立快速的重新连接和保持连续性）进行连接。</p>
+<p>##Tip2<br>在四向握手的第三次完成后，STA就会认为生成的PTK是正确的，安装PTK并开始使用其派生的密钥作为CCMP的会话密钥，然后通过802.1x进行通信。</p>
+<p>##Tip3<br>协议规定：</p>
+<ol>
+<li>每次生成PTK后，都要重设CCMP的计数器的值</li>
+<li>处在已经安装PTK状态下的STA要处理重传的第一和第三个握手包</li>
+</ol>
+<p>##Tip4<br>STA方给AP发送确认包之后并不能确认认证方是否收到了Ack，而如果AP在第三次握手完成后一直没有收到Ack确认包，则会重传第三次的握手包，同时递增其中的replay-counter值来使其有效。</p>
+<p>##Tip5<br>Android和Linux中的wpa_supplicant基本都存在例外，允许未完整加密的EAPOL包和未验证PTK密钥来源</p>
+<p>##Tip6<br>WPA加密协议采用的是stream cipher加密（即用一个伪随机密钥流逐字节去异或明文）。</p>
+<blockquote>
+<p>可简单理解为：ciphertext = plaintext xor AES(key, IV||counter)</p>
+</blockquote>
+<p>在正常的过程中，key和IV是不变的，counter值每次都递增，这也就导致每次生成的密钥都不同。<br>但在重安装过程中，counter值会被反复置为0，这也就导致每次生成的密钥都是一样的。<br>所以数据的结果也就变为了：使用同一密钥加密多组不同的明文。对于两组密文来说，相互异或就能抵消掉密钥，只剩加密后的明文。而如果其中一组明文对于攻击者而言已知，那么就可推出另一组明文的具体内容。</p>
+<p>##我的理解<br>攻击者事先在STA和AP中充当中间人，通过拦截第四次握手包让AP重传第三次握手包，这样就会导致STA重装本地密钥。重装密钥之后，就能诱使STA连接到一个钓鱼AP上了（AP连接的验证机制可以简单理解为AP名+密码，密码全零即可）</p>
+<ol>
+<li>对于Android 6.0以上的手机来说（Linux上的wpa_supplicant版本为2.4~2.6的wifi客户端），在初始化密钥后，它们会直接将包含密钥材料的缓冲区内存清零。但程序并不知道缓冲区已经被清零，因此又会再去读取一次那块内存区域，那这个时候的密钥就一定是由全零的数据衍生来的。如Nonce为0，那么攻击者就可以直接计算出加密数据包所使用的密钥，也就能直接解析用户发送的数据了。</li>
+<li>对于非Android6.0和Linux对应wpa_supplicant的wifi客户端来说，STA加密所用的密钥不可知，但如果攻击者知晓其中一组数据包的明文是什么，那么就可以推出其他数据包的明文（此过程不需要知晓加密密钥，直接异或）。但从<a href="https://zhuanlan.zhihu.com/p/30281357?group_id=904476874034634752" target="_blank" rel="noopener">其他文章</a>上发现，每次可推导出的明文内容有限且可能具有很大的不确定性。</li>
+</ol>
+<p>这个过程只能说是绕过而不能说是破解WPA2（发现者也说是bypass），因为wifi的密钥在整个流程中并没有被破解，也没有破解四向握手过程中新生成的加密密钥。</p>
+<ul>
+<li>Android 6.0以上和部分Linux之所以成为目标是因为它的wpa_supplicant代码实现上有问题。windows和ios因为实现不同因此不会受zero-encrypt key的攻击。</li>
+<li>如果敏感信息进行了加密或者其他安全保护比如https，那就是安全的</li>
+</ul>
+<p>##关于本文</p>
+<ul>
+<li>有些细节及攻击实现上因为是自己的理解，并且Paper太拖沓，跳着看的，所以一些地方可能有偏差。如果以后发现有不足或者错误的地方就再修改吧。</li>
+<li>POC据说已经有了，研究后再完善一下</li>
+<li>一些协议的基础细节上不是很完善，之后再补充，比如CCMP、WEP、WPA/WPA2、EAP、EAPOL</li>
+</ul>
+<p>##引用</p>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/KRACK" target="_blank" rel="noopener">维基百科：https://en.wikipedia.org/wiki/KRACK</a></li>
+<li><a href="https://www.youtube.com/watch?v=Oh4WURZoR98" target="_blank" rel="noopener">KRACK演示视频: https://www.youtube.com/watch?v=Oh4WURZoR98</a></li>
+<li><a href="https://papers.mathyvanhoef.com/ccs2017.pdf" target="_blank" rel="noopener">KRACK Paper: https://papers.mathyvanhoef.com/ccs2017.pdf</a></li>
+<li><a href="https://www.krackattacks.com/" target="_blank" rel="noopener">https://www.krackattacks.com/</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/30281357?group_id=904476874034634752" target="_blank" rel="noopener">Don’t Panic! KRACK 没你想象的那么糟</a></li>
+</ul>
+
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/漏洞/">漏洞</a> <a class="tag tag--primary tag--small t-link" href="/tags/蓝牙/">蓝牙</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/11/07/汇编基础及个人理解/" data-tooltip="汇编基础及个人理解" aria-label="上一篇: 汇编基础及个人理解">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/10/30/Dex/" data-tooltip="Dex文件结构分析" aria-label="下一篇: Dex文件结构分析">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2017/11/07/802.11协议簇及KRACK攻击/" title="分享到 Facebook">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2017/11/07/802.11协议簇及KRACK攻击/" title="分享到 Twitter">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2017/11/07/802.11协议簇及KRACK攻击/" title="分享到 Google+">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2018 CytQ. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/11/07/汇编基础及个人理解/" data-tooltip="汇编基础及个人理解" aria-label="上一篇: 汇编基础及个人理解">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/10/30/Dex/" data-tooltip="Dex文件结构分析" aria-label="下一篇: Dex文件结构分析">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2017/11/07/802.11协议簇及KRACK攻击/" title="分享到 Facebook">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2017/11/07/802.11协议簇及KRACK攻击/" title="分享到 Twitter">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2017/11/07/802.11协议簇及KRACK攻击/" title="分享到 Google+">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+    <i id="btn-close-shareoptions" class="fa fa-close"></i>
+    <ul class="share-options">
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2017/11/07/802.11协议簇及KRACK攻击/">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i><span>分享到 Facebook</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2017/11/07/802.11协议簇及KRACK攻击/">
+                    <i class="fa fa-twitter" aria-hidden="true"></i><span>分享到 Twitter</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2017/11/07/802.11协议簇及KRACK攻击/">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i><span>分享到 Google+</span>
+                </a>
+            </li>
+        
+    </ul>
+</div>
+
+            
+        </div>
+        
+
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <h4 id="about-card-name">CytQ</h4>
+        
+            <div id="about-card-bio"><p>author.bio</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>author.job</p>
+
+            </div>
+        
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-peofhqjkzcghmndknakluequy1y6owxdwpaqyju9ntl9zxnk7rdolb3rjjoj.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+
+
+
+    </body>
+</html>

@@ -1,0 +1,494 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hello! CytQ">
+    <title>二叉树 - Hello! CytQ</title>
+    <meta name="author" content="CytQ">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="二叉树， 二叉查找树，二分查找算法">
+<meta name="keywords" content="算法">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="二叉树">
+<meta property="og:url" content="http://imlzq.com/2016/03/15/二叉树/index.html">
+<meta property="og:site_name" content="Hello! CytQ">
+<meta property="og:description" content="二叉树， 二叉查找树，二分查找算法">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="http://img.blog.csdn.net/20160315125814600">
+<meta property="og:updated_time" content="2018-02-12T03:48:04.288Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="二叉树">
+<meta name="twitter:description" content="二叉树， 二叉查找树，二分查找算法">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20160315125814600">
+    
+    
+        
+    
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-pz4cc6y13wt2trzqa8l3n9v0yykr0sstdaheem7qj628nhjmhp9pfawvqawz.min.css">
+    <!--STYLES END-->
+    
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/ ">Hello! CytQ</a>
+    </div>
+    
+        
+            <a  class="header-right-picture "
+                href="#about">
+        
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/ "
+                            
+                            title="首页"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">首页</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-categories"
+                            
+                            title="分类"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">分类</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-tags"
+                            
+                            title="标签"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">标签</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-archives"
+                            
+                            title="归档"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">归档</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link open-algolia-search"
+                             href="#search"
+                            
+                            title="搜索"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">搜索</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="#about"
+                            
+                            title="关于"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">关于</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/atom.xml"
+                            
+                            title="RSS"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            二叉树
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time itemprop="datePublished" datetime="2016-03-15T13:05:35+08:00">
+	
+		    3月 15, 2016
+    	
+    </time>
+    
+</div>
+
+    
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <p>二叉树， 二叉查找树，二分查找算法</p>
+<a id="more"></a>    
+<p>##二叉树##</p>
+<p>二叉树跟树有区别，最大的一点就是：树的度没有限制，而二叉树最多则不能超过２个度</p>
+<p><strong>基础</strong></p>
+<p>二叉树由结点组成，结点包含的链接可以为空( null)或者指向其他结点，在二叉树中，每个结点只能有一个父结点(只有根节点例外)，　而且每个结点都只有左右两个链接，分别指向他们自己的左子节点和右子节点。</p>
+<p><strong>类型</strong></p>
+<ul>
+<li>完全二叉树：若设二叉树的高度为h，除第 h 层外，其它各层 (1～h-1) 的结点数都达到最大个数，第h层有叶子结点，并且叶子结点都是从左到右依次排布，这就是完全二叉树。</li>
+<li>满二叉树：除了叶结点外每一个结点都有左右子叶且叶子结点都处在最底层的二叉树。</li>
+<li>平衡二叉树：平衡二叉树又被称为AVL树（区别于AVL算法），它是一棵二叉排序树，且具有以下性质：它是一棵空树或它的左右两个子树的高度差的绝对值不超过1，并且左右两个子树都是一棵平衡二叉树。</li>
+</ul>
+<p><strong>二叉排序树</strong></p>
+<p>二叉排序树又称为二叉查找树，它的一个显著特点是：它的每个结点都含有一个Comparable的键(以及相关联的值）。如果根节点存在左右节点，那么根节点的值一定比右节点小，比左节点大。<br>在二分查找树中，每个结点还包含了一个键和一个值。<br>从这里我们也可以看出二叉排序树的一个很好的优点就是它能够保持键的有序性，因此它可以作为实现有序符号表中众多方法的基础。<br>而根据它的这个特性，就可以归纳出一个二叉查找树的查找方法：二分查找树。<br>接下来，就先归纳二分查找法，之后再平缓过度到二分查找树的查找中。</p>
+<p>##二分查找##<br>二分查找是一种查找效率较高的方法，但是对于被查找的数据有一定的先决条件：被查找的数据需要是有序的，即从从小到大或从大到小排列。</p>
+<p>不足：查询快，但是插入和删除信息较慢</p>
+<p><strong>二分查找（Binary Search）思路</strong><br>先确定待查记录所在的区间，然后逐步缩小区间直到找到或找不到该记录为止。</p>
+<p><strong>具体过程</strong></p>
+<ol>
+<li>先将关键字与 mid 指向的元素比较，如果相等则返回mid。</li>
+<li>关键字小于 mid 指向的元素关键字，mid –, 在 [ low,  mid ]区间中继续进行二分查找。 </li>
+<li>关键字大于mid 指向的元素关键字，mid ++, 在[ mid, high] 区间中继续进行二分查找。</li>
+</ol>
+<p><strong>代码</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//二分查找返回待查元素的数组下标  </span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">search_Binary</span><span class="params">(STable st, KeyType key)</span></span>&#123;  </span><br><span class="line">    <span class="keyword">int</span> low = <span class="number">0</span>;  </span><br><span class="line">    <span class="keyword">int</span> high = st.length - <span class="number">1</span>;  </span><br><span class="line">    <span class="keyword">while</span>(low &lt;= high)&#123;  </span><br><span class="line">        <span class="keyword">int</span> mid = (low + high)/<span class="number">2</span>;  </span><br><span class="line">        <span class="keyword">if</span>( key == st.elem[mid].key) &#123;</span><br><span class="line">            <span class="keyword">return</span> mid;  </span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span>(key &lt; st.elem[mid].key) &#123; </span><br><span class="line">            high = mid - <span class="number">1</span>;  </span><br><span class="line">        &#125; <span class="keyword">else</span> &#123; </span><br><span class="line">	        low = mid + <span class="number">1</span>;</span><br><span class="line">	    &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span>;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>##二叉查找树的使用##<br><figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Value <span class="built_in">get</span>(Key <span class="built_in">key</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">get</span>(root, <span class="built_in">key</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Value <span class="built_in">get</span>(Node x,Key <span class="built_in">key</span>) &#123;</span><br><span class="line">        <span class="comment">// 在以x为根结点的子树中查找并返回key所对应的值</span></span><br><span class="line">        <span class="comment">//　如果找不到则返回null</span></span><br><span class="line">        <span class="keyword">if</span> (x == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">int</span> cmp = <span class="built_in">key</span>.compareTo(x.<span class="built_in">key</span>);</span><br><span class="line">        <span class="keyword">if</span> (cmp &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">get</span>(x.left, <span class="built_in">key</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (cmp &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">get</span>(x.right, <span class="built_in">key</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">return</span> x.val;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> put(Key <span class="built_in">key</span>, Value val) &#123;</span><br><span class="line">        <span class="comment">// 查找key,找到则更新它的值，否则为他创建一个新的节点</span></span><br><span class="line">        root = put(root, <span class="built_in">key</span>, val);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Node put(Node x, Key <span class="built_in">key</span>, Value val) &#123;</span><br><span class="line">        <span class="comment">// 如果key存在于以x为根节点的子树中则更新它的值</span></span><br><span class="line">        <span class="comment">//　否则将以key和val为键值对的新节点的新节点插入到该子树中</span></span><br><span class="line">        <span class="keyword">if</span> (x == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> Node(<span class="built_in">key</span>, val, <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">int</span> cmp = <span class="built_in">key</span>.compareTo(x.<span class="built_in">key</span>);</span><br><span class="line">        <span class="keyword">if</span> (cmp &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            x.left = put(x.left, <span class="built_in">key</span>, val);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (cmp &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            x.right = put(x.right, <span class="built_in">key</span>, val);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            x.val = val;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        x.N = <span class="built_in">size</span>(x.left) + <span class="built_in">size</span>(x.right) + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>在Node put()方法中，最后一句有个x.N = size(x.left) + size(x.right) + 1,这一句的作用是：<br>size()方法会将空链接的值当做0，这样就能够保证一下的公式对于二叉树的人以节点x总是成立。</p>
+<blockquote>
+<p>size(x) = size(x.left) + size(x.right) + 1</p>
+</blockquote>
+<h2 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h2><p>二分查找树的一个更重要的特性就是插入的实现难度和查找差不多，当查找一个不存在于书中的结点并结束于一条空链接时，需要做的就是将链接指向一个含有被查找的键的新节点即可。<br>在上面的代码中，上面代码中的put()方法即是这种功能。</p>
+<h2 id="二叉树的遍历"><a href="#二叉树的遍历" class="headerlink" title="二叉树的遍历"></a>二叉树的遍历</h2><p>二叉树的遍历分为：</p>
+<ul>
+<li>前序遍历：根节点－左子树－右子树</li>
+<li>中序遍历：左子树－根节点－右子树</li>
+<li>后序遍历：左子树－右子树－根节点</li>
+<li>按层遍历：从根节点到下，一层层的从左到右依次遍历</li>
+</ul>
+<p><img src="http://img.blog.csdn.net/20160315125814600" alt=""></p>
+<p>这是我画的一个简单使示例图，照着遍历的方法，结果就为：</p>
+<p>前序遍历：　ABCDEFG<br>中序遍历：　CBDAEGF<br>后序遍历：　CDBGFEA<br>按层遍历：　ABECDFG</p>
+<p>总结到这里，又想起之前发的一篇文章, <a href="http://blog.csdn.net/jonstank2013/article/details/50754834" target="_blank" rel="noopener"> Python学习笔记(四) 多重继承及内部算法解析</a>, 里面也总结了一下深度优先算法，广度优先算法及Python在多重继承同名父类方法选择上的C3算法。这里就不做过多的介绍了，传送门在这。</p>
+
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/算法/">算法</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/15/子字符串查找算法_归纳及汇总/" data-tooltip="子字符串查找算法_归纳及汇总" aria-label="上一篇: 子字符串查找算法_归纳及汇总">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/14/快速排序_归纳/" data-tooltip="快速排序_归纳" aria-label="下一篇: 快速排序_归纳">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2016/03/15/二叉树/" title="分享到 Facebook">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2016/03/15/二叉树/" title="分享到 Twitter">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2016/03/15/二叉树/" title="分享到 Google+">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2018 CytQ. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/15/子字符串查找算法_归纳及汇总/" data-tooltip="子字符串查找算法_归纳及汇总" aria-label="上一篇: 子字符串查找算法_归纳及汇总">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/14/快速排序_归纳/" data-tooltip="快速排序_归纳" aria-label="下一篇: 快速排序_归纳">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2016/03/15/二叉树/" title="分享到 Facebook">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2016/03/15/二叉树/" title="分享到 Twitter">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2016/03/15/二叉树/" title="分享到 Google+">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+    <i id="btn-close-shareoptions" class="fa fa-close"></i>
+    <ul class="share-options">
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2016/03/15/二叉树/">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i><span>分享到 Facebook</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2016/03/15/二叉树/">
+                    <i class="fa fa-twitter" aria-hidden="true"></i><span>分享到 Twitter</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2016/03/15/二叉树/">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i><span>分享到 Google+</span>
+                </a>
+            </li>
+        
+    </ul>
+</div>
+
+            
+        </div>
+        
+
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <h4 id="about-card-name">CytQ</h4>
+        
+            <div id="about-card-bio"><p>author.bio</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>author.job</p>
+
+            </div>
+        
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-peofhqjkzcghmndknakluequy1y6owxdwpaqyju9ntl9zxnk7rdolb3rjjoj.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+
+
+
+    </body>
+</html>

@@ -1,0 +1,471 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hello! CytQ">
+    <title>RxJava使用示例：实现Rxbus代替eventbus - Hello! CytQ</title>
+    <meta name="author" content="CytQ">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="之前学习了Rxjava（RxJava学习笔记），但是一直找不到使用它的地方。最近做项目的时候遇到需要使用eventbus的时候，突然想起来Rxjava的一个拓展面就是Rxbus，果断用来试试 下一篇博文：RxJava实现原理探索">
+<meta name="keywords" content="Android,Rxjava">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="RxJava使用示例：实现Rxbus代替eventbus">
+<meta property="og:url" content="http://imlzq.com/2016/01/24/RxJava使用示例：实现Rxbus代替eventbus/index.html">
+<meta property="og:site_name" content="Hello! CytQ">
+<meta property="og:description" content="之前学习了Rxjava（RxJava学习笔记），但是一直找不到使用它的地方。最近做项目的时候遇到需要使用eventbus的时候，突然想起来Rxjava的一个拓展面就是Rxbus，果断用来试试 下一篇博文：RxJava实现原理探索">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2018-02-12T03:59:11.337Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RxJava使用示例：实现Rxbus代替eventbus">
+<meta name="twitter:description" content="之前学习了Rxjava（RxJava学习笔记），但是一直找不到使用它的地方。最近做项目的时候遇到需要使用eventbus的时候，突然想起来Rxjava的一个拓展面就是Rxbus，果断用来试试 下一篇博文：RxJava实现原理探索">
+    
+    
+        
+    
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-pz4cc6y13wt2trzqa8l3n9v0yykr0sstdaheem7qj628nhjmhp9pfawvqawz.min.css">
+    <!--STYLES END-->
+    
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/ ">Hello! CytQ</a>
+    </div>
+    
+        
+            <a  class="header-right-picture "
+                href="#about">
+        
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/ "
+                            
+                            title="首页"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">首页</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-categories"
+                            
+                            title="分类"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">分类</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-tags"
+                            
+                            title="标签"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">标签</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-archives"
+                            
+                            title="归档"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">归档</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link open-algolia-search"
+                             href="#search"
+                            
+                            title="搜索"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">搜索</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="#about"
+                            
+                            title="关于"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">关于</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/atom.xml"
+                            
+                            title="RSS"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            RxJava使用示例：实现Rxbus代替eventbus
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time itemprop="datePublished" datetime="2016-01-24T19:14:06+08:00">
+	
+		    1月 24, 2016
+    	
+    </time>
+    
+</div>
+
+    
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <p>之前学习了Rxjava（<a href="http://blog.csdn.net/jonstank2013/article/details/50366109" target="_blank" rel="noopener">RxJava学习笔记</a>），但是一直找不到使用它的地方。最近做项目的时候遇到需要使用eventbus的时候，突然想起来Rxjava的一个拓展面就是Rxbus，果断用来试试</p>
+<p>下一篇博文：<a href="http://blog.csdn.net/jonstank2013/article/details/50981404" target="_blank" rel="noopener">RxJava实现原理探索</a></p>
+<a id="more"></a>
+<h2 id="什么是Eventbus"><a href="#什么是Eventbus" class="headerlink" title="什么是Eventbus"></a>什么是Eventbus</h2><p>EventBus定义：是一个发布 / 订阅的事件总线。<br>这么说应该包含4个成分：发布者，订阅者，事件，总线。<br>那么这四者的关系是什么呢？<br>很明显：订阅者订阅事件到总线，发送者发布事件。</p>
+<p>总结一下就是：我订阅你，你遇到事情了，发送事件，或者理解为更新动态，我就收到消息。</p>
+<h2 id="常用的地方"><a href="#常用的地方" class="headerlink" title="常用的地方"></a>常用的地方</h2><p>Eventbus和Rxbus常用于组件间信息的交换与通知，避免采用广播以及使用一大堆接口来实现。</p>
+<p>使用的地方以本次项目来举例：<br>       一个商城界面，包含一个RecyclerView和LinearLayout，LinearLayout中是一个购物篮信息，也就是美团那种。当点击RecyclerView中的按钮时，商品被添加，LinearLayout中的商品总价应该发生变化。而这时候就到了使用Eventbus或者Rxbus的时候了。<br>      为了增加商品总价，常见的方法有这几种：</p>
+<ol>
+<li>在创建adapter的时候将LinearLayout的对象一并传入，以此可以更改LinearLayout中的TextView</li>
+<li>设置广播事件。添加商品-》发送广播-》处理广播</li>
+<li>设置接口。添加商品-》触发接口</li>
+<li>使用观察者模式。也就是Eventbus以及Rxbus实现的功能。</li>
+</ol>
+<p>上面的四种方式，第一种差评，可以直接排除。第二种和第三种倒是可以，但是这种事件多了之后就会产生一大堆接口，维护起来很麻烦。<br>因此，在这里就可以使用Eventbus或者Rxbus了。<br>而Rxjava相对于Eventbus来说更加的好用，因为它不止这个功能，还可以避免compile一大堆其余的依赖</p>
+<h2 id="使用Rxjava实现Rxbus代替eventbus"><a href="#使用Rxjava实现Rxbus代替eventbus" class="headerlink" title="使用Rxjava实现Rxbus代替eventbus"></a>使用Rxjava实现Rxbus代替eventbus</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.screform.mmd.utils;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> android.os.Bundle;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> rx.Observable;</span><br><span class="line"><span class="keyword">import</span> rx.subjects.PublishSubject;</span><br><span class="line"><span class="keyword">import</span> rx.subjects.SerializedSubject;</span><br><span class="line"><span class="keyword">import</span> rx.subjects.Subject;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * RxBus</span></span><br><span class="line"><span class="comment"> * Created by lizhongquan on 16-1-20.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RxBus</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Subject&lt;Object, Object&gt;</span><br><span class="line">            rxBus = <span class="keyword">new</span> SerializedSubject&lt;&gt;(PublishSubject.create());</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">RxBus</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> RxBus <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> RxbusHolder.instance;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">RxbusHolder</span></span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> RxBus instance = <span class="keyword">new</span> RxBus();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">send</span><span class="params">(Bundle o)</span> </span>&#123;</span><br><span class="line">        rxBus.onNext(o);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Observable&lt;Object&gt; <span class="title">toObserverable</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> rxBus;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>使用</strong>：<br><strong>在被订阅的地方</strong><br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 利用<span class="keyword">bundle传值</span></span><br><span class="line"><span class="keyword">Bundle </span><span class="keyword">bundle </span>= new <span class="keyword">Bundle();</span></span><br><span class="line"><span class="keyword">bundle.putString("eventname", </span><span class="string">"addOrderInfoGoods"</span>)<span class="comment">;</span></span><br><span class="line"><span class="symbol">RxBus.getInstance</span>().send(<span class="keyword">bundle);</span></span><br></pre></td></tr></table></figure></p>
+<p><strong>订阅者</strong><br>首先使用map进行类型转换，将Object类型转换为Bundle类型<br>之后在onNext中进行处理（这里使用一个参的new Action1替换）<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * RxBus</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"> <span class="keyword">private</span> <span class="function"><span class="keyword">void</span> <span class="title">operateBus</span><span class="params">()</span> </span>&#123;</span><br><span class="line">     RxBus.getInstance().toObserverable()</span><br><span class="line">             .map(<span class="keyword">new</span> Func1&lt;Object, Bundle&gt;() &#123;</span><br><span class="line">                 <span class="meta">@Override</span></span><br><span class="line">                 <span class="keyword">public</span> <span class="function">Bundle <span class="title">call</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">                     <span class="keyword">return</span> (Bundle) o;</span><br><span class="line">                 &#125;</span><br><span class="line">             &#125;)</span><br><span class="line">             .subscribe(<span class="keyword">new</span> Action1&lt;Bundle&gt;() &#123;</span><br><span class="line">                 <span class="meta">@Override</span></span><br><span class="line">                 <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">call</span><span class="params">(Bundle bundle)</span> </span>&#123;</span><br><span class="line">                     <span class="keyword">if</span> (bundle.getString(<span class="string">"eventname"</span>).equals(<span class="string">"showLinearLayoutBuyOK"</span>)) &#123;</span><br><span class="line">                         showLinearLayoutBuyOK(bundle);</span><br><span class="line">                     &#125;</span><br><span class="line">                 &#125;</span><br><span class="line">             &#125;);</span><br></pre></td></tr></table></figure></p>
+<p>这样的话就完成了整个订阅与处理事件。<br>另外，一旦订阅者订阅了某个事件，就一定要记得取消订阅，不然会造成内存泄露。一般是在onStop或者是onPause中。</p>
+<p>取消订阅<br>-<br>可以利用Subscription rxsub = Rxbus.getInstance()……….<br>在onStop或者是onPause中使用rxsub.unsubscribe()方法就可以取消了<br>而这个rxsub至于是生成一个全局的还是通过其他的方式来获取或者是取消就可以根据自己的需要来设置了，一定要注意避免内存泄露，对于手机内存小的积累一下很容易就OOM了</p>
+<hr>
+<p>可添加的功能<br>-<br>还有一个就是关于订阅事件的分发问题，现在是利用Bundle来传递事件名，其实这样不好，因为这样的话所有的订阅者都会收到通知。可以在Rxbus中添加一个过滤器，这样就可以让指定订阅者收到。最近由于事情太多，以后有需要的时候再更新吧</p>
+
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/Android/">Android</a> <a class="tag tag--primary tag--small t-link" href="/tags/Rxjava/">Rxjava</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/02/24/总结及梳理：Fragment/" data-tooltip="总结及梳理：Fragment" aria-label="上一篇: 总结及梳理：Fragment">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/01/14/发布自己项目让别人可以在dependencies中compile的更简单方法/" data-tooltip="发布自己项目让别人可以在dependencies中compile的更简单方法" aria-label="下一篇: 发布自己项目让别人可以在dependencies中compile的更简单方法">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2016/01/24/RxJava使用示例：实现Rxbus代替eventbus/" title="分享到 Facebook">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2016/01/24/RxJava使用示例：实现Rxbus代替eventbus/" title="分享到 Twitter">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2016/01/24/RxJava使用示例：实现Rxbus代替eventbus/" title="分享到 Google+">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2018 CytQ. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/02/24/总结及梳理：Fragment/" data-tooltip="总结及梳理：Fragment" aria-label="上一篇: 总结及梳理：Fragment">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/01/14/发布自己项目让别人可以在dependencies中compile的更简单方法/" data-tooltip="发布自己项目让别人可以在dependencies中compile的更简单方法" aria-label="下一篇: 发布自己项目让别人可以在dependencies中compile的更简单方法">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2016/01/24/RxJava使用示例：实现Rxbus代替eventbus/" title="分享到 Facebook">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2016/01/24/RxJava使用示例：实现Rxbus代替eventbus/" title="分享到 Twitter">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2016/01/24/RxJava使用示例：实现Rxbus代替eventbus/" title="分享到 Google+">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+    <i id="btn-close-shareoptions" class="fa fa-close"></i>
+    <ul class="share-options">
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2016/01/24/RxJava使用示例：实现Rxbus代替eventbus/">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i><span>分享到 Facebook</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2016/01/24/RxJava使用示例：实现Rxbus代替eventbus/">
+                    <i class="fa fa-twitter" aria-hidden="true"></i><span>分享到 Twitter</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2016/01/24/RxJava使用示例：实现Rxbus代替eventbus/">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i><span>分享到 Google+</span>
+                </a>
+            </li>
+        
+    </ul>
+</div>
+
+            
+        </div>
+        
+
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <h4 id="about-card-name">CytQ</h4>
+        
+            <div id="about-card-bio"><p>author.bio</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>author.job</p>
+
+            </div>
+        
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-peofhqjkzcghmndknakluequy1y6owxdwpaqyju9ntl9zxnk7rdolb3rjjoj.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+
+
+
+    </body>
+</html>

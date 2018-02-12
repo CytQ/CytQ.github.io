@@ -1,0 +1,475 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hello! CytQ">
+    <title>自定义控件（一）：EditText自定义 - Hello! CytQ</title>
+    <meta name="author" content="CytQ">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="自定义控件分三种：  自绘控件 组合控件 继承控件  代码已上传到 github以后的自定义控件就都放这个仓库">
+<meta name="keywords" content="Android">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="自定义控件（一）：EditText自定义">
+<meta property="og:url" content="http://imlzq.com/2016/01/12/自定义控件（一）：EditText自定义/index.html">
+<meta property="og:site_name" content="Hello! CytQ">
+<meta property="og:description" content="自定义控件分三种：  自绘控件 组合控件 继承控件  代码已上传到 github以后的自定义控件就都放这个仓库">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2018-02-12T04:03:29.883Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="自定义控件（一）：EditText自定义">
+<meta name="twitter:description" content="自定义控件分三种：  自绘控件 组合控件 继承控件  代码已上传到 github以后的自定义控件就都放这个仓库">
+    
+    
+        
+    
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-pz4cc6y13wt2trzqa8l3n9v0yykr0sstdaheem7qj628nhjmhp9pfawvqawz.min.css">
+    <!--STYLES END-->
+    
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/ ">Hello! CytQ</a>
+    </div>
+    
+        
+            <a  class="header-right-picture "
+                href="#about">
+        
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/ "
+                            
+                            title="首页"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">首页</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-categories"
+                            
+                            title="分类"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">分类</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-tags"
+                            
+                            title="标签"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">标签</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-archives"
+                            
+                            title="归档"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">归档</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link open-algolia-search"
+                             href="#search"
+                            
+                            title="搜索"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">搜索</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="#about"
+                            
+                            title="关于"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">关于</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/atom.xml"
+                            
+                            title="RSS"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            自定义控件（一）：EditText自定义
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time itemprop="datePublished" datetime="2016-01-12T18:25:08+08:00">
+	
+		    1月 12, 2016
+    	
+    </time>
+    
+</div>
+
+    
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <p>自定义控件分三种：</p>
+<ol>
+<li>自绘控件</li>
+<li>组合控件</li>
+<li>继承控件</li>
+</ol>
+<p>代码已上传到 <a href="https://github.com/LiZHongquan2013/CustomWidget#customwidget" target="_blank" rel="noopener">github</a><br>以后的自定义控件就都放这个仓库</p>
+<a id="more"></a>
+<h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>这里由于项目的需要实现一个自定义EditText,主要实现的为两点，一个是工具图标toolIcon，例如点击清除EditText内容。一个为EditText左边的提示图标hintIcon, 例如输入账号密码时前面的图标。</p>
+<p>为了让这个控件的拓展性更高，设置了两个点击事件接口。对于toolIcon来说，默认点击事件为清除EditText内容，如果需要更改，在代码中设设置相关的点击事件即可。</p>
+<h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><ol>
+<li>继承EditText</li>
+<li>编写attrs.xml, 创建declare-styleable</li>
+<li>编写MyEditText</li>
+<li>布局中使用</li>
+</ol>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p><strong>获取布局文件中设置的属性</strong></p>
+<p>这里返回的是一个TypedArray数组，获取之后就可以获得布局文件中设置的属性了<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">init</span>(<span class="params">Context context, AttributeSet attrs</span>) </span>&#123;</span><br><span class="line">        TypedArray typedArray = context.getTheme().obtainStyledAttributes(</span><br><span class="line">                attrs,</span><br><span class="line">                R.styleable.MyEditText,</span><br><span class="line">                <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">        hintIcon = typedArray.getDrawable(R.styleable.MyEditText_hintIcon);</span><br><span class="line">        toolIcon = typedArray.getDrawable(R.styleable.MyEditText_toolIcon);</span><br><span class="line">        <span class="keyword">fixed</span> = typedArray.getBoolean(R.styleable.MyEditText_fixed, <span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (toolIcon != <span class="literal">null</span> &amp;&amp; <span class="keyword">fixed</span>) &#123;</span><br><span class="line">            setHeight(toolIcon.getIntrinsicHeight());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        setCompoundDrawablesWithIntrinsicBounds(hintIcon, <span class="literal">null</span>, <span class="literal">null</span>, <span class="literal">null</span>);</span><br><span class="line"></span><br><span class="line">        setCompoundDrawablePadding(<span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">        typedArray.recycle();</span><br><span class="line"></span><br><span class="line">        onClickListenerWithEditTextToolIcon = <span class="keyword">new</span> OnClickListenerWithEditTextToolIcon() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">                setText(<span class="string">""</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>设置资源图片</strong><br>EditText是继承自TextView，在TextView中存在两个方法<br><figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">setCompoundDrawablesWithIntrinsicBounds(<span class="built_in">left</span>, <span class="built_in">top</span>, <span class="built_in">right</span>, <span class="built_in">bottom</span>)</span><br><span class="line">setCompoundDrawables(<span class="built_in">left</span>, <span class="built_in">top</span>, <span class="built_in">right</span>, <span class="built_in">bottom</span>)</span><br></pre></td></tr></table></figure></p>
+<p>是设置资源图片的位置，第一个方法和第二个方法的区别在于第一个方法中资源图片的大小是由系统来获取图片固有的大小，第二个方法则是需要自己通过LayoutParams设置大小。</p>
+<p><strong>设置点击事件</strong><br>我们通过setCompoundDrawables()等方法设置的图片，而由于在父类中并没有提供相关的图片点击处理接口，因此可以重写onTouchEvent()来实现相关的点击事件，只需要根据我们手指落点或抬起点的位置就可以判断手指是否点击了相关图片。在这里，我选择了手指抬起时处理</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Override the touchEvent to judge whether click toolIcon or hintIcon</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * @param event motionEvent</span></span><br><span class="line"><span class="comment">     * @return super</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    @Override</span><br><span class="line">    <span class="function"><span class="keyword">public</span> boolean <span class="title">onTouchEvent</span>(<span class="params">MotionEvent <span class="keyword">event</span></span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">event</span>.getAction() == MotionEvent.ACTION_UP) &#123;</span><br><span class="line">            <span class="keyword">if</span> (hintIcon != <span class="literal">null</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (<span class="keyword">event</span>.getX() &lt; hintIcon.getIntrinsicWidth()</span><br><span class="line">                        &amp;&amp; <span class="keyword">event</span>.getX() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (getCompoundDrawables()[<span class="number">0</span>] != <span class="literal">null</span></span><br><span class="line">                            &amp;&amp; onClickListenerWithEditTextHintIcon != <span class="literal">null</span>) &#123;</span><br><span class="line">                        onClickListenerWithEditTextHintIcon.onClick();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (toolIcon != <span class="literal">null</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (<span class="keyword">event</span>.getX() &gt; (getWidth()</span><br><span class="line">                        - toolIcon.getIntrinsicWidth())</span><br><span class="line">                        &amp;&amp; <span class="keyword">event</span>.getX() &lt; getWidth()) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (getCompoundDrawables()[<span class="number">2</span>] != <span class="literal">null</span> ) &#123;</span><br><span class="line">                        onClickListenerWithEditTextToolIcon.onClick();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> super.onTouchEvent(<span class="keyword">event</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">     * interface when click hintIcon</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">OnClickListenerWithEditTextHintIcon</span> &#123;</span><br><span class="line">        <span class="function"><span class="keyword">void</span>  <span class="title">onClick</span>(<span class="params"></span>)</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * interface when click toolIcon</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">OnClickListenerWithEditTextToolIcon</span> &#123;</span><br><span class="line">        <span class="function"><span class="keyword">void</span> <span class="title">onClick</span>(<span class="params"></span>)</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.customwidget.lzqwidget.cuswidget;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> android.content.Context;</span><br><span class="line"><span class="keyword">import</span> android.content.res.TypedArray;</span><br><span class="line"><span class="keyword">import</span> android.graphics.drawable.Drawable;</span><br><span class="line"><span class="keyword">import</span> android.util.AttributeSet;</span><br><span class="line"><span class="keyword">import</span> android.view.MotionEvent;</span><br><span class="line"><span class="keyword">import</span> android.widget.EditText;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.customwidget.lzqwidget.R;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Custom widget of EditText with two icon.</span></span><br><span class="line"><span class="comment"> * Created by lizhongquan on 16-1-6.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyEditText</span> <span class="keyword">extends</span> <span class="title">EditText</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Drawable hintIcon = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">private</span> Drawable toolIcon = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * HintIcon clickListener</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> OnClickListenerWithEditTextHintIcon onClickListenerWithEditTextHintIcon = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Default clear the EditText</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> OnClickListenerWithEditTextToolIcon onClickListenerWithEditTextToolIcon = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Default fixed the Height</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> fixed = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyEditText</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyEditText</span><span class="params">(Context context, AttributeSet attrs)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context, attrs);</span><br><span class="line">        init(context, attrs);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyEditText</span><span class="params">(Context context, AttributeSet attrs, <span class="keyword">int</span> defStyleAttr)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context, attrs, defStyleAttr);</span><br><span class="line">        init(context, attrs);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(Context context, AttributeSet attrs)</span> </span>&#123;</span><br><span class="line">        TypedArray typedArray = context.getTheme().obtainStyledAttributes(</span><br><span class="line">                attrs,</span><br><span class="line">                R.styleable.MyEditText,</span><br><span class="line">                <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">        hintIcon = typedArray.getDrawable(R.styleable.MyEditText_hintIcon);</span><br><span class="line">        toolIcon = typedArray.getDrawable(R.styleable.MyEditText_toolIcon);</span><br><span class="line">        fixed = typedArray.getBoolean(R.styleable.MyEditText_fixed, <span class="keyword">true</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (toolIcon != <span class="keyword">null</span> &amp;&amp; fixed) &#123;</span><br><span class="line">            setHeight(toolIcon.getIntrinsicHeight());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        setCompoundDrawablesWithIntrinsicBounds(hintIcon, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line"></span><br><span class="line">        setCompoundDrawablePadding(<span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">        typedArray.recycle();</span><br><span class="line"></span><br><span class="line">        onClickListenerWithEditTextToolIcon = <span class="keyword">new</span> OnClickListenerWithEditTextToolIcon() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                setText(<span class="string">""</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Override the touchEvent to judge whether click toolIcon or hintIcon</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> event motionEvent</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> super</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onTouchEvent</span><span class="params">(MotionEvent event)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (event.getAction() == MotionEvent.ACTION_UP) &#123;</span><br><span class="line">            <span class="keyword">if</span> (hintIcon != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (event.getX() &lt; hintIcon.getIntrinsicWidth()</span><br><span class="line">                        &amp;&amp; event.getX() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (getCompoundDrawables()[<span class="number">0</span>] != <span class="keyword">null</span></span><br><span class="line">                            &amp;&amp; onClickListenerWithEditTextHintIcon != <span class="keyword">null</span>) &#123;</span><br><span class="line">                        onClickListenerWithEditTextHintIcon.onClick();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (toolIcon != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (event.getX() &gt; (getWidth()</span><br><span class="line">                        - toolIcon.getIntrinsicWidth())</span><br><span class="line">                        &amp;&amp; event.getX() &lt; getWidth()) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (getCompoundDrawables()[<span class="number">2</span>] != <span class="keyword">null</span> ) &#123;</span><br><span class="line">                        onClickListenerWithEditTextToolIcon.onClick();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.onTouchEvent(event);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * the clickListener of click hintIcon</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> clickListenerOfHintIcon OnClickListenerWithEditTextHintIcon</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setOnClickListenerWithEditTextHintIcon</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">            OnClickListenerWithEditTextHintIcon clickListenerOfHintIcon)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.onClickListenerWithEditTextHintIcon = clickListenerOfHintIcon;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * the clickListener of click toolIcon</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> clickListenerOfToolIcon OnClickListenerWithEditTextToolIcon</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setOnClickListenerWithEditTextToolIcon</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">            OnClickListenerWithEditTextToolIcon clickListenerOfToolIcon)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.onClickListenerWithEditTextToolIcon = clickListenerOfToolIcon;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * onTextChange</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> text         text</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> start        start</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> lengthBefore lengthBefore</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> lengthAfter  lengthAfter</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onTextChanged</span><span class="params">(CharSequence text, <span class="keyword">int</span> start, <span class="keyword">int</span> lengthBefore, <span class="keyword">int</span> lengthAfter)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onTextChanged(text, start, lengthBefore, lengthAfter);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (text.length() &gt; <span class="number">0</span> &amp;&amp; getCompoundDrawables()[<span class="number">2</span>] == <span class="keyword">null</span> &amp;&amp; toolIcon != <span class="keyword">null</span>) &#123;</span><br><span class="line"><span class="comment">//            hintIcon.setBounds(10, 0, 10, 0);</span></span><br><span class="line">            setCompoundDrawablesWithIntrinsicBounds(hintIcon, <span class="keyword">null</span>, toolIcon, <span class="keyword">null</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (text.length() == <span class="number">0</span> &amp;&amp; getCompoundDrawables()[<span class="number">2</span>] != <span class="keyword">null</span> &amp;&amp; toolIcon != <span class="keyword">null</span>) &#123;</span><br><span class="line">            setCompoundDrawablesWithIntrinsicBounds(hintIcon, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * interface when click hintIcon</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">OnClickListenerWithEditTextHintIcon</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">void</span>  <span class="title">onClick</span><span class="params">()</span></span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * interface when click toolIcon</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">OnClickListenerWithEditTextToolIcon</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">void</span> <span class="title">onClick</span><span class="params">()</span></span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>attrs.xml:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?</span>xml version=<span class="string">"1.0"</span> encoding=<span class="string">"utf-8"</span><span class="meta">?&gt;</span></span></span><br><span class="line"><span class="tag">&lt;<span class="name">resources</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">declare-styleable</span> <span class="attr">name</span>=<span class="string">"MyEditText"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">"hintIcon"</span> <span class="attr">format</span>=<span class="string">"integer"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">"toolIcon"</span> <span class="attr">format</span>=<span class="string">"integer"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">"fixed"</span> <span class="attr">format</span>=<span class="string">"boolean"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">declare-styleable</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">resources</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/Android/">Android</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/01/13/使用Gradle发布项目到JCenter仓库/" data-tooltip="使用Gradle发布项目到JCenter仓库" aria-label="上一篇: 使用Gradle发布项目到JCenter仓库">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/12/20/RxJava学习笔记/" data-tooltip="RxJava学习笔记" aria-label="下一篇: RxJava学习笔记">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2016/01/12/自定义控件（一）：EditText自定义/" title="分享到 Facebook">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2016/01/12/自定义控件（一）：EditText自定义/" title="分享到 Twitter">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2016/01/12/自定义控件（一）：EditText自定义/" title="分享到 Google+">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2018 CytQ. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/01/13/使用Gradle发布项目到JCenter仓库/" data-tooltip="使用Gradle发布项目到JCenter仓库" aria-label="上一篇: 使用Gradle发布项目到JCenter仓库">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/12/20/RxJava学习笔记/" data-tooltip="RxJava学习笔记" aria-label="下一篇: RxJava学习笔记">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2016/01/12/自定义控件（一）：EditText自定义/" title="分享到 Facebook">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2016/01/12/自定义控件（一）：EditText自定义/" title="分享到 Twitter">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2016/01/12/自定义控件（一）：EditText自定义/" title="分享到 Google+">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+    <i id="btn-close-shareoptions" class="fa fa-close"></i>
+    <ul class="share-options">
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2016/01/12/自定义控件（一）：EditText自定义/">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i><span>分享到 Facebook</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2016/01/12/自定义控件（一）：EditText自定义/">
+                    <i class="fa fa-twitter" aria-hidden="true"></i><span>分享到 Twitter</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2016/01/12/自定义控件（一）：EditText自定义/">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i><span>分享到 Google+</span>
+                </a>
+            </li>
+        
+    </ul>
+</div>
+
+            
+        </div>
+        
+
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <h4 id="about-card-name">CytQ</h4>
+        
+            <div id="about-card-bio"><p>author.bio</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>author.job</p>
+
+            </div>
+        
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-peofhqjkzcghmndknakluequy1y6owxdwpaqyju9ntl9zxnk7rdolb3rjjoj.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+
+
+
+    </body>
+</html>

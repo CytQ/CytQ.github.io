@@ -1,0 +1,525 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hello! CytQ">
+    <title>JVM原理及底层探索 - Hello! CytQ</title>
+    <meta name="author" content="CytQ">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="JVM是Java程序运行的环境，但是他同时也是一个操作系统的一个应用程序的一个进程，因此JVM也有他自己的运行生命周期，也有自己的代码和数据空间。">
+<meta name="keywords" content="Java">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="JVM原理及底层探索">
+<meta property="og:url" content="http://imlzq.com/2016/03/18/JVM原理及底层探索/index.html">
+<meta property="og:site_name" content="Hello! CytQ">
+<meta property="og:description" content="JVM是Java程序运行的环境，但是他同时也是一个操作系统的一个应用程序的一个进程，因此JVM也有他自己的运行生命周期，也有自己的代码和数据空间。">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="http://hi.csdn.net/attachment/201201/6/0_1325814932X3Ts.gif">
+<meta property="og:updated_time" content="2018-02-12T03:57:07.031Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JVM原理及底层探索">
+<meta name="twitter:description" content="JVM是Java程序运行的环境，但是他同时也是一个操作系统的一个应用程序的一个进程，因此JVM也有他自己的运行生命周期，也有自己的代码和数据空间。">
+<meta name="twitter:image" content="http://hi.csdn.net/attachment/201201/6/0_1325814932X3Ts.gif">
+    
+    
+        
+    
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-pz4cc6y13wt2trzqa8l3n9v0yykr0sstdaheem7qj628nhjmhp9pfawvqawz.min.css">
+    <!--STYLES END-->
+    
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/ ">Hello! CytQ</a>
+    </div>
+    
+        
+            <a  class="header-right-picture "
+                href="#about">
+        
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/ "
+                            
+                            title="首页"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">首页</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-categories"
+                            
+                            title="分类"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">分类</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-tags"
+                            
+                            title="标签"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">标签</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-archives"
+                            
+                            title="归档"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">归档</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link open-algolia-search"
+                             href="#search"
+                            
+                            title="搜索"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">搜索</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="#about"
+                            
+                            title="关于"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">关于</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/atom.xml"
+                            
+                            title="RSS"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            JVM原理及底层探索
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time itemprop="datePublished" datetime="2016-03-18T14:05:09+08:00">
+	
+		    3月 18, 2016
+    	
+    </time>
+    
+</div>
+
+    
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <p>JVM是Java程序运行的环境，但是他同时也是一个操作系统的一个应用程序的一个进程，因此JVM也有他自己的运行生命周期，也有自己的代码和数据空间。</p>
+<a id="more"></a>
+<p>##JDK</p>
+<p>JDK在Java的整个体系中充当一个生产加工中心，产生所有的数据输出，是所有指令和战略的执行中心。本身还提供了Java的完整方案，可以开发目前Java能支持的所有应用和系统程序。而之所以现在还会分j2me，j2ee这些类，是把他们用来简化各自领域内的开发和构建过程。JDK除了JVM之外，还有一些核心的API，用户工具，技术等等。</p>
+<p>而JVM在JDK中就处于最底层的位置，负责操作系统的交互，用来屏蔽操作系统环境，提供一个完整的Java运行环境，也就是一个虚拟计算机。</p>
+<p>##GC（垃圾回收）</p>
+<p>Java堆的描述如下：<br><img src="http://hi.csdn.net/attachment/201201/6/0_1325814932X3Ts.gif" alt="这里写图片描述"><br>内存由Perm和Heap组成。<br>JVM内存模型中分两大块，其实在垃圾回收的算法中，有一个方法就是分代垃圾回收（这个在下面的时候我会归纳一下）。而JVM这里也就是一个分代的原理。一块是新生代，一块是老一代。在老一代里面，存放的东西都是应用程序生命周期较长的内存对象（老一代嘛），而新生代里面存放东西的生命周期就要短一些了（因此在垃圾回收算法中可以根据不同代的特点来指定不同的回收方案）。</p>
+<p>在新生代中，有一个叫Eden（圣经中伊甸园的意思，这样看名字就可以猜出它大概的意思及作用了吧）的空间来存放新生的对象，还有两个Survivor Spaces它们是用来存放每次垃圾回收后存活下来的对象。</p>
+<p>还有个Permanent Generation Space, 是指内存的永久保存区域，而一般出现OOM的时候，就是内存溢出了。而为什么会溢出呢？是因为Class在被Load的时候被放入该区域，它和存放Instance的Heap区域不同,GC不会在主程序运行期对PermGen space进行清理，所以如果你的APP会LOAD很多CLASS的话,就很可能出现PermGen space错误。<br>它其实就是一个方法区，里面主要存放了两种信息。</p>
+<blockquote>
+<p>1.Class的节本信息<br>Package Name<br>Super class package name<br>Class or interface<br>Type modifiers<br>Super inferface package name<br>2.其它信息<br>The constant pool for the type<br>Field information<br>Method information<br>All class (static) variables declared<br>in the type, except constants<br>A reference to class ClassLoader<br>A reference to class Class</p>
+</blockquote>
+<p><strong>常见的溢出</strong></p>
+<pre><code>1. OLD段溢出
+  这种内存溢出是最常见的情况之一，产生的原因可能是：
+    1) 设置的内存参数过小(ms/mx, NewSize/MaxNewSize)
+    2) 程序问题
+    单个程序持续进行消耗内存的处理，如循环几千次的字符串处理，对字符串处理应建议使用StringBuffer。此时不会报内存溢出错，却会使系统持续垃圾收集，无法处理其它请求，单个程序所申请内存过大，有的程序会申请几十乃至几百兆内存，此时JVM也会因无法申请到资源而出现内存溢出。
+    当Java对象使用完毕后，其所引用的对象却没有销毁，使得JVM认为他还是活跃的对象而不进行回收，这样累计占用了大量内存而无法释放。
+
+2. Perm段溢出
+  通常由于Perm段装载了大量的类而导致溢出，目前的解决办法：就是增加它的空间。
+
+3. C Heap溢出 
+  系统对C Heap没有限制，故C Heap发生问题时，Java进程所占内存会持续增长，直到占用所有可用系统内存
+4. 其他：
+  JVM有2个GC线程。第一个线程负责回收Heap的NEW区。第二个线程在Heap不足时，遍历Heap，将NEW区升级为Older区。Older区的大小等于-Xmx减去-Xmn，不能将-Xms的值设的过大，因为第二个线程被迫运行会降低JVM的性能。
+</code></pre><p>为什么一些程序频繁发生GC？有如下原因：</p>
+<ol>
+<li>程序内调用了System.gc()或Runtime.gc()。</li>
+<li>一些中间件软件调用自己的GC方法，此时需要设置参数禁止这些GC。</li>
+<li>Java的Heap太小，一般默认的Heap值都很小。</li>
+<li>频繁实例化对象，Release对象。此时尽量保存并重用对象，例如使用StringBuffer和String。</li>
+</ol>
+<p>如果每次GC后，Heap的剩余空间会是总空间的50%，这表示你的Heap处于健康状态。许多Server端的Java程序每次GC后最好能有65%的剩余空间。</p>
+<p>注意：</p>
+<ol>
+<li>增加Heap的大小虽然会降低GC的频率，但也增加了每次GC的时间。并且GC运行时，所有的用户线程将暂停，也就是GC期间，Java应用程序不做任何工作。</li>
+<li>Heap大小并不决定进程的内存使用量。进程的内存使用量要大于-Xmx定义的值，因为Java为其他任务分配内存，例如每个线程的Stack等。</li>
+<li>每个线程都有他自己的Stack,Stack的大小限制着线程的数量。如果Stack过大就好导致内存溢漏</li>
+<li>硬件环境也影响GC的效率，例如机器的种类，内存，swap空间，和CPU的数量。如果你的程序需要频繁创建很多transient对象，会导致JVM频繁GC。这种情况你可以增加机器的内存，来减少Swap空间的使用</li>
+</ol>
+<p>垃圾回收<br>-<br>在新生代块中，垃圾回收一般用Copying的算法，速度快。每次GC的时候，存活下来的对象首先由Eden拷贝到某个Survivor Space, 当Survivor Space空间满了后, 剩下的live对象就被直接拷贝到老一代中。因此，每次GC后，Eden内存块会被清空。在老一代中，垃圾回收一般用mark-compact（标记-整理）算法，它的内存占用少，速度慢。<br>垃圾回收分多级，0级为全部(Full)的垃圾回收，会回收OLD段中的垃圾；1级或以上为部分垃圾回收，只会回收NEW中的垃圾，内存溢出通常发生于OLD段或Perm段垃圾回收后，仍然无内存空间容纳新的Java对象的情况。</p>
+<p>##什么情况下触发垃圾回收##<br>   由于对象进行了分代处理，因此垃圾回收区域、时间也不一样。GC有两种类型：Scavenge GC 和 Full GC<br>   Scavenge GC<br>    一般情况下，当新对象生成，并且在Eden申请空间失败时，就会触发Scavenge GC，对Eden区域进行GC，清除非存活对象，并且把尚且存活的对象移动到Survivor区。然后整理Survivor的两个区。这种方式的GC是对年轻代的Eden区进行，不会影响到老一代。因为大部分对象都是从Eden区开始的，同时Eden区不会分配的很大，所以Eden区的GC会频繁进行。因而，一般在这里需要使用速度快、效率高的算法，使Eden区能尽快空闲出来。<br>    Full GC<br>    对整个堆进行整理，包括年轻代，老一代和持久代。Full GC 因为需要对整个堆进行回收，所以比 Scavenge GC 要慢，因此应该尽可能减少 Full GC 的次数。在对JVM调优的过程中，很大一部分工作就是对于 Full GC 的调节。</p>
+<p>   有如下原因可能导致Full GC:<br>    . 老一代被写满<br>    . 持久代被写满<br>    . System.gc()被显式调用<br>    . 上一次GC之后Heap的各域分配策略动态变化</p>
+<p>##JVM如何判断一个对象为垃圾##<br>这个时候就要考虑JVM什么时候才把一个对象当成垃圾了，常用的有以下几种方法：</p>
+<p><strong>引用计数器算法</strong></p>
+<p>定义： 引用计数器算法是给每个对象设置一个计数器，当有地方引用这个对象的时候，计数器+1，当引用失效的时候，计数器-1，当计数器为0的时候，JVM就认为对象不再被使用，是“垃圾”了。</p>
+<p>优缺点：引用计数器实现简单，效率高；但是不能解决循环引用问问题（A对象引用B对象，B对象又引用A对象，但是A,B对象已不被任何其他对象引用），同时每次计数器的增加和减少都带来了很多额外的开销，所以在JDK1.1之后，这个算法已经不再使用了。</p>
+<p><strong>根搜索方法</strong><br>根搜索方法是通过一些“GC Roots”对象作为起点，从这些节点开始往下搜索，搜索通过的路径成为引用链（Reference Chain），当一个对象没有被GC Roots的引用链连接的时候，说明这个对象是不可用的。</p>
+<p>GC Roots对象包括：</p>
+<p>a) 虚拟机栈（栈帧中的本地变量表）中的引用的对象。<br>b) 方法区域中的类静态属性引用的对象。<br>c) 方法区域中常量引用的对象。<br>d) 本地方法栈中JNI（Native方法）的引用的对象。</p>
+<p>##垃圾回收算法##</p>
+<p><strong>一、按回收策略来分可分为三种</strong></p>
+<p><strong>标记-清除法（Mark-Sweep）</strong><br>标记清除法分为两个阶段，一个是标记，另一个是清除。<br>在标记阶段，确定所有要回收的对象，并作标记<br>在清除阶段，将所有标记了的对象清除。它的操作是紧跟标记阶段的</p>
+<p>缺点：<br>标记和清除阶段的效率不高，而且清除后回产生大量的不连续空间，这样当程序需要分配大内存对象时，可能无法找到足够的连续空间。</p>
+<p><strong>复制算法（Coping）</strong><br>复制算法是把内存分为大小相等的两块，每次使用其中的一块，当垃圾回收的时候，把存货的对象复制到另一块上，然后把这段内存清除掉。</p>
+<p>复制算法实现简单，运行效率高，但是由于每次只能使用其中的一半，造成内存的利用率不高。现在的JVM用复制方法收集新生代，由于新生代中大部分对象（98%）都是朝生夕死的，所以两块内存的比例不是1:1(大概是8:1)。复制算法完成后会形成连续的空间。</p>
+<p><strong>标记整理算法（Mark-Compact）</strong><br>标记-整理算法和标记-清除算法一样，但是标记-整理算法是把存活的对象直接向内存的一端移动，然后把超过边界的内存直接清除。</p>
+<p>标记整理算法提高了内存的利用率，适用于收集存货时间较长的老一代。这种算法完成之后也会是连续的内存空间</p>
+<p><strong>二、按分区对待的方式来分可分为两种</strong></p>
+<p><strong>分代收集</strong><br>这个就是根据对象的存活时间，分为老一代（存活时间上）和新一代（存活时间短），然后根据不同的年代来采用不同的算法。老一代采用标记整理算法，新一代采用复制算法。<br>在Java程序运行的过程中，会产生大量的对象，其中有些对象是与业务信息相关，比如Http请求中的Session对象、线程、Socket连接，这类对象跟业务直接挂钩，因此生命周期比较长。<br>但是还有一些对象，主要是程序运行过程中生成的临时变量，这些对象生命周期会比较短，比如：String对象，由于其不变类的特性，系统会产生大量的这些对象，有些对象甚至只用一次即可回收。</p>
+<p><strong>增量收集</strong><br>它又被称为实时垃圾回收算法。即：在应用进行的同时进行垃圾回收。</p>
+<p><strong>三、按系统线程可分为三种</strong></p>
+<p><strong>串行收集</strong><br>串行收集使用单线程处理所有垃圾回收工作，因为无需多线程交互，实现容易，而且效率比较高。但是，其局限性也比较明显，即无法使用多处理器的优势，所以此收集适合单处理器机器。当然，此收集器也可以用在小数据量（100M左右）情况下的多处理器机器上。</p>
+<p><strong>并行收集</strong><br>并行收集使用多线程处理垃圾回收工作，因而速度快，效率高。而且理论上CPU数目越多，越能体现出并行收集器的优势。（串型收集的并发版本，需要暂停jvm） 并行paralise指的是多个任务在多个cpu中一起并行执行，最后将结果合并。效率是N倍。</p>
+<p><strong>并发收集</strong><br>相对于串行收集和并行收集而言，前面两个在进行垃圾回收工作时，需要暂停整个运行环境，而只有垃圾回收程序在运行，因此，系统在垃圾回收时会有明显的暂停，而且暂停时间会因为堆越大而越长。（和并行收集不同，并发只有在开头和结尾会暂停jvm）并发concurrent指的是多个任务在一个cpu伪同步执行，但其实是串行调度的，效率并非直接是N倍。</p>
+<p>四种GC<br>-<br>第一种为单线程GC,也是默认的GC，适用于单CPU的机器<br>第二种为多线程GC，适用于多CPU，使用大量线程的程序。这跟第一种是类似的，这种GC在回收NEW区时是多线程的，但是在回收OLD区是跟第一种一样的，仍然采用单线程。<br>第三种为Concurrent Low Pause GC，类似于第一种，适用于多CPU，并要求缩短因GC造成程序停滞的时间。这种GC可以在Old区的回收同时，运行应用程序<br>第四种第四种为Incremental Low Pause GC，适用于要求缩短因GC造成程序停滞的时间。这种GC可以在Young区回收的同时，回收一部分Old区对象。</p>
+<p>##JVM操作cpu与内存交互的工作原理##</p>
+<p>在C/C++中，它们的工作原理是<br>先将语句转化为汇编，<br>再把汇编转换为二进制数据传给CPU，<br>cpu通过控制总线来控制cpu的地址总线寻找内存地址,数据总线传送数据到内存单元中。获得数据实现与内存的交互。</p>
+<p>而在Java这一块来说的话，编译成.class文件（它是一个字节码文件）之后，这个时候cpu就相当于可以和他进行交互了，而jvm就负责在中间这一块去识别它。如果照上面的C/C++的逻辑来说，.class可以理解为cpu可以理解的语言了（JVM负责翻译）。</p>
+<p>-—————————————————–<br>现在发现了几个很好的资源，记录一下，以后看看，传送门：<a href="http://bbs.csdn.net/topics/390251794" target="_blank" rel="noopener">http://bbs.csdn.net/topics/390251794</a></p>
+<p>这个是介绍了happen-before以及其他重要内容的资源：<a href="http://ifeve.com/java-concurrent-hashmap-1/" target="_blank" rel="noopener">http://ifeve.com/java-concurrent-hashmap-1/</a></p>
+
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/Java/">Java</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/23/Android推送（长连接）探索/" data-tooltip="Android推送（长连接）探索" aria-label="上一篇: Android推送（长连接）探索">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/16/设计模式_状态模式/" data-tooltip="设计模式_状态模式" aria-label="下一篇: 设计模式_状态模式">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2016/03/18/JVM原理及底层探索/" title="分享到 Facebook">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2016/03/18/JVM原理及底层探索/" title="分享到 Twitter">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2016/03/18/JVM原理及底层探索/" title="分享到 Google+">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2018 CytQ. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/23/Android推送（长连接）探索/" data-tooltip="Android推送（长连接）探索" aria-label="上一篇: Android推送（长连接）探索">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/16/设计模式_状态模式/" data-tooltip="设计模式_状态模式" aria-label="下一篇: 设计模式_状态模式">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2016/03/18/JVM原理及底层探索/" title="分享到 Facebook">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2016/03/18/JVM原理及底层探索/" title="分享到 Twitter">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2016/03/18/JVM原理及底层探索/" title="分享到 Google+">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+    <i id="btn-close-shareoptions" class="fa fa-close"></i>
+    <ul class="share-options">
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2016/03/18/JVM原理及底层探索/">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i><span>分享到 Facebook</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2016/03/18/JVM原理及底层探索/">
+                    <i class="fa fa-twitter" aria-hidden="true"></i><span>分享到 Twitter</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2016/03/18/JVM原理及底层探索/">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i><span>分享到 Google+</span>
+                </a>
+            </li>
+        
+    </ul>
+</div>
+
+            
+        </div>
+        
+
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <h4 id="about-card-name">CytQ</h4>
+        
+            <div id="about-card-bio"><p>author.bio</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>author.job</p>
+
+            </div>
+        
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-peofhqjkzcghmndknakluequy1y6owxdwpaqyju9ntl9zxnk7rdolb3rjjoj.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+
+
+
+    </body>
+</html>

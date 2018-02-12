@@ -1,0 +1,462 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hello! CytQ">
+    <title>Android自动填写验证码 - Hello! CytQ</title>
+    <meta name="author" content="CytQ">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="第四篇博客就来总结下项目中使用到的一个提升用户体验的功能：　Android自动填写验证码　　从字面上来看，很明显的可以看出它的实现流程：监听-&amp;gt;有改变-&amp;gt;获取信息-&amp;gt;改变ui">
+<meta name="keywords" content="Android">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Android自动填写验证码">
+<meta property="og:url" content="http://imlzq.com/2015/11/25/Android自动填写验证码/index.html">
+<meta property="og:site_name" content="Hello! CytQ">
+<meta property="og:description" content="第四篇博客就来总结下项目中使用到的一个提升用户体验的功能：　Android自动填写验证码　　从字面上来看，很明显的可以看出它的实现流程：监听-&amp;gt;有改变-&amp;gt;获取信息-&amp;gt;改变ui">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2018-02-12T03:56:09.538Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android自动填写验证码">
+<meta name="twitter:description" content="第四篇博客就来总结下项目中使用到的一个提升用户体验的功能：　Android自动填写验证码　　从字面上来看，很明显的可以看出它的实现流程：监听-&amp;gt;有改变-&amp;gt;获取信息-&amp;gt;改变ui">
+    
+    
+        
+    
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-pz4cc6y13wt2trzqa8l3n9v0yykr0sstdaheem7qj628nhjmhp9pfawvqawz.min.css">
+    <!--STYLES END-->
+    
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/ ">Hello! CytQ</a>
+    </div>
+    
+        
+            <a  class="header-right-picture "
+                href="#about">
+        
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/ "
+                            
+                            title="首页"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">首页</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-categories"
+                            
+                            title="分类"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">分类</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-tags"
+                            
+                            title="标签"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">标签</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-archives"
+                            
+                            title="归档"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">归档</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link open-algolia-search"
+                             href="#search"
+                            
+                            title="搜索"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">搜索</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="#about"
+                            
+                            title="关于"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">关于</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/atom.xml"
+                            
+                            title="RSS"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            Android自动填写验证码
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time itemprop="datePublished" datetime="2015-11-25T17:27:19+08:00">
+	
+		    11月 25, 2015
+    	
+    </time>
+    
+</div>
+
+    
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <p>　　第四篇博客就来总结下项目中使用到的一个提升用户体验的功能：　Android自动填写验证码<br>　　从字面上来看，很明显的可以看出它的实现流程：监听-&gt;有改变-&gt;获取信息-&gt;改变ui</p>
+<a id="more"></a>
+<h2 id="观察者模式"><a href="#观察者模式" class="headerlink" title="观察者模式"></a>观察者模式</h2><p>　　观察者模式是软件设计模式中的一种，在此模式中，一个目标物件管理所有相依于它的观察者物件，并且在本身的状态改变时主动发出通知。这通常透过呼叫各观察者所提供的方法来实现。此种模式通常被用来实现事件处理系统<br>　　观察者模式Observer完美的将观察者和被观察的对象分离开，在模块之间划定接线，提高应用程序的可维护性和重用性。同时定义了对象间一种一对多的以来关系，以便一个对象的状态发生变化时，所有依赖于它的对象都得到通知并自动刷新。<br>       观察者：Observer将自己注册到被观察对象中，被观察对象将观察者存放在一个容器里<br>       被观察：当被观察者对象发生了某种变化，从容器中得到所有注册过的观察者，将变化通知观察者<br>       撤销观察：观察者告诉被观察者要撤销观察，被观察者从容器中将观察者去除<br><strong>ContentObserver</strong><br>　　内容观察者，目的是观察捕捉特定uri引起的数据库的变化，继而做一些相应的处理，类似于数据库中的触发器。<br>　　<strong>流程如下：</strong><br>　　１.　创建ContentObserver派生类，重载onChange()方法处理回调。<br>　　２.　利用context.getContentResolover()　获得ContentResolove对象，调用registerContentObserver()方法去注册<br>　　３.　在不需要使用时（例如验证码获取成功后），调用unregisterContentObserver()取消注册</p>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>　　在我们创建的SmsObserver类中，必须要实现onChange方法，这是一个检测uri是否变化的方法。<br>　　而验证短信发来的时候，会调用两次，第一次的uri会提示raw，此时只是表示短信到了，还没有写入数据库中。而第二次变化的时候才是我们需要接收与检测的，此时才表示短信已经被写入了数据库中。<br>而对于相关验证码的提取，使用正则表达式的方式，获取连续的4个数字（根据自己的需要）。<br>    　另外，在AndroidManifest文件中添加Read_SMS的权限</p>
+<p>相关代码如下：<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.screform.mmd.customview;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> android.content.Context;</span><br><span class="line"><span class="keyword">import</span> android.database.ContentObserver;</span><br><span class="line"><span class="keyword">import</span> android.database.Cursor;</span><br><span class="line"><span class="keyword">import</span> android.net.Uri;</span><br><span class="line"><span class="keyword">import</span> android.os.Handler;</span><br><span class="line"><span class="keyword">import</span> android.util.Log;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.screform.mmd.aty.Aty_Register;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.regex.Matcher;</span><br><span class="line"><span class="keyword">import</span> java.util.regex.Pattern;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Created by lizhongquan on 15-11-18.</span></span><br><span class="line"><span class="comment"> * Class to Observer the sms and notify to setText in editText_IdentifyingCode</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SmsObserver</span> <span class="keyword">extends</span> <span class="title">ContentObserver</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Context context;</span><br><span class="line">    <span class="keyword">private</span> Handler <span class="keyword">handler</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Creates a content observer.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> handler The handler to run &#123;<span class="doctag">@link</span> #onChange&#125; on, or null if none.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SmsObserver</span><span class="params">(Context context, Handler <span class="keyword">handler</span>)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(<span class="keyword">handler</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">this</span>.context = context;</span><br><span class="line">        <span class="keyword">this</span>.<span class="keyword">handler</span> = <span class="keyword">handler</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * code ChangeListener</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> selfChange change or not</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> uri        the uri of event</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">onChange</span><span class="params">(<span class="keyword">boolean</span> selfChange, Uri uri)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onChange(selfChange, uri);</span><br><span class="line"></span><br><span class="line">        Log.d(<span class="string">"info"</span>, <span class="string">"SMS is changed"</span>);</span><br><span class="line">        Log.d(<span class="string">"info"</span>, uri.toString());</span><br><span class="line"></span><br><span class="line">        <span class="comment">// When the sms is coming, it will be change twice.</span></span><br><span class="line">        <span class="comment">// the first time change is not the one we need.</span></span><br><span class="line">        <span class="comment">// The sms is not writed into the database in this time</span></span><br><span class="line">        <span class="keyword">if</span> (uri.toString().equals(<span class="string">"content://sms/raw"</span>)) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// handle the second change</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// get the inboxUri</span></span><br><span class="line">        Uri inboxUri = Uri.parse(<span class="string">"content://sms/inbox"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// query the inbox</span></span><br><span class="line">        <span class="comment">// get the sms</span></span><br><span class="line">        Cursor mCursor = context.getContentResolver().query(inboxUri, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="string">"date desc"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != mCursor) &#123;</span><br><span class="line">            <span class="keyword">if</span> (mCursor.moveToFirst()) &#123;</span><br><span class="line">                String address = mCursor.getString(mCursor.getColumnIndex(<span class="string">"address"</span>));</span><br><span class="line">                String body = mCursor.getString(mCursor.getColumnIndex(<span class="string">"body"</span>));</span><br><span class="line"></span><br><span class="line">                Log.d(<span class="string">"info"</span>, <span class="string">"address is :"</span> + address + <span class="string">", body is "</span> + body);</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (address.equals(<span class="string">"106900321100"</span>)) &#123;</span><br><span class="line">                    <span class="comment">// use a regular expression to resolve and get the identifying code</span></span><br><span class="line">                    <span class="comment">// get the four consecutive numbers</span></span><br><span class="line">                    Pattern pattern = Pattern.compile(<span class="string">"(\\d&#123;4&#125;)"</span>);</span><br><span class="line">                    Matcher matcher = pattern.matcher(body);</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">if</span> (matcher.find())&#123;</span><br><span class="line">                        Log.d(<span class="string">"info"</span>, <span class="string">"Identifying code is "</span> + matcher.group(<span class="number">0</span>));</span><br><span class="line">                        <span class="keyword">handler</span>.obtainMessage(Aty_Register.GETSMS, matcher.group(<span class="number">0</span>))</span><br><span class="line">                                .sendToTarget();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// close mCursor</span></span><br><span class="line">        mCursor.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在Aty_Register.java中：</p>
+<p>initObserver()：<br><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Uri</span> uri = <span class="built_in">Uri</span>.parse(<span class="string">"content://sms"</span>);</span><br><span class="line">smsObserver = <span class="keyword">new</span> SmsObserver(Aty_Register.<span class="keyword">this</span>, handler);</span><br><span class="line">getContentResolver().registerContentObserver(uri, <span class="keyword">true</span>, smsObserver);</span><br></pre></td></tr></table></figure></p>
+<p>onStop()中：　取消注册</p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="function"><span class="keyword">void</span> <span class="title">onStop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onStop();</span><br><span class="line">        getContentResolver().unregisterContentObserver(smsObserver);</span><br><span class="line">        Log.d(<span class="string">"info"</span>, <span class="string">"unregister"</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>handler中：　更新UI</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">case</span> <span class="selector-tag">GETSMS</span>:</span><br><span class="line">      <span class="selector-tag">editText_IdentifyingCode</span><span class="selector-class">.setText</span>(<span class="selector-tag">msg</span><span class="selector-class">.obj</span><span class="selector-class">.toString</span>());</span><br><span class="line">      <span class="selector-tag">break</span>;</span><br></pre></td></tr></table></figure>
+<p>AndroidManifest:</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;uses-permission android:<span class="built_in">name</span>=<span class="string">"android.permission.READ_SMS"</span> /&gt;</span><br></pre></td></tr></table></figure>
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/Android/">Android</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/12/01/引导页_视差显示/" data-tooltip="引导页_视差显示" aria-label="上一篇: 引导页_视差显示">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/11/24/全局变量的处理/" data-tooltip="全局变量的处理" aria-label="下一篇: 全局变量的处理">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2015/11/25/Android自动填写验证码/" title="分享到 Facebook">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2015/11/25/Android自动填写验证码/" title="分享到 Twitter">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2015/11/25/Android自动填写验证码/" title="分享到 Google+">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2018 CytQ. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/12/01/引导页_视差显示/" data-tooltip="引导页_视差显示" aria-label="上一篇: 引导页_视差显示">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/11/24/全局变量的处理/" data-tooltip="全局变量的处理" aria-label="下一篇: 全局变量的处理">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2015/11/25/Android自动填写验证码/" title="分享到 Facebook">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2015/11/25/Android自动填写验证码/" title="分享到 Twitter">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2015/11/25/Android自动填写验证码/" title="分享到 Google+">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+    <i id="btn-close-shareoptions" class="fa fa-close"></i>
+    <ul class="share-options">
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2015/11/25/Android自动填写验证码/">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i><span>分享到 Facebook</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2015/11/25/Android自动填写验证码/">
+                    <i class="fa fa-twitter" aria-hidden="true"></i><span>分享到 Twitter</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2015/11/25/Android自动填写验证码/">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i><span>分享到 Google+</span>
+                </a>
+            </li>
+        
+    </ul>
+</div>
+
+            
+        </div>
+        
+
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <h4 id="about-card-name">CytQ</h4>
+        
+            <div id="about-card-bio"><p>author.bio</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>author.job</p>
+
+            </div>
+        
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-peofhqjkzcghmndknakluequy1y6owxdwpaqyju9ntl9zxnk7rdolb3rjjoj.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+
+
+
+    </body>
+</html>

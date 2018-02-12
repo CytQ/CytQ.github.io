@@ -1,0 +1,475 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hello! CytQ">
+    <title>Json数据的解析_Gson - Hello! CytQ</title>
+    <meta name="author" content="CytQ">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="一些简单的JSON格式解析可以直接使用JSONObject和JSONArray来解析，但是面对比较复杂或者是数据量较大的JSON数据时就需要使用fastJSON和Gson来解析了，这样的效率和效果都更好。">
+<meta name="keywords" content="Android">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Json数据的解析_Gson">
+<meta property="og:url" content="http://imlzq.com/2015/12/07/Json数据的解析_Gson/index.html">
+<meta property="og:site_name" content="Hello! CytQ">
+<meta property="og:description" content="一些简单的JSON格式解析可以直接使用JSONObject和JSONArray来解析，但是面对比较复杂或者是数据量较大的JSON数据时就需要使用fastJSON和Gson来解析了，这样的效率和效果都更好。">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2018-02-12T03:56:47.540Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Json数据的解析_Gson">
+<meta name="twitter:description" content="一些简单的JSON格式解析可以直接使用JSONObject和JSONArray来解析，但是面对比较复杂或者是数据量较大的JSON数据时就需要使用fastJSON和Gson来解析了，这样的效率和效果都更好。">
+    
+    
+        
+    
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-pz4cc6y13wt2trzqa8l3n9v0yykr0sstdaheem7qj628nhjmhp9pfawvqawz.min.css">
+    <!--STYLES END-->
+    
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/ ">Hello! CytQ</a>
+    </div>
+    
+        
+            <a  class="header-right-picture "
+                href="#about">
+        
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/ "
+                            
+                            title="首页"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">首页</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-categories"
+                            
+                            title="分类"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">分类</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-tags"
+                            
+                            title="标签"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">标签</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-archives"
+                            
+                            title="归档"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">归档</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link open-algolia-search"
+                             href="#search"
+                            
+                            title="搜索"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">搜索</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="#about"
+                            
+                            title="关于"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">关于</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/atom.xml"
+                            
+                            title="RSS"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            Json数据的解析_Gson
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time itemprop="datePublished" datetime="2015-12-07T17:05:42+08:00">
+	
+		    12月 07, 2015
+    	
+    </time>
+    
+</div>
+
+    
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <p>一些简单的JSON格式解析可以直接使用JSONObject和JSONArray来解析，但是面对比较复杂或者是数据量较大的JSON数据时就需要使用fastJSON和Gson来解析了，这样的效率和效果都更好。</p>
+<a id="more"></a>
+<p>这里介绍本次项目使用到的Gson解析，fastJSON类似，但是由于如果包含了fastJSON,那么在proguard混淆的时候需要在rule中包含以下内容：<br><figure class="highlight haml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-<span class="ruby">keepattributes Signature     /<span class="regexp">/ 避免混淆泛型</span></span></span><br><span class="line"><span class="ruby">-keepattributes *Annotation*　<span class="regexp">//</span>　不混淆注解</span></span><br></pre></td></tr></table></figure></p>
+<p>如果不包含的话，就会出现以下几个问题：<br>１.　加了符号Annotation的实体属性后，一使用就崩溃<br>２.   当有泛型属性时，一使用就崩溃</p>
+<p>接下来就先总结一下Gson的解析</p>
+<h2 id="GSON-简单解析"><a href="#GSON-简单解析" class="headerlink" title="GSON 简单解析"></a>GSON 简单解析</h2><p>先是解析JSONObject<br><figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">Gson gson</span> = new Gson();</span><br><span class="line"><span class="attribute">Person person</span> = gson.fromJson(response, Person.class);</span><br></pre></td></tr></table></figure></p>
+<p>再是解析JSONArray<br>需要借助TypeToken将期望解析成的数据类型传入fromJson方法<br><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Gson gson = <span class="keyword">new</span> Gson();</span><br><span class="line"><span class="built_in">List</span>&lt;Person&gt; datas = gson.fromJson(response, <span class="keyword">new</span> TypeToken&lt;<span class="built_in">List</span>&lt;Person&gt;&gt;()&#123;&#125;.getType());</span><br></pre></td></tr></table></figure></p>
+<h2 id="GSON-复杂解析"><a href="#GSON-复杂解析" class="headerlink" title="GSON 复杂解析"></a>GSON 复杂解析</h2><p>JSON返回的数据如下：<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"code"</span>:<span class="number">0</span>,<span class="attr">"desc"</span>:<span class="string">"Success"</span>,<span class="attr">"content"</span>:&#123;<span class="attr">"grade"</span>:<span class="number">14</span>,<span class="attr">"signin"</span>:<span class="literal">false</span>,<span class="attr">"room"</span>:<span class="string">""</span>,<span class="attr">"docs"</span>:[&#123;<span class="attr">"id"</span>:<span class="number">331</span>,<span class="attr">"docname"</span>:<span class="string">"[SFTM财务系统改善]成本支付-2.xlsxsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsd.xlsx"</span>,<span class="attr">"pagecnt"</span>:<span class="number">8</span>,<span class="attr">"doctime"</span>:<span class="string">"2015-11-28"</span>&#125;,&#123;<span class="attr">"id"</span>:<span class="number">332</span>,<span class="attr">"docname"</span>:<span class="string">"外勤1.0需求细分列表修改版.docx"</span>,<span class="attr">"pagecnt"</span>:<span class="number">4</span>,<span class="attr">"doctime"</span>:<span class="string">"2015-11-28"</span>&#125;,&#123;<span class="attr">"id"</span>:<span class="number">333</span>,<span class="attr">"docname"</span>:<span class="string">"1.docx"</span>,<span class="attr">"pagecnt"</span>:<span class="number">1</span>,<span class="attr">"doctime"</span>:<span class="string">"2015-11-29"</span>&#125;,&#123;<span class="attr">"id"</span>:<span class="number">334</span>,<span class="attr">"docname"</span>:<span class="string">"要件签字封面（部品单价）.xls"</span>,<span class="attr">"pagecnt"</span>:<span class="number">3</span>,<span class="attr">"doctime"</span>:<span class="string">"2015-11-29"</span>&#125;],<span class="attr">"printer"</span>:[&#123;<span class="attr">"id"</span>:<span class="number">1</span>,<span class="attr">"address"</span>:<span class="string">"5104"</span>&#125;]&#125;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>上面的JSON数据总结一下，也就包含以下几个内容：<br>首先第一层是code, desc,content<br>第二层content中包含以下的内容：grade, signin, room, docs，printer<br>第三层docs中包含以下内容: id, docname, pagecnt, doctime<br>第三层printer中包含以下内容:id, address</p>
+<p>对于这种比较复杂的JSON数据格式的解析，可以分成以下几步来做：</p>
+<ul>
+<li>创建一个实体</li>
+<li>在实体中包含３个属性</li>
+<li>创建一个静态内部类，该类中包含的属性就是content中存在的内容，也就是grade, signin, room, docs，printer。如果content是一个[]，就应该定义为List<doccontent>,如果是{},就定义为DocContent</doccontent></li>
+<li>再在content创建的静态内部类中创建两个静态内部类：Docs和Printer</li>
+</ul>
+<p>总体的效果如下：<br>第一层<br><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">int</span> code;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">String</span> desc;</span><br><span class="line"><span class="keyword">private</span> DocContent content;</span><br></pre></td></tr></table></figure></p>
+<p>第二层</p>
+<figure class="highlight zephir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">DocContent</span> </span>&#123;</span><br><span class="line">	 <span class="keyword">private</span> <span class="keyword">int</span> grade;</span><br><span class="line">     <span class="keyword">private</span> <span class="keyword">Boolean</span> signin;</span><br><span class="line">     <span class="keyword">private</span> String room;</span><br><span class="line">     <span class="keyword">private</span> <span class="keyword">List</span>&lt;Docs&gt; docs;</span><br><span class="line">     <span class="keyword">private</span> <span class="keyword">List</span>&lt;Printer&gt; printer;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第三层<br><figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Docs</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">String</span> docname;</span><br><span class="line">    <span class="keyword">private</span> int pagecnt;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">String</span> doctime;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Printer</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> int id;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">String</span> address;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>当然咯，其中还要包括各种setter和getter方法，只需要注意一点，这里的属性被声明为List是因为这个是一个JSONArray，对于JSONObject只需要直接定义</p>
+<p>完整代码如下：</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">JsonDatas_DocInfo</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getCode</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> code;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setCode</span>(<span class="params"><span class="keyword">int</span> code</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.code = code;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getDesc</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> desc;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDesc</span>(<span class="params">String desc</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.desc = desc;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DocContent <span class="title">getContent</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> content;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setContent</span>(<span class="params">DocContent content</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.content = content;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> code;</span><br><span class="line">    <span class="keyword">private</span> String desc;</span><br><span class="line">    <span class="keyword">private</span> DocContent content;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title">DocContent</span> &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getGrade</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> grade;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setGrade</span>(<span class="params"><span class="keyword">int</span> grade</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.grade = grade;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Boolean <span class="title">getSignin</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> signin;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSignin</span>(<span class="params">Boolean signin</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.signin = signin;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">getRoom</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> room;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setRoom</span>(<span class="params">String room</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.room = room;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> List&lt;Docs&gt; <span class="title">getDocs</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> docs;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDocs</span>(<span class="params">List&lt;Docs&gt; docs</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.docs = docs;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> List&lt;Printer&gt; <span class="title">getPrinter</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> printer;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPrinter</span>(<span class="params">List&lt;Printer&gt; printer</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.printer = printer;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span> grade;</span><br><span class="line">        <span class="keyword">private</span> Boolean signin;</span><br><span class="line">        <span class="keyword">private</span> String room;</span><br><span class="line">        <span class="keyword">private</span> List&lt;Docs&gt; docs;</span><br><span class="line">        <span class="keyword">private</span> List&lt;Printer&gt; printer;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title">Docs</span> &#123;</span><br><span class="line">            <span class="keyword">private</span> <span class="keyword">int</span> id;</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getId</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> id;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setId</span>(<span class="params"><span class="keyword">int</span> id</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">this</span>.id = id;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">public</span> String <span class="title">getDocname</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> docname;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDocname</span>(<span class="params">String docname</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">this</span>.docname = docname;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getPagecnt</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> pagecnt;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPagecnt</span>(<span class="params"><span class="keyword">int</span> pagecnt</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">this</span>.pagecnt = pagecnt;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">public</span> String <span class="title">getDoctime</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> doctime;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDoctime</span>(<span class="params">String doctime</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">this</span>.doctime = doctime;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">private</span> String docname;</span><br><span class="line">            <span class="keyword">private</span> <span class="keyword">int</span> pagecnt;</span><br><span class="line">            <span class="keyword">private</span> String doctime;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title">Printer</span> &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getId</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> id;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setId</span>(<span class="params"><span class="keyword">int</span> id</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">this</span>.id = id;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">public</span> String <span class="title">getAddress</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> address;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAddress</span>(<span class="params">String address</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">this</span>.address = address;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">private</span> <span class="keyword">int</span> id;</span><br><span class="line">            <span class="keyword">private</span> String address;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>调用的方法：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Gson gson = <span class="keyword">new</span> Gson();</span><br><span class="line">JsonDatas_DocInfo jsonDatas_docInfo = gson.fromJson(response, JsonDatas_DocInfo.<span class="keyword">class</span>);</span><br><span class="line"><span class="built_in">List</span>&lt;JsonDatas_DocInfo.DocContent.Docs&gt; docs = jsonDatas_docInfo.getContent().getDocs();</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (docs != <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">for</span> (JsonDatas_DocInfo.DocContent.Docs tempDoc : docs) &#123;</span><br><span class="line">        <span class="keyword">final</span> <span class="built_in">int</span> id = tempDoc.getId();</span><br><span class="line">        <span class="keyword">final</span> <span class="built_in">String</span> docname = tempDoc.getDocname();</span><br><span class="line">        <span class="keyword">final</span> <span class="built_in">int</span> pagecnt = tempDoc.getPagecnt();</span><br><span class="line">        <span class="keyword">final</span> <span class="built_in">String</span> doctime = tempDoc.getDoctime();</span><br><span class="line"></span><br><span class="line">        Log.d(<span class="string">"info"</span>, id + <span class="string">", docname:"</span> + docname + <span class="string">", pagecnt : "</span> +</span><br><span class="line">                pagecnt + <span class="string">", doctime : "</span> + doctime);</span><br><span class="line">        listDocInfo.add(<span class="keyword">new</span> DocInfo(id, docname, pagecnt, doctime));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    handler.sendMessage(msg);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/Android/">Android</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/12/08/ViewPager取消预加载/" data-tooltip="ViewPager取消预加载" aria-label="上一篇: ViewPager取消预加载">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/12/01/手势/" data-tooltip="手势" aria-label="下一篇: 手势">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2015/12/07/Json数据的解析_Gson/" title="分享到 Facebook">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2015/12/07/Json数据的解析_Gson/" title="分享到 Twitter">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2015/12/07/Json数据的解析_Gson/" title="分享到 Google+">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2018 CytQ. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/12/08/ViewPager取消预加载/" data-tooltip="ViewPager取消预加载" aria-label="上一篇: ViewPager取消预加载">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/12/01/手势/" data-tooltip="手势" aria-label="下一篇: 手势">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2015/12/07/Json数据的解析_Gson/" title="分享到 Facebook">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2015/12/07/Json数据的解析_Gson/" title="分享到 Twitter">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2015/12/07/Json数据的解析_Gson/" title="分享到 Google+">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+    <i id="btn-close-shareoptions" class="fa fa-close"></i>
+    <ul class="share-options">
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2015/12/07/Json数据的解析_Gson/">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i><span>分享到 Facebook</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2015/12/07/Json数据的解析_Gson/">
+                    <i class="fa fa-twitter" aria-hidden="true"></i><span>分享到 Twitter</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2015/12/07/Json数据的解析_Gson/">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i><span>分享到 Google+</span>
+                </a>
+            </li>
+        
+    </ul>
+</div>
+
+            
+        </div>
+        
+
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <h4 id="about-card-name">CytQ</h4>
+        
+            <div id="about-card-bio"><p>author.bio</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>author.job</p>
+
+            </div>
+        
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-peofhqjkzcghmndknakluequy1y6owxdwpaqyju9ntl9zxnk7rdolb3rjjoj.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+
+
+
+    </body>
+</html>

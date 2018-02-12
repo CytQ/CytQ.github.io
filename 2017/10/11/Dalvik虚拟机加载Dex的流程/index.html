@@ -1,0 +1,753 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hello! CytQ">
+    <title>Dalvik虚拟机加载Dex的流程 - Hello! CytQ</title>
+    <meta name="author" content="CytQ">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="上篇文章Android脱壳（基于第一代加壳）介绍了如何使用ida pro在运行Dalvik虚拟机的Android4.4手机上脱壳。其中有一个很重要的步骤就是给libdvm.so的_Z21dvmDexFileOpenPartialPKviPP6DvmDex函数下断点，用于确定dex在内存空间中的起始位置和大小，那这篇文章就挖一下Dalvik虚拟机是如何加载dex文件的。  Android源码">
+<meta name="keywords" content="漏洞,Dalvik">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Dalvik虚拟机加载Dex的流程">
+<meta property="og:url" content="http://imlzq.com/2017/10/11/Dalvik虚拟机加载Dex的流程/index.html">
+<meta property="og:site_name" content="Hello! CytQ">
+<meta property="og:description" content="上篇文章Android脱壳（基于第一代加壳）介绍了如何使用ida pro在运行Dalvik虚拟机的Android4.4手机上脱壳。其中有一个很重要的步骤就是给libdvm.so的_Z21dvmDexFileOpenPartialPKviPP6DvmDex函数下断点，用于确定dex在内存空间中的起始位置和大小，那这篇文章就挖一下Dalvik虚拟机是如何加载dex文件的。  Android源码">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2018-02-12T04:21:12.310Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Dalvik虚拟机加载Dex的流程">
+<meta name="twitter:description" content="上篇文章Android脱壳（基于第一代加壳）介绍了如何使用ida pro在运行Dalvik虚拟机的Android4.4手机上脱壳。其中有一个很重要的步骤就是给libdvm.so的_Z21dvmDexFileOpenPartialPKviPP6DvmDex函数下断点，用于确定dex在内存空间中的起始位置和大小，那这篇文章就挖一下Dalvik虚拟机是如何加载dex文件的。  Android源码">
+    
+    
+        
+    
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-pz4cc6y13wt2trzqa8l3n9v0yykr0sstdaheem7qj628nhjmhp9pfawvqawz.min.css">
+    <!--STYLES END-->
+    
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/ ">Hello! CytQ</a>
+    </div>
+    
+        
+            <a  class="header-right-picture "
+                href="#about">
+        
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/ "
+                            
+                            title="首页"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">首页</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-categories"
+                            
+                            title="分类"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">分类</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-tags"
+                            
+                            title="标签"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">标签</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-archives"
+                            
+                            title="归档"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">归档</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link open-algolia-search"
+                             href="#search"
+                            
+                            title="搜索"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">搜索</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="#about"
+                            
+                            title="关于"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">关于</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/atom.xml"
+                            
+                            title="RSS"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            Dalvik虚拟机加载Dex的流程
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time itemprop="datePublished" datetime="2017-10-11T00:00:00+08:00">
+	
+		    10月 11, 2017
+    	
+    </time>
+    
+</div>
+
+    
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <p>上篇文章Android脱壳（基于第一代加壳）介绍了如何使用ida pro在运行Dalvik虚拟机的Android4.4手机上脱壳。其中有一个很重要的步骤就是给libdvm.so的_Z21dvmDexFileOpenPartialPKviPP6DvmDex函数下断点，用于确定dex在内存空间中的起始位置和大小，那这篇文章就挖一下Dalvik虚拟机是如何加载dex文件的。</p>
+<blockquote>
+<p><a href="https://source.android.com/source/downloading" target="_blank" rel="noopener">Android源码</a></p>
+</blockquote>
+<a id="more"></a>    
+<p>##开始</p>
+<p><a href="www.baidu.com">Dalvik虚拟机介绍</a></p>
+<ul>
+<li>Dalvik虚拟机在加载dex之前，会判断本地是否存在odex文件（<a href="www.baidu.com">Dex\ELF文件格式</a>, <a href="www.baidu.com">ODex与Dex比较</a>）</li>
+<li>如果存在，则直接加载odex</li>
+<li>如果不存在，使用dexopt优化dex文件为odex（odex的后缀类型仍然为dex）</li>
+<li>除此之外，dexopt还担任dex的校验功能。它会判断DexHeader中的时间戳和crc校验值，从而判断该dex是否合法（弱校验，可欺骗绕过）</li>
+</ul>
+<p>故从上我们可以知道，在APP运行时dexopt占有很重要的一环，因此，我们只需在dexopt中找到加载dex的那段代码即可跟踪Dalvik虚拟机加载dex的流程。</p>
+<p>dexopt的主函数位于<a href="http://androidxref.com/4.1.1/xref/dalvik/dexopt/OptMain.cpp" target="_blank" rel="noopener">OptMain.cpp</a></p>
+<pre><code>/*
+ * Main entry point.  Decide where to go.
+ */
+int main(int argc, char* const argv[])
+{
+    set_process_name(&quot;dexopt&quot;);
+
+    setvbuf(stdout, NULL, _IONBF, 0);
+
+    if (argc &gt; 1) {
+        if (strcmp(argv[1], &quot;--zip&quot;) == 0)
+            return fromZip(argc, argv);
+        else if (strcmp(argv[1], &quot;--dex&quot;) == 0)
+            return fromDex(argc, argv);
+        else if (strcmp(argv[1], &quot;--preopt&quot;) == 0)
+            return preopt(argc, argv);
+    }
+
+    fprintf(stderr,
+        &quot;Usage:\n\n&quot;
+        &quot;Short version: Don&apos;t use this.\n\n&quot;
+        &quot;Slightly longer version: This system-internal tool is used to\n&quot;
+        &quot;produce optimized dex files. See the source code for details.\n&quot;);
+
+    return 1;
+}
+</code></pre><p>跟踪14行进入fromDex<br>这里面先进行的是一些参数和环境的判断，配置<a href="www.baidu.com">dexOptMode、verifyMode</a>，初始化vm相关环境，然后进入dvmContinueOptimization函数继续接下来的优化过程。</p>
+<pre><code>static int fromDex(int argc, char* const argv[])
+{
+    int result = -1;
+    bool vmStarted = false;
+    char* bootClassPath = NULL;
+    int fd, flags, vmBuildVersion;
+    long offset, length;
+    const char* debugFileName;
+    u4 crc, modWhen;
+    char* endp;
+    bool onlyOptVerifiedDex = false;
+    DexClassVerifyMode verifyMode;
+    DexOptimizerMode dexOptMode;
+
+if (argc &lt; 10) {
+    /* don&apos;t have all mandatory args */
+    ALOGE(&quot;Not enough arguments for --dex (found %d)&quot;, argc);
+    goto bail;
+}
+
+/* skip &quot;--dex&quot; */
+argc--;
+argv++;
+
+/*
+ * Extract the args.
+ */
+GET_ARG(vmBuildVersion, strtol, &quot;bad vm build&quot;);
+if (vmBuildVersion != DALVIK_VM_BUILD) {
+    ALOGE(&quot;DexOpt: build rev does not match VM: %d vs %d&quot;,
+        vmBuildVersion, DALVIK_VM_BUILD);
+    goto bail;
+}
+GET_ARG(fd, strtol, &quot;bad fd&quot;);
+GET_ARG(offset, strtol, &quot;bad offset&quot;);
+GET_ARG(length, strtol, &quot;bad length&quot;);
+debugFileName = *++argv;
+--argc;
+GET_ARG(modWhen, strtoul, &quot;bad modWhen&quot;);
+GET_ARG(crc, strtoul, &quot;bad crc&quot;);
+GET_ARG(flags, strtol, &quot;bad flags&quot;);
+
+ALOGV(&quot;Args: fd=%d off=%ld len=%ld name=&apos;%s&apos; mod=%#x crc=%#x flg=%d (argc=%d)&quot;,
+    fd, offset, length, debugFileName, modWhen, crc, flags, argc);
+assert(argc &gt; 0);
+
+if (--argc == 0) {
+    bootClassPath = strdup(&quot;&quot;);
+} else {
+    int i, bcpLen;
+    char* const* argp;
+    char* cp;
+
+    bcpLen = 0;
+    for (i = 0, argp = argv; i &lt; argc; i++) {
+        ++argp;
+        ALOGV(&quot;DEP: &apos;%s&apos;&quot;, *argp);
+        bcpLen += strlen(*argp) + 1;
+    }
+
+    cp = bootClassPath = (char*) malloc(bcpLen +1);
+    for (i = 0, argp = argv; i &lt; argc; i++) {
+        int strLen;
+
+        ++argp;
+        strLen = strlen(*argp);
+        if (i != 0)
+            *cp++ = &apos;:&apos;;
+        memcpy(cp, *argp, strLen);
+        cp += strLen;
+    }
+    *cp = &apos;\0&apos;;
+
+    assert((int) strlen(bootClassPath) == bcpLen-1);
+}
+ALOGV(&quot;  bootclasspath is &apos;%s&apos;&quot;, bootClassPath);
+
+/* start the VM partway */
+
+/* ugh -- upgrade these to a bit field if they get any more complex */
+if ((flags &amp; DEXOPT_VERIFY_ENABLED) != 0) {
+    if ((flags &amp; DEXOPT_VERIFY_ALL) != 0)
+        verifyMode = VERIFY_MODE_ALL;
+    else
+        verifyMode = VERIFY_MODE_REMOTE;
+} else {
+    verifyMode = VERIFY_MODE_NONE;
+}
+if ((flags &amp; DEXOPT_OPT_ENABLED) != 0) {
+    if ((flags &amp; DEXOPT_OPT_ALL) != 0)
+        dexOptMode = OPTIMIZE_MODE_ALL;
+    else
+        dexOptMode = OPTIMIZE_MODE_VERIFIED;
+} else {
+    dexOptMode = OPTIMIZE_MODE_NONE;
+}
+
+if (dvmPrepForDexOpt(bootClassPath, dexOptMode, verifyMode, flags) != 0) {
+    ALOGE(&quot;VM init failed&quot;);
+    goto bail;
+}
+
+vmStarted = true;
+
+/* do the optimization */
+if (!dvmContinueOptimization(fd, offset, length, debugFileName,
+        modWhen, crc, (flags &amp; DEXOPT_IS_BOOTSTRAP) != 0))
+{
+    ALOGE(&quot;Optimization failed&quot;);
+    goto bail;
+}
+
+result = 0;
+
+bail:
+    /*
+     * In theory we should gracefully shut the VM down at this point.  In
+     * practice that only matters if we&apos;re checking for memory leaks with
+     * valgrind -- simply exiting is much faster.
+     *
+     * As it turns out, the DEX optimizer plays a little fast and loose
+     * with class loading.  We load all of the classes from a partially-
+     * formed DEX file, which is unmapped when we&apos;re done.  If we want to
+     * do clean shutdown here, perhaps for testing with valgrind, we need
+     * to skip the munmap call there.
+     */
+#if 0
+    if (vmStarted) {
+        ALOGI(&quot;DexOpt shutting down, result=%d&quot;, result);
+        dvmShutdown();
+    }
+#endif
+
+    free(bootClassPath);
+    ALOGV(&quot;DexOpt command complete (result=%d)&quot;, result);
+    return result;
+}
+</code></pre><p>而在dvmContinueOptimization函数中，在简单判断dex是否合法之后会将整个dex文件通过<a href="www.baidu.com">mmap</a>映射到内存中，然后重写文件，包括字符的重排序、结构对齐、类验证及字节码优化等，方便对文件进行处理。</p>
+<pre><code>/*
+ * Do the actual optimization.  This is executed in the dexopt process.
+ *
+ * For best use of disk/memory, we want to extract once and perform
+ * optimizations in place.  If the file has to expand or contract
+ * to match local structure padding/alignment expectations, we want
+ * to do the rewrite as part of the extract, rather than extracting
+ * into a temp file and slurping it back out.  (The structure alignment
+ * is currently correct for all platforms, and this isn&apos;t expected to
+ * change, so we should be okay with having it already extracted.)
+ *
+ * Returns &quot;true&quot; on success.
+ */
+bool dvmContinueOptimization(int fd, off_t dexOffset, long dexLength,
+    const char* fileName, u4 modWhen, u4 crc, bool isBootstrap)
+{
+    DexClassLookup* pClassLookup = NULL;
+    RegisterMapBuilder* pRegMapBuilder = NULL;
+
+    assert(gDvm.optimizing);
+
+    ALOGV(&quot;Continuing optimization (%s, isb=%d)&quot;, fileName, isBootstrap);
+
+    assert(dexOffset &gt;= 0);
+
+    /* quick test so we don&apos;t blow up on empty file */
+    if (dexLength &lt; (int) sizeof(DexHeader)) {
+        ALOGE(&quot;too small to be DEX&quot;);
+        return false;
+    }
+    if (dexOffset &lt; (int) sizeof(DexOptHeader)) {
+        ALOGE(&quot;not enough room for opt header&quot;);
+        return false;
+    }
+
+    bool result = false;
+
+    /*
+     * Drop this into a global so we don&apos;t have to pass it around.  We could
+     * also add a field to DexFile, but since it only pertains to DEX
+     * creation that probably doesn&apos;t make sense.
+     */
+    gDvm.optimizingBootstrapClass = isBootstrap;
+
+    {
+        /*
+         * Map the entire file (so we don&apos;t have to worry about page
+         * alignment).  The expectation is that the output file contains
+         * our DEX data plus room for a small header.
+         */
+        bool success;
+        void* mapAddr;
+        mapAddr = mmap(NULL, dexOffset + dexLength, PROT_READ|PROT_WRITE,
+                    MAP_SHARED, fd, 0);
+        if (mapAddr == MAP_FAILED) {
+            ALOGE(&quot;unable to mmap DEX cache: %s&quot;, strerror(errno));
+            goto bail;
+        }
+
+        bool doVerify, doOpt;
+        if (gDvm.classVerifyMode == VERIFY_MODE_NONE) {
+            doVerify = false;
+        } else if (gDvm.classVerifyMode == VERIFY_MODE_REMOTE) {
+            doVerify = !gDvm.optimizingBootstrapClass;
+        } else /*if (gDvm.classVerifyMode == VERIFY_MODE_ALL)*/ {
+            doVerify = true;
+        }
+
+        if (gDvm.dexOptMode == OPTIMIZE_MODE_NONE) {
+            doOpt = false;
+        } else if (gDvm.dexOptMode == OPTIMIZE_MODE_VERIFIED ||
+                   gDvm.dexOptMode == OPTIMIZE_MODE_FULL) {
+            doOpt = doVerify;
+        } else /*if (gDvm.dexOptMode == OPTIMIZE_MODE_ALL)*/ {
+            doOpt = true;
+        }
+
+        /*
+         * Rewrite the file.  Byte reordering, structure realigning,
+         * class verification, and bytecode optimization are all performed
+         * here.
+         *
+         * In theory the file could change size and bits could shift around.
+         * In practice this would be annoying to deal with, so the file
+         * layout is designed so that it can always be rewritten in place.
+         *
+         * This creates the class lookup table as part of doing the processing.
+         */
+        success = rewriteDex(((u1*) mapAddr) + dexOffset, dexLength,
+                    doVerify, doOpt, &amp;pClassLookup, NULL);
+
+        if (success) {
+            DvmDex* pDvmDex = NULL;
+            u1* dexAddr = ((u1*) mapAddr) + dexOffset;
+
+            if (dvmDexFileOpenPartial(dexAddr, dexLength, &amp;pDvmDex) != 0) {
+                ALOGE(&quot;Unable to create DexFile&quot;);
+                success = false;
+            } else {
+                /*
+                 * If configured to do so, generate register map output
+                 * for all verified classes.  The register maps were
+                 * generated during verification, and will now be serialized.
+                 */
+                if (gDvm.generateRegisterMaps) {
+                    pRegMapBuilder = dvmGenerateRegisterMaps(pDvmDex);
+                    if (pRegMapBuilder == NULL) {
+                        ALOGE(&quot;Failed generating register maps&quot;);
+                        success = false;
+                    }
+                }
+
+                DexHeader* pHeader = (DexHeader*)pDvmDex-&gt;pHeader;
+                updateChecksum(dexAddr, dexLength, pHeader);
+
+                dvmDexFileFree(pDvmDex);
+            }
+        }
+
+      ..........
+}
+</code></pre><p>而如果重写成功，则会获取到dex在内存中的实际地址（这个地址由mmap映射的地址和dexoffset偏移量联合确定）。<br>这时就会调用dvmDexFileOpenPartial(const void<em> addr, int len, DvmDex*</em> ppDvmDex)，第一和第二个参数，就是上篇文章提到的dex起始地址和dex长度，它们分别存放在R0和R1寄存器。有了这两个参数，我们就能将dex直接从内存中抠出来。</p>
+<p>##未完待续：继续接下来的加载流程</p>
+
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/Dalvik/">Dalvik</a> <a class="tag tag--primary tag--small t-link" href="/tags/漏洞/">漏洞</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/10/26/Linux 文件基础和mmap/" data-tooltip="Linux文件基础和mmap" aria-label="上一篇: Linux文件基础和mmap">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/02/24/Android重构记录及其模块化/" data-tooltip="Android重构记录及其模块化" aria-label="下一篇: Android重构记录及其模块化">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2017/10/11/Dalvik虚拟机加载Dex的流程/" title="分享到 Facebook">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2017/10/11/Dalvik虚拟机加载Dex的流程/" title="分享到 Twitter">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2017/10/11/Dalvik虚拟机加载Dex的流程/" title="分享到 Google+">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2018 CytQ. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/10/26/Linux 文件基础和mmap/" data-tooltip="Linux文件基础和mmap" aria-label="上一篇: Linux文件基础和mmap">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/02/24/Android重构记录及其模块化/" data-tooltip="Android重构记录及其模块化" aria-label="下一篇: Android重构记录及其模块化">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2017/10/11/Dalvik虚拟机加载Dex的流程/" title="分享到 Facebook">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2017/10/11/Dalvik虚拟机加载Dex的流程/" title="分享到 Twitter">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2017/10/11/Dalvik虚拟机加载Dex的流程/" title="分享到 Google+">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+    <i id="btn-close-shareoptions" class="fa fa-close"></i>
+    <ul class="share-options">
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://imlzq.com/2017/10/11/Dalvik虚拟机加载Dex的流程/">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i><span>分享到 Facebook</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://imlzq.com/2017/10/11/Dalvik虚拟机加载Dex的流程/">
+                    <i class="fa fa-twitter" aria-hidden="true"></i><span>分享到 Twitter</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://imlzq.com/2017/10/11/Dalvik虚拟机加载Dex的流程/">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i><span>分享到 Google+</span>
+                </a>
+            </li>
+        
+    </ul>
+</div>
+
+            
+        </div>
+        
+
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <h4 id="about-card-name">CytQ</h4>
+        
+            <div id="about-card-bio"><p>author.bio</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>author.job</p>
+
+            </div>
+        
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-peofhqjkzcghmndknakluequy1y6owxdwpaqyju9ntl9zxnk7rdolb3rjjoj.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+
+
+
+    </body>
+</html>

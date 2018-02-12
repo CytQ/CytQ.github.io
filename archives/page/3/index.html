@@ -15,7 +15,7 @@
     
     <meta property="og:type" content="blog">
 <meta property="og:title" content="Hello! CytQ">
-<meta property="og:url" content="http://yoursite.com/archives/page/3/index.html">
+<meta property="og:url" content="http://imlzq.com/archives/page/3/index.html">
 <meta property="og:site_name" content="Hello! CytQ">
 <meta property="og:locale" content="zh-cn">
 <meta name="twitter:card" content="summary">
@@ -180,21 +180,21 @@
     <section class="postShorten-group main-content-wrap">
     
     
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
         <div class="postShorten-wrap">
             
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2018/02/11/设计模式_Builder模式/">
-                            (无标题)
+                        <a class="link-unstyled" href="/2016/03/02/MVP 深引用方式的简单实现/">
+                            MVP 深引用方式的简单实现
                         </a>
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-02-11T17:38:39+08:00">
+    <time itemprop="datePublished" datetime="2016-03-02T09:55:05+08:00">
 	
-		    2月 11, 2018
+		    3月 02, 2016
     	
     </time>
     
@@ -202,24 +202,13 @@
 
             </div>
             
-                <div class="postShorten-content" itemprop="articleBody">
-                    <p>Builder模式是一步一步创建一个复杂对象的创建型模式，他允许用户在不知道内部构造细节的情况下，可以更精细地控制对象的构造流程。该模式是为了将一个复杂对象的构建与他的表示分离，使得同样的构建过程可以创建不同的表示。</p>
-<p>使用场景<br>-<br>例如，在创建一个对象时，如果该对象的构造方法需要多个参数，而多个参数势必会增加开发者调用该构造方法时的难度，一两个参数还好，如果说参数有5个，甚至是更多的时候，开发者在调用方法的时候就需要一个个的比对参数的作用，而如果中途构造方法的参数改变了，就需要改动很多个地方，也就是增加了维护及拓展的难度。</p>
-<p>而使用Builder模式，可以直接通过setMethodName()来设置参数，而如果setMethodName()返回的是Builder本身，还可以实现链式创建。这让代码变得更为的清晰，同时也容易维护及拓展。</p>
-<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Builder setName(<span class="keyword">String</span> name) &#123;</span><br><span class="line">	<span class="built_in">this</span>.name = name;</span><br><span class="line">	<span class="keyword">return</span> builder;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> Builder setAge(<span class="keyword">String</span> name) &#123;</span><br><span class="line">	<span class="built_in">this</span>.name = name;</span><br><span class="line">	<span class="keyword">return</span> builder;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> <span class="type">TestBuilder</span>().setName(<span class="string">"haha"</span>).setAge(<span class="number">20</span>);</span><br></pre></td></tr></table></figure>
-<p>上面介绍的这个使用场景是Builder模式使用在创建对象时，在Android中，AlertDialog.Builder就采用了这种方式，具体的各位可以查看一下相关的源码。<br>除了这个使用场景之外，Builder模式也可以用于正常的开发中，不仅仅是构造方法，但是由于它们的思路是一样的，这里就不再赘述，毕竟思想最重要 : )</p>
-<p>额外的<br>-<br>Builder模式可以将一个对象的创建分为必要参数和可选参数，这样也增加了一个组件或者是一个函数的用途。在Builder的构造方法中填入必要的参数，而可选的参数就可以使用setMethodName()这种方法来动态的添加，这在Android中相当重要，可以多使用使用</p>
-
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>每个框架都有各自的使用领域，要根据项目的实际情况合理的选择对应的框架以及设计模式。</p>
                     
+                        <a href="/2016/03/02/MVP 深引用方式的简单实现/" class="postShorten-excerpt_link link">
+                            阅读全文
+                        </a>
                         
-
-                    
-                    
-                        <p>
-                            <a href="/2018/02/11/设计模式_Builder模式/#post-footer" class="postShorten-excerpt_link link">
-                                评论和共享
-                            </a>
-                        </p>
                     
                 </div>
             
@@ -228,21 +217,21 @@
     </article>
     
     
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
         <div class="postShorten-wrap">
             
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2018/02/11/设计模式_原型模式/">
-                            (无标题)
+                        <a class="link-unstyled" href="/2016/02/27/Python学习笔记(四) 多重继承及内部算法解析/">
+                            Python学习笔记(四) 多重继承及内部算法解析
                         </a>
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-02-11T17:38:14+08:00">
+    <time itemprop="datePublished" datetime="2016-02-27T13:23:35+08:00">
 	
-		    2月 11, 2018
+		    2月 27, 2016
     	
     </time>
     
@@ -250,45 +239,13 @@
 
             </div>
             
-                <div class="postShorten-content" itemprop="articleBody">
-                    <p>原型模式： Prototype Module</p>
-<p>顾名思义，这个模式有一个样板实例，用户从这个样板对象中复制出一个内部属性一致的对象，这个过程也就是我们俗称的克隆。被复制的实例就被成为“原型”。</p>
-<p>定义<br>-<br>用原型实例指定创建对象的种类，并通过拷贝这些原型创建新的对象</p>
-<p>使用场景<br>-</p>
-<ol>
-<li>类初始化需要消耗非常多的资源，包括数据，硬件资源，通过原型拷贝可以避免这些消耗</li>
-<li>通过new产生一个对象需要非常繁琐的数据准备或访问权限</li>
-<li>一个对象需要提供给其他对象访问，并且每个调用者可能都需要修改其值时，可以通过保护性原型拷贝拷贝多个对象供调用者使用。</li>
-</ol>
-<p><strong>注意</strong><br>通过实现Cloneable接口的原型模式在调用clone函数构造实例时并不一定比通过new操作速度快，只有当通过new构造对象较为耗时或者是成本较高时，通过clone方法才能获得效率上的提升。</p>
-<p>当然，原型模式除了实现Cloneable接口来实现，同样也存在这其他的实现方式.</p>
-<p>实现<br>-</p>
-<p>##方法一: 实现Cloneable接口##</p>
-<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">import java.awt.List;</span><br><span class="line">import java.util.ArrayList;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">WordDocument</span> <span class="title">implements</span> <span class="title">Cloneable</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> String mText;</span><br><span class="line">	<span class="keyword">private</span> ArrayList&lt;String&gt; mImages = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">WordDocument</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">		System.<span class="keyword">out</span>.println(<span class="string">"执行构造函数"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> ArrayList&lt;String&gt; <span class="title">getImages</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> mImages;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addImages</span>(<span class="params">String img</span>)</span>&#123;</span><br><span class="line">		mImages.<span class="keyword">add</span>(img);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getText</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> mText;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setText</span>(<span class="params">String mText</span>) </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.mText = mText;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">showDocument</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">		System.<span class="keyword">out</span>.println(<span class="string">"-------------文本内容----------"</span>);</span><br><span class="line">		System.<span class="keyword">out</span>.println(<span class="string">"Text : "</span> + mText);</span><br><span class="line">		<span class="keyword">for</span> (String <span class="keyword">string</span> : mImages) &#123;</span><br><span class="line">			System.<span class="keyword">out</span>.println(<span class="string">"image name : "</span> + <span class="keyword">string</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		System.<span class="keyword">out</span>.println(<span class="string">"-------------内容结束----------"</span>);</span><br><span class="line">		System.<span class="keyword">out</span>.println(<span class="string">""</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	@Override</span><br><span class="line">	<span class="function"><span class="keyword">protected</span> WordDocument <span class="title">clone</span>(<span class="params"></span>) throws CloneNotSupportedException </span>&#123;</span><br><span class="line">		WordDocument doc = (WordDocument) super.clone();</span><br><span class="line">		doc.mText = <span class="keyword">this</span>.mText;</span><br><span class="line">		<span class="keyword">return</span> doc;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> PrototypeModule &#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">void</span> main(<span class="built_in">String</span>[] args) &#123;</span><br><span class="line">		WordDocument <span class="built_in">document</span> = <span class="keyword">new</span> WordDocument();</span><br><span class="line">		<span class="built_in">document</span>.setText(<span class="string">"初始文本信息"</span>);</span><br><span class="line">		<span class="built_in">document</span>.addImages(<span class="string">"img1"</span>);</span><br><span class="line">		<span class="built_in">document</span>.addImages(<span class="string">"img2"</span>);</span><br><span class="line">		<span class="built_in">document</span>.addImages(<span class="string">"img3"</span>);</span><br><span class="line">		<span class="built_in">document</span>.showDocument();</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			WordDocument documentClone = <span class="built_in">document</span>.clone();</span><br><span class="line">			System.out.println(<span class="string">"修改text"</span>);</span><br><span class="line">			documentClone.setText(<span class="string">" + 修改文本信息"</span>);</span><br><span class="line">			documentClone.addImages(<span class="string">"增加图片"</span>);</span><br><span class="line">			documentClone.showDocument();</span><br><span class="line">			</span><br><span class="line">			System.out.println(<span class="string">"增加图片"</span>);</span><br><span class="line">			<span class="built_in">document</span>.showDocument();</span><br><span class="line">		&#125; <span class="keyword">catch</span> (CloneNotSupportedException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="http://img.blog.csdn.net/20160316125730134" alt="结果"><br>从结果中可以看出，当我们在被拷贝出来的对象中修改ArrayList中的数据时，原对象的ArrayList数据也改变了，这是因为我们这里使用的方式只是一个浅拷贝，它其实并不是将原始文档的所有字段都重新构造了一份，而是直接将副本文档的字段直接引用原始文档的字段，因此当我们改变副本文档时，原始文档也随着改变了。</p>
-<p><strong>注意</strong><br>为什么我们也修改了text，但是原始文档的值还是没有变化？<br>String类型是一个值类型<br>String指向的对象是一个不可变的对象，String类型的每次变化其实都是创建一个新的对象，之后再将引用指向这个新的对象而已。之前的那个对象其实还是存在的，只是我们不指向它了。<br>如果将String mText更改为StringBuffer mText, setText方法更改为append(text)的话结果就一样了。</p>
-<p>深拷贝<br>-<br>鉴于上面的浅拷贝存在的一些问题，我们可以采用深层拷贝来解决它。之所以会出现修改副本时原本会改变，是因为副本是直接指向原本的引用的。因此，我们只需要在拷贝对象时，对于引用型的字段也采用拷贝的形式，而不是单纯的引用。</p>
-<p>修改如下：<br><figure class="highlight ceylon"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">protected WordDocument clone() <span class="meta">throws</span> CloneNotSupportedException &#123;</span><br><span class="line">	WordDocument <span class="meta">doc</span> = (WordDocument) <span class="keyword">super</span>.clone();</span><br><span class="line">	<span class="meta">doc</span>.mText = <span class="keyword">this</span>.mText;</span><br><span class="line">	<span class="meta">doc</span>.mImages = (ArrayList&lt;String&gt;) <span class="keyword">this</span>.mImages.clone();</span><br><span class="line">	<span class="keyword">return</span> <span class="meta">doc</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>这样的话副本的引用型字段就指向原本字段的拷贝了，而不是它的本身，这样就不会引起连锁反应。<br>而上面的text由于是String类型，是一个值类型，不是引用类型</p>
-<p>实际使用<br>-<br>在Android中，Intent也是使用了一个原型模式。而Intent为什么要使用原型模式呢？就是因为这个Intent和以前的一个Intent在很多地方是一样的，我们只需要更改它的部分信息就可以了，因此先拷贝，再修改，节约资源。而在Intent中，存在一段代码，这段代码也很好的解释了之前总结的那句话：clone方法是要看情况的，需要根据构造对象的成本来决定是clone还是new一个新的。</p>
-<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="function">Object <span class="title">clone</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">new</span> Intent(<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这里并没有使用super.clone()方法来实现对象的拷贝，而是直接new的一个新的，因为考虑到成本的问题</p>
-<p>在Bundle以及OkHttp中也是使用了原型模式，其余使用的地方自己可以多看看，多找找。</p>
-<p>—————————-华丽丽的分割线——————————</p>
-<p>在这里记录一个自己用到的地方吧：<br>在进行登陆操作时，会通过一个session来保存用户的登录信息，而这些信息会在APP模块中调用，比如说登陆失效的判断等等。在登陆时，会先获取一次之前的登录信息，登陆完成后就要从网络上获取一个新的信息，例如登陆的时间存放到session中。<br>而这个时候就可以使用原型模式了，深层拷贝的方法：<br>第一次登陆时使用拷贝出来的副本进行登陆，等网络请求结束，成功获取到当前登陆的服务器时间时就修改原本中的用户信息。</p>
-<p>总结<br>-<br>原型模式使用起来还是挺好的，而具体什么时候使用也是看项目的需求吧，看什么合适就使用什么模式</p>
-
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    <p>Python学习笔记：四</p>
                     
+                        <a href="/2016/02/27/Python学习笔记(四) 多重继承及内部算法解析/" class="postShorten-excerpt_link link">
+                            阅读全文
+                        </a>
                         
-
-                    
-                    
-                        <p>
-                            <a href="/2018/02/11/设计模式_原型模式/#post-footer" class="postShorten-excerpt_link link">
-                                评论和共享
-                            </a>
-                        </p>
                     
                 </div>
             
@@ -297,21 +254,21 @@
     </article>
     
     
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
         <div class="postShorten-wrap">
             
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2018/02/11/设计模式_状态模式/">
-                            (无标题)
+                        <a class="link-unstyled" href="/2016/02/27/Python学习笔记（三）/">
+                            Python学习笔记（三）
                         </a>
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-02-11T17:36:22+08:00">
+    <time itemprop="datePublished" datetime="2016-02-27T00:50:28+08:00">
 	
-		    2月 11, 2018
+		    2月 27, 2016
     	
     </time>
     
@@ -319,34 +276,13 @@
 
             </div>
             
-                <div class="postShorten-content" itemprop="articleBody">
-                    <p>状态模式中的行为是由状态来决定的，不同的状态下有不同的行为。状态模式把对象的行为包装在不同的状态对象里，每一个状态对象都有一个共同的抽象状态基类。意图是让一个对象在其内部状态改变的时候，行为也随之改变。</p>
-<p>使用场景<br>-</p>
-<ol>
-<li>一个对象的行为取决于它的状态，并且它必须在运行时根据状态改变它的行为</li>
-<li>代码中包含大量与对象状态有关的条件语句，例如if-else, switch-case且这些分支依赖于该对象的状态</li>
-</ol>
-<p>状态模式将每一个条件分支放入一个独立的类中，这使得你可以根据对象自身的情况将对象的状态作为一个对象，通过多态来去除过多的if-else</p>
-<p>实现<br>-<br>下面代码主要是实现一个简单的例子，根据人不同的状态（坐着或躺着）来进行不同的动作，其实也就是一个简单的多态实现。<br>创建接口<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">HumanState</span> &#123;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 人坐着时吃饭</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">eat</span>(<span class="params"></span>)</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 人躺着时睡觉</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sleep</span>(<span class="params"></span>)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>实现坐着时的方法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HumanSit</span> <span class="keyword">implements</span> <span class="title">HumanState</span></span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">eat</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"开始吃饭"</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sleep</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="comment">// 不做任何操作或者是提示用户当前状态不符</span></span><br><span class="line">		System.out.println(<span class="string">"我在吃饭，不能睡觉"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>实现躺着时的方法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HumanLie</span> <span class="keyword">implements</span> <span class="title">HumanState</span></span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">eat</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="comment">// 不做任何操作或者提示用户状态不符</span></span><br><span class="line">		System.out.println(<span class="string">"我在睡觉，不能吃饭"</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sleep</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"开始睡觉"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>创建改变状态接口<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public<span class="built_in"> interface </span>HumanStateControl &#123;</span><br><span class="line">	public void changeIntoSit();</span><br><span class="line">	public void changeIntoLie();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>创建控制人物行为的类<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HumanControl</span> <span class="keyword">implements</span> <span class="title">HumanStateControl</span></span>&#123;</span><br><span class="line">	<span class="comment">// 人默认是坐着的</span></span><br><span class="line">	HumanState humanState = <span class="keyword">new</span> HumanSit();</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setHumanState</span><span class="params">(HumanState humanState)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.humanState = humanState;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">changeIntoSit</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		setHumanState(<span class="keyword">new</span> HumanSit());</span><br><span class="line">		System.out.println(<span class="string">"坐起来啦"</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">changeIntoLie</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		setHumanState(<span class="keyword">new</span> HumanLie());</span><br><span class="line">		System.out.println(<span class="string">"躺下啦"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">eat</span><span class="params">()</span></span>&#123;</span><br><span class="line">		humanState.eat();</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sleep</span><span class="params">()</span></span>&#123;</span><br><span class="line">		humanState.sleep();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>测试<br><figure class="highlight pony"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">TestModule</span> &#123;</span></span><br><span class="line"></span><br><span class="line">	public static void main(<span class="type">String</span>[] args) &#123;</span><br><span class="line">		<span class="type">HumanControl</span> humanControl = <span class="function"><span class="keyword">new</span> <span class="title">HumanControl</span>();</span></span><br><span class="line"><span class="function">		</span></span><br><span class="line"><span class="function">		<span class="title">humanControl</span>.<span class="title">changeIntoSit</span>();</span></span><br><span class="line"><span class="function">		<span class="title">humanControl</span>.<span class="title">eat</span>();</span></span><br><span class="line"><span class="function">		<span class="title">humanControl</span>.<span class="title">sleep</span>();</span></span><br><span class="line"><span class="function">		</span></span><br><span class="line"><span class="function">		<span class="title">humanControl</span>.<span class="title">changeIntoLie</span>();</span></span><br><span class="line"><span class="function">		<span class="title">humanControl</span>.<span class="title">eat</span>();</span></span><br><span class="line"><span class="function">		<span class="title">humanControl</span>.<span class="title">sleep</span>();</span></span><br><span class="line"><span class="function">	&#125;</span></span><br><span class="line"><span class="function">&#125;</span></span><br></pre></td></tr></table></figure></p>
-<p>由于结果是很显而易见的，这里就不贴出来了。<br>而从上面的流程来看，对于一个小的项目来说，这样的操作确实很繁琐，因为要编写很多的接口以及相关的controller类，但是对于一个中型或者是大型的需要考虑维护性和拓展性的项目来说，这种方式在编写的时候就简洁多了。如果不使用状态模式，那么我们在TestModule的Main方法中就必须要添加一大堆的if-else条件判断，少量的还好，但是如果一旦判断过多，以后维护和拓展时是要死人的。</p>
-<p>实用场景<br>-<br>Android中一个很典型的使用了状态模式的地方就是Wifi管理。具体的可以看一下它的源码，内容有点多，就不赘述了，这里只是简单分析一下大概：<br>在wifi管理的状态中，状态存在一个层级关系，树型的，当前状态只能转换上一个状态或者是下一个状态，不能够跨越转换，这里面存在一个状态转换规则。从这里面我们也可以学习到，以后自己编的时候也可以注意一下状态的转换关系，根据项目的需要判断是否可以跨越式转换，如果不可以的话，就一定要制定好相应的状态转换规则。</p>
-<p>总结<br>-<br>状态模式其实还是挺常用的，根据用户的状态去产生不同的用户行为，代码可维护性和可拓展性都大大的提升，也避免的代码的膨胀（if-else等）。<br>缺点也倒是听明显的，对于一些小的项目来说，用处不是特别大，因为状态模式肯定会增加系统类和对象的个数</p>
-
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    <p>Python学习笔记：三</p>
                     
+                        <a href="/2016/02/27/Python学习笔记（三）/" class="postShorten-excerpt_link link">
+                            阅读全文
+                        </a>
                         
-
-                    
-                    
-                        <p>
-                            <a href="/2018/02/11/设计模式_状态模式/#post-footer" class="postShorten-excerpt_link link">
-                                评论和共享
-                            </a>
-                        </p>
                     
                 </div>
             
@@ -355,21 +291,21 @@
     </article>
     
     
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
         <div class="postShorten-wrap">
             
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2018/02/11/JVM原理及底层探索/">
-                            (无标题)
+                        <a class="link-unstyled" href="/2016/02/26/Python学习笔记(二)  装饰器decorator/">
+                            Python学习笔记(二)  装饰器decorator
                         </a>
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-02-11T17:35:06+08:00">
+    <time itemprop="datePublished" datetime="2016-02-26T22:26:45+08:00">
 	
-		    2月 11, 2018
+		    2月 26, 2016
     	
     </time>
     
@@ -377,83 +313,13 @@
 
             </div>
             
-                <div class="postShorten-content" itemprop="articleBody">
-                    <p>JVM是Java程序运行的环境，但是他同时也是一个操作系统的一个应用程序的一个进程，因此JVM也有他自己的运行生命周期，也有自己的代码和数据空间。</p>
-<p>JDK<br>-<br>JDK在Java的整个体系中充当一个生产加工中心，产生所有的数据输出，是所有指令和战略的执行中心。本身还提供了Java的完整方案，可以开发目前Java能支持的所有应用和系统程序。而之所以现在还会分j2me，j2ee这些类，是把他们用来简化各自领域内的开发和构建过程。JDK除了JVM之外，还有一些核心的API，用户工具，技术等等。</p>
-<p>而JVM在JDK中就处于最底层的位置，负责操作系统的交互，用来屏蔽操作系统环境，提供一个完整的Java运行环境，也就是一个虚拟计算机。</p>
-<p>GC（垃圾回收）<br>-<br>Java堆的描述如下：<br><img src="http://hi.csdn.net/attachment/201201/6/0_1325814932X3Ts.gif" alt="这里写图片描述"><br>内存由Perm和Heap组成。<br>JVM内存模型中分两大块，其实在垃圾回收的算法中，有一个方法就是分代垃圾回收（这个在下面的时候我会归纳一下）。而JVM这里也就是一个分代的原理。一块是新生代，一块是老一代。在老一代里面，存放的东西都是应用程序生命周期较长的内存对象（老一代嘛），而新生代里面存放东西的生命周期就要短一些了（因此在垃圾回收算法中可以根据不同代的特点来指定不同的回收方案）。</p>
-<p>在新生代中，有一个叫Eden（圣经中伊甸园的意思，这样看名字就可以猜出它大概的意思及作用了吧）的空间来存放新生的对象，还有两个Survivor Spaces它们是用来存放每次垃圾回收后存活下来的对象。</p>
-<p>还有个Permanent Generation Space, 是指内存的永久保存区域，而一般出现OOM的时候，就是内存溢出了。而为什么会溢出呢？是因为Class在被Load的时候被放入该区域，它和存放Instance的Heap区域不同,GC不会在主程序运行期对PermGen space进行清理，所以如果你的APP会LOAD很多CLASS的话,就很可能出现PermGen space错误。<br>它其实就是一个方法区，里面主要存放了两种信息。</p>
-<blockquote>
-<p>1.Class的节本信息<br>Package Name<br>Super class package name<br>Class or interface<br>Type modifiers<br>Super inferface package name<br>2.其它信息<br>The constant pool for the type<br>Field information<br>Method information<br>All class (static) variables declared<br>in the type, except constants<br>A reference to class ClassLoader<br>A reference to class Class</p>
-</blockquote>
-<p><strong>常见的溢出</strong></p>
-<ol>
-<li><p>OLD段溢出<br>这种内存溢出是最常见的情况之一，产生的原因可能是：<br>1) 设置的内存参数过小(ms/mx, NewSize/MaxNewSize)<br>2) 程序问题<br>单个程序持续进行消耗内存的处理，如循环几千次的字符串处理，对字符串处理应建议使用StringBuffer。此时不会报内存溢出错，却会使系统持续垃圾收集，无法处理其它请求，单个程序所申请内存过大，有的程序会申请几十乃至几百兆内存，此时JVM也会因无法申请到资源而出现内存溢出。<br>当Java对象使用完毕后，其所引用的对象却没有销毁，使得JVM认为他还是活跃的对象而不进行回收，这样累计占用了大量内存而无法释放。</p>
-</li>
-<li><p>Perm段溢出<br>通常由于Perm段装载了大量的类而导致溢出，目前的解决办法：就是增加它的空间。</p>
-</li>
-<li><p>C Heap溢出<br>系统对C Heap没有限制，故C Heap发生问题时，Java进程所占内存会持续增长，直到占用所有可用系统内存</p>
-</li>
-<li>其他：<br>JVM有2个GC线程。第一个线程负责回收Heap的NEW区。第二个线程在Heap不足时，遍历Heap，将NEW区升级为Older区。Older区的大小等于-Xmx减去-Xmn，不能将-Xms的值设的过大，因为第二个线程被迫运行会降低JVM的性能。</li>
-</ol>
-<p>为什么一些程序频繁发生GC？有如下原因：</p>
-<ol>
-<li>程序内调用了System.gc()或Runtime.gc()。</li>
-<li>一些中间件软件调用自己的GC方法，此时需要设置参数禁止这些GC。</li>
-<li>Java的Heap太小，一般默认的Heap值都很小。</li>
-<li>频繁实例化对象，Release对象。此时尽量保存并重用对象，例如使用StringBuffer和String。</li>
-</ol>
-<p>如果每次GC后，Heap的剩余空间会是总空间的50%，这表示你的Heap处于健康状态。许多Server端的Java程序每次GC后最好能有65%的剩余空间。</p>
-<p>注意：</p>
-<ol>
-<li>增加Heap的大小虽然会降低GC的频率，但也增加了每次GC的时间。并且GC运行时，所有的用户线程将暂停，也就是GC期间，Java应用程序不做任何工作。</li>
-<li>Heap大小并不决定进程的内存使用量。进程的内存使用量要大于-Xmx定义的值，因为Java为其他任务分配内存，例如每个线程的Stack等。</li>
-<li>每个线程都有他自己的Stack,Stack的大小限制着线程的数量。如果Stack过大就好导致内存溢漏</li>
-<li>硬件环境也影响GC的效率，例如机器的种类，内存，swap空间，和CPU的数量。如果你的程序需要频繁创建很多transient对象，会导致JVM频繁GC。这种情况你可以增加机器的内存，来减少Swap空间的使用</li>
-</ol>
-<p>垃圾回收<br>-<br>在新生代块中，垃圾回收一般用Copying的算法，速度快。每次GC的时候，存活下来的对象首先由Eden拷贝到某个Survivor Space, 当Survivor Space空间满了后, 剩下的live对象就被直接拷贝到老一代中。因此，每次GC后，Eden内存块会被清空。在老一代中，垃圾回收一般用mark-compact（标记-整理）算法，它的内存占用少，速度慢。<br>垃圾回收分多级，0级为全部(Full)的垃圾回收，会回收OLD段中的垃圾；1级或以上为部分垃圾回收，只会回收NEW中的垃圾，内存溢出通常发生于OLD段或Perm段垃圾回收后，仍然无内存空间容纳新的Java对象的情况。</p>
-<p>##什么情况下触发垃圾回收##<br>   由于对象进行了分代处理，因此垃圾回收区域、时间也不一样。GC有两种类型：Scavenge GC 和 Full GC<br>   Scavenge GC<br>    一般情况下，当新对象生成，并且在Eden申请空间失败时，就会触发Scavenge GC，对Eden区域进行GC，清除非存活对象，并且把尚且存活的对象移动到Survivor区。然后整理Survivor的两个区。这种方式的GC是对年轻代的Eden区进行，不会影响到老一代。因为大部分对象都是从Eden区开始的，同时Eden区不会分配的很大，所以Eden区的GC会频繁进行。因而，一般在这里需要使用速度快、效率高的算法，使Eden区能尽快空闲出来。<br>    Full GC<br>    对整个堆进行整理，包括年轻代，老一代和持久代。Full GC 因为需要对整个堆进行回收，所以比 Scavenge GC 要慢，因此应该尽可能减少 Full GC 的次数。在对JVM调优的过程中，很大一部分工作就是对于 Full GC 的调节。</p>
-<p>   有如下原因可能导致Full GC:<br>    . 老一代被写满<br>    . 持久代被写满<br>    . System.gc()被显式调用<br>    . 上一次GC之后Heap的各域分配策略动态变化</p>
-<p>##JVM如何判断一个对象为垃圾##<br>这个时候就要考虑JVM什么时候才把一个对象当成垃圾了，常用的有以下几种方法：</p>
-<p><strong>引用计数器算法</strong></p>
-<p>定义： 引用计数器算法是给每个对象设置一个计数器，当有地方引用这个对象的时候，计数器+1，当引用失效的时候，计数器-1，当计数器为0的时候，JVM就认为对象不再被使用，是“垃圾”了。</p>
-<p>优缺点：引用计数器实现简单，效率高；但是不能解决循环引用问问题（A对象引用B对象，B对象又引用A对象，但是A,B对象已不被任何其他对象引用），同时每次计数器的增加和减少都带来了很多额外的开销，所以在JDK1.1之后，这个算法已经不再使用了。</p>
-<p><strong>根搜索方法</strong><br>根搜索方法是通过一些“GC Roots”对象作为起点，从这些节点开始往下搜索，搜索通过的路径成为引用链（Reference Chain），当一个对象没有被GC Roots的引用链连接的时候，说明这个对象是不可用的。</p>
-<p>GC Roots对象包括：</p>
-<p>a) 虚拟机栈（栈帧中的本地变量表）中的引用的对象。<br>b) 方法区域中的类静态属性引用的对象。<br>c) 方法区域中常量引用的对象。<br>d) 本地方法栈中JNI（Native方法）的引用的对象。</p>
-<p>##垃圾回收算法##</p>
-<p><strong>一、按回收策略来分可分为三种</strong></p>
-<p><strong>标记-清除法（Mark-Sweep）</strong><br>标记清除法分为两个阶段，一个是标记，另一个是清除。<br>在标记阶段，确定所有要回收的对象，并作标记<br>在清除阶段，将所有标记了的对象清除。它的操作是紧跟标记阶段的</p>
-<p>缺点：<br>标记和清除阶段的效率不高，而且清除后回产生大量的不连续空间，这样当程序需要分配大内存对象时，可能无法找到足够的连续空间。</p>
-<p><strong>复制算法（Coping）</strong><br>复制算法是把内存分为大小相等的两块，每次使用其中的一块，当垃圾回收的时候，把存货的对象复制到另一块上，然后把这段内存清除掉。</p>
-<p>复制算法实现简单，运行效率高，但是由于每次只能使用其中的一半，造成内存的利用率不高。现在的JVM用复制方法收集新生代，由于新生代中大部分对象（98%）都是朝生夕死的，所以两块内存的比例不是1:1(大概是8:1)。复制算法完成后会形成连续的空间。</p>
-<p><strong>标记整理算法（Mark-Compact）</strong><br>标记-整理算法和标记-清除算法一样，但是标记-整理算法是把存活的对象直接向内存的一端移动，然后把超过边界的内存直接清除。</p>
-<p>标记整理算法提高了内存的利用率，适用于收集存货时间较长的老一代。这种算法完成之后也会是连续的内存空间</p>
-<p><strong>二、按分区对待的方式来分可分为两种</strong></p>
-<p><strong>分代收集</strong><br>这个就是根据对象的存活时间，分为老一代（存活时间上）和新一代（存活时间短），然后根据不同的年代来采用不同的算法。老一代采用标记整理算法，新一代采用复制算法。<br>在Java程序运行的过程中，会产生大量的对象，其中有些对象是与业务信息相关，比如Http请求中的Session对象、线程、Socket连接，这类对象跟业务直接挂钩，因此生命周期比较长。<br>但是还有一些对象，主要是程序运行过程中生成的临时变量，这些对象生命周期会比较短，比如：String对象，由于其不变类的特性，系统会产生大量的这些对象，有些对象甚至只用一次即可回收。</p>
-<p><strong>增量收集</strong><br>它又被称为实时垃圾回收算法。即：在应用进行的同时进行垃圾回收。</p>
-<p><strong>三、按系统线程可分为三种</strong></p>
-<p><strong>串行收集</strong><br>串行收集使用单线程处理所有垃圾回收工作，因为无需多线程交互，实现容易，而且效率比较高。但是，其局限性也比较明显，即无法使用多处理器的优势，所以此收集适合单处理器机器。当然，此收集器也可以用在小数据量（100M左右）情况下的多处理器机器上。</p>
-<p><strong>并行收集</strong><br>并行收集使用多线程处理垃圾回收工作，因而速度快，效率高。而且理论上CPU数目越多，越能体现出并行收集器的优势。（串型收集的并发版本，需要暂停jvm） 并行paralise指的是多个任务在多个cpu中一起并行执行，最后将结果合并。效率是N倍。</p>
-<p><strong>并发收集</strong><br>相对于串行收集和并行收集而言，前面两个在进行垃圾回收工作时，需要暂停整个运行环境，而只有垃圾回收程序在运行，因此，系统在垃圾回收时会有明显的暂停，而且暂停时间会因为堆越大而越长。（和并行收集不同，并发只有在开头和结尾会暂停jvm）并发concurrent指的是多个任务在一个cpu伪同步执行，但其实是串行调度的，效率并非直接是N倍。</p>
-<p>四种GC<br>-<br>第一种为单线程GC,也是默认的GC，适用于单CPU的机器<br>第二种为多线程GC，适用于多CPU，使用大量线程的程序。这跟第一种是类似的，这种GC在回收NEW区时是多线程的，但是在回收OLD区是跟第一种一样的，仍然采用单线程。<br>第三种为Concurrent Low Pause GC，类似于第一种，适用于多CPU，并要求缩短因GC造成程序停滞的时间。这种GC可以在Old区的回收同时，运行应用程序<br>第四种第四种为Incremental Low Pause GC，适用于要求缩短因GC造成程序停滞的时间。这种GC可以在Young区回收的同时，回收一部分Old区对象。</p>
-<p>##JVM操作cpu与内存交互的工作原理##</p>
-<p>在C/C++中，它们的工作原理是<br>先将语句转化为汇编，<br>再把汇编转换为二进制数据传给CPU，<br>cpu通过控制总线来控制cpu的地址总线寻找内存地址,数据总线传送数据到内存单元中。获得数据实现与内存的交互。</p>
-<p>而在Java这一块来说的话，编译成.class文件（它是一个字节码文件）之后，这个时候cpu就相当于可以和他进行交互了，而jvm就负责在中间这一块去识别它。如果照上面的C/C++的逻辑来说，.class可以理解为cpu可以理解的语言了（JVM负责翻译）。</p>
-<p>-—————————————————–<br>现在发现了几个很好的资源，记录一下，以后看看，传送门：<a href="http://bbs.csdn.net/topics/390251794" target="_blank" rel="noopener">http://bbs.csdn.net/topics/390251794</a></p>
-<p>这个是介绍了happen-before以及其他重要内容的资源：<a href="http://ifeve.com/java-concurrent-hashmap-1/" target="_blank" rel="noopener">http://ifeve.com/java-concurrent-hashmap-1/</a></p>
-
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    <p>Python学习笔记：二</p>
                     
+                        <a href="/2016/02/26/Python学习笔记(二)  装饰器decorator/" class="postShorten-excerpt_link link">
+                            阅读全文
+                        </a>
                         
-
-                    
-                    
-                        <p>
-                            <a href="/2018/02/11/JVM原理及底层探索/#post-footer" class="postShorten-excerpt_link link">
-                                评论和共享
-                            </a>
-                        </p>
                     
                 </div>
             
@@ -462,21 +328,21 @@
     </article>
     
     
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
         <div class="postShorten-wrap">
             
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2018/02/11/Android推送（长连接）探索/">
-                            (无标题)
+                        <a class="link-unstyled" href="/2016/02/26/Python学习笔记(一)　高阶函数，偏函数，闭包/">
+                            Python学习笔记(一)　高阶函数，偏函数，闭包
                         </a>
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-02-11T17:34:30+08:00">
+    <time itemprop="datePublished" datetime="2016-02-26T22:12:18+08:00">
 	
-		    2月 11, 2018
+		    2月 26, 2016
     	
     </time>
     
@@ -484,52 +350,13 @@
 
             </div>
             
-                <div class="postShorten-content" itemprop="articleBody">
-                    <p>android推送的方式存在几种，包括轮询，长连接等方式，由于其他的方式用户体验并不是特别好（耗电或者是消耗资源），所以现在大部分的推送都使用的是socket长连接的方式。</p>
-<p>集成Android的推送服务<br>-<br>现在的第三方可推送的平台特别多，以前用过的就是极光推送，友盟的，好像mob也有一个，具体的集成方法这里就不介绍了，需要的话请自行到对应官网去查看对应API。当然如果项目有需要的话，也完全可以自己实现推送服务，这个时候就要注意处理心跳包了（具体的请见下文）。这篇文章主要探索Android推送底层的一些处理及细节。</p>
-<p>长连接<br>-</p>
-<p>##运作方式##<br>客户端在与服务器建立了TCP连接之后，客户端定时向服务器发送心跳包确认，有消息的时候，服务器直接通过这个已经建立好的TCP连接通知客户端。<br>而正所谓长连接，就是大家建立连接之后不主动断开，双方互相发送数据，发完了也不主动断开连接，之后有需要发送的数据就继续通过这个连接发送。</p>
-<p>##TCP的三次握手##<br>既然总结到了TCP,就顺带总结一下TCP的三次握手和四次挥手吧。</p>
-<p><img src="http://hi.csdn.net/attachment/201108/7/0_1312718352k8l6.gif" alt=""></p>
-<p>这是TCP的三次握手，也就是通过这三次握手，让客户端与服务器建立一个连接，该连接理论上是永远不会断的，但其底层存在一个保活协议（默认为2小时），如果到了指定的时间检测到客户端死了，服务器就会关闭掉与该客户端的连接。也由于保活协议默认的时间太长（2个小时），也就诞生出了心跳包的概念，用于定时检测客户端是否还是活着的，如果死了就立刻关闭掉当前客户端的连接，节省服务器的带宽资源。</p>
-<p>首先，客户端会发送一个包给服务器，服务器接收到了之后就会把当前服务器的一个状态码+1（用于区分，之后会讲到），之后服务器发送SYN包给客户端，此时服务器的状态改变，准备建立连接。客户端接收到服务器发过来的SYN包时，向服务器发送一个确认包，表明我知道了，当服务器接受到这个包的时候，就会检测当前的状态码（第一次+1的那个状态码）是否对应，因为有可能在第一次握手的时候存在一个超时的情况，客户端的包迟迟没有发到服务器（例如网络阻塞），而之前没有发到服务器的包却有可能在本次操作的时候发到了，所以就需要检测状态码是否对应，用于区分发过来的包到底是不是客户端第二次发来的包。最后就进入到连接建立的状态。</p>
-<p>TCP的四次挥手<br>-<br>四次挥手是用于客户端与服务器断开连接的</p>
-<p><img src="http://hi.csdn.net/attachment/201108/7/0_1312718564tZXD.gif" alt=""></p>
-<p>1、客户端的应用简称先向其TCP发出连接释放报文段，并停止再发送数据，主动关闭TCP连接，客户端把连接释放报文段首部的种植控制为置为1，然后进入到终止等待1状态，等待服务器的确认<br>2、服务器收到连接释放报文段后即发出确认，之后进入到关闭等待状态。而TCP服务器进程这个时候就会通知高层的应用进程，从而让客户端到服务器这个方向的连接被释放掉，这个时候的TCP连接处于一个半关闭状态（即客户端没有数据要发送了，但是服务器如果要发送数据，客户端仍然要接受，也就是服务器到客户端的连接未关闭），客户端在收到来自服务器的确认之后，就进入终止等待2状态，等待服务器发出的连接释放报文段。<br>3、如果服务器已经没有了要向客户端发送的数据，其应用进程就会通知TCP释放连接，之后服务器进入最后确认状态，等待客户端的确认<br>4、客户端在收到服务器的连接释放报文段后，就必须对此发出确认，之后进入到时间等待状态，此时的TCP连接仍然没有被释放掉，必须要经过时间等待计时器设置的时间2MSL后，客户端才进入到关闭状态。MSL被称为最长报文段寿命，可根据工程的实际情况来进行设定（RFC建议设置为2分钟但对于现在的网络来说可能过长），而经过了2MSL（以4分钟为例）之后，就进入到了关闭状态，才能开始建立下一个新的连接。</p>
-<p>之所以要经过2MSL的时间才能关闭是因为以下两个原因：</p>
-<ul>
-<li>可以保证客户端发送的最后一个报文段能够到达服务器，最后的这个报文段有可能丢失，因此服务器在没收到的情况下会超时重传一次第三步的报文，而客户端就又会收到这个报文段，之后再重传，同时重新等待2MSL</li>
-<li>用于防止上一个失效的链接请求报文段出现在本连接中。客户端在发送完最后一个报文段后，经过时间2MSL，就可以让本连接持续的时间内所产生的所有报文段都从网络中消失，这样就可以使下一个新的连接不会出现这种旧的连接请求报文段。</li>
-</ul>
-<p>连接中断的情况<br>-<br>由于现在我们使用的是手机，因此我们的网络状态在很多时候都不是稳定的，就很有可能会导致连接被切断（切断后就需要再次建立连接），比如说NAT设备超时（路由器就是一个NAT设备），网络状态切换，DHCP的租期等等。</p>
-<p>心跳包<br>-<br>这里推荐一篇文章，<a href="http://mp.weixin.qq.com/s?__biz=MzAwNDY1ODY2OQ==&amp;mid=207243549&amp;idx=1&amp;sn=4ebe4beb8123f1b5ab58810ac8bc5994&amp;scene=4#wechat_redirect" target="_blank" rel="noopener">Android微信智能心跳方案</a></p>
-<p>心跳包，顾名思义，就是用于判断当前的客户端是否还有心跳（也就是是否还活着），如果没有心跳了，服务器就会关闭掉这个连接，用于节省带宽。</p>
-<p>在一个正常的情况下，服务器会面对很多个连接。而一旦这个连接建立之后，是不会主动断开的，就会一直占据到服务器的资源，而很有可能过了一段时间之后有的连接就已经失效了，就可以释放掉该连接，而之后如果客户端需要再连接的时候重新建立连接就好了。</p>
-<p>而这里有个点是很重要的，如果客户端心跳间隔是固定的，那么服务器就会在连接闲置超过这个时间还没收到心跳时，可以认为对方掉线，关闭连接。如果客户端心跳会动态改变，例如在微信的心跳方案中的话，就应该在服务器设置一个最大值，超过最大值如果还没收到就认为对方掉线。</p>
-<p>同时服务器通过TCP连接主动给客户端发消息出现写超时的时候，也可以直接认为对方掉线了。</p>
-<p>而之所以在这一小段中提到<a href="http://mp.weixin.qq.com/s?__biz=MzAwNDY1ODY2OQ==&amp;mid=207243549&amp;idx=1&amp;sn=4ebe4beb8123f1b5ab58810ac8bc5994&amp;scene=4#wechat_redirect" target="_blank" rel="noopener">Android微信智能心跳方案</a>，是因为对于整个心跳包来说，理论是比较简单的，而重要的是这个心跳时间间隔的设定。<br>发送心跳包势必要先唤醒设备, 然后才能发送, 如果唤醒设备过于频繁, 或者直接导致设备无法休眠, 会大量消耗电量, 而且移动网络下进行网络通信, 比在wifi下耗电得多. 所以这个心跳包的时间间隔应该尽量的长, 最理想的情况就是根本没有NAT超时, 这也就是网上常说的长连接, 慢心跳.</p>
-<p>而超时的这个情况肯定是不能避免的了，这个时候就可以参看一下上面的那篇心跳方案，它是关于如何让心跳间隔逼近NAT超时的间隔，同时自动适应NAT超时间隔的变化。</p>
-<p>设备休眠<br>-</p>
-<blockquote>
-<p>首先Android手机有两个处理器，一个叫Application Processor（AP），一个叫Baseband Processor（BP）。AP是ARM架构的处理器，用于运行Linux+Android系统；BP用于运行实时操作系统（RTOS），通讯协议栈运行于BP的RTOS之上。非通话时间，BP的能耗基本上在5mA左右，而AP只要处于非休眠状态，能耗至少在50mA以上，执行图形运算时会更高。另外LCD工作时功耗在100mA左右，WIFI也在100mA左右。一般手机待机时，AP、LCD、WIFI均进入休眠状态，这时Android中应用程序的代码也会停止执行。</p>
-<p>Android为了确保应用程序中关键代码的正确执行，提供了Wake Lock的API，使得应用程序有权限通过代码阻止AP进入休眠状态。但如果不领会Android设计者的意图而滥用Wake Lock API，为了自身程序在后台的正常工作而长时间阻止AP进入休眠状态，就会成为待机电池杀手。比如前段时间的某应用，比如现在仍然干着这事的某应用。</p>
-<p>网上有说使用AlarmManager，因为AlarmManager 是Android 系统封装的用于管理 RTC 的模块，RTC (Real Time Clock) 是一个独立的硬件时钟，可以在 CPU 休眠时正常运行，在预设的时间到达时，通过中断唤醒 CPU。</p>
-</blockquote>
-<p>尤其需要注意的一点就是：如果不进行特别的设置，Android会在一定时间后屏幕变暗，在屏幕变暗后约几分钟，CPU也会休眠，大多数的程序都会停止运行，从而节省电量。而CPU休眠的话就存在一个很严重的问题了，很有可能你设置的一些程序会由于CPU休眠而无法执行，例如Timer和TimerTask，这个时候就可以使用系统的AlarmService来执行轮询。因为虽然系统让机器休眠，节省电量，但并不是完全的关机，系统有一部分优先级很高的程序还是在执行的，比如闹钟，利用AlarmService可以定时启动自己的程序，让cpu启动,执行完毕再休眠。</p>
-<p>而对于Socket来说，同样也存在一个很严重的问题，当屏幕关了几分钟之后连接会被断开，但实际上网络又是连通的，这是因为CPU休眠了，此时就可以设置一个PARTIAL_WAKE_LOCK来保持CPU不休眠。（这是从网上找的一种解决方案，可能会有更优）</p>
-<p>最后再补充一句，小米的MIUI系统对于原生的系统改动太大，很多地方可能需要根据该系统的情况来设定指定的方案，说多了都是泪~</p>
-<p>参考<br>-<br><a href="http://www.cnblogs.com/kobe8/p/3819305.html" target="_blank" rel="noopener">android设备休眠</a><br><a href="http://mp.weixin.qq.com/s?__biz=MzAwNDY1ODY2OQ==&amp;mid=207243549&amp;idx=1&amp;sn=4ebe4beb8123f1b5ab58810ac8bc5994&amp;scene=4#wechat_redirect" target="_blank" rel="noopener">Android微信智能心跳方案</a><br><a href="http://www.jianshu.com/p/584707554ed7" target="_blank" rel="noopener">Android推送技术研究</a><br><a href="http://www.cnblogs.com/hanyonglu/archive/2012/03/04/2378971.html" target="_blank" rel="noopener">Android实现推送方式解决方案</a></p>
-
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    <p>Python学习笔记：一</p>
                     
+                        <a href="/2016/02/26/Python学习笔记(一)　高阶函数，偏函数，闭包/" class="postShorten-excerpt_link link">
+                            阅读全文
+                        </a>
                         
-
-                    
-                    
-                        <p>
-                            <a href="/2018/02/11/Android推送（长连接）探索/#post-footer" class="postShorten-excerpt_link link">
-                                评论和共享
-                            </a>
-                        </p>
                     
                 </div>
             
@@ -538,21 +365,21 @@
     </article>
     
     
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
         <div class="postShorten-wrap">
             
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2018/02/11/Rxjava原理探索：切换线程，变换/">
-                            (无标题)
+                        <a class="link-unstyled" href="/2016/02/26/Go语言学习笔记（一）：Linux下的安装与配置/">
+                            Go语言学习笔记（一）：Linux下的安装与配置
                         </a>
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-02-11T17:33:59+08:00">
+    <time itemprop="datePublished" datetime="2016-02-26T15:37:47+08:00">
 	
-		    2月 11, 2018
+		    2月 26, 2016
     	
     </time>
     
@@ -560,41 +387,13 @@
 
             </div>
             
-                <div class="postShorten-content" itemprop="articleBody">
-                    <p>在之前的几篇博客中，我编写了一篇有关<a href="http://blog.csdn.net/jonstank2013/article/details/50366109" target="_blank" rel="noopener">Rxjava学习笔记</a>的，还有一个是<a href="http://blog.csdn.net/jonstank2013/article/details/50574871" target="_blank" rel="noopener">RxJava使用示例（一）： 实现Rxbus代替eventbus</a>（这篇博文其实还不算完善，因为没有对被观察者发出的时间进行一个筛选，一次发送所有订阅者都会收到，这样不太好，可以再新加一个筛选器，等以后有空或者是遇到的时候再来改一改，现在不急）。</p>
-<p>之前在写那边Rxjava学习笔记的时候，就突出了一点是只涉及使用，不涉及原理，现在就对Rxjava的原理进行一个简单的探索。</p>
-<p>从整体来看<br>-<br>Rxjava属于一种扩展性的观察者模式，里面的四个基本概念是：Observable (可观察者，即被观察者)、 Observer (观察者)、 subscribe (订阅)、事件。Observable 和 Observer 通过 subscribe() 方法实现订阅关系，从而 Observable 可以在需要的时候发出事件来通知 Observer。<br><img src="http://7xn2zf.com1.z0.glb.clouddn.com/rxjavarxjava_4_d.gif" alt=""><br>另外有一点是需要注意的，也是Rxjava很重要的一个特性，里面的onError方法，只要是发生错误的话就一定会被处理，所以可以将一些错误处理的代码直接写在onError中。</p>
-<p>还有一点就是，Rxjava跟普通的观察者模式的区别在于如果observable没有任何Observer的话是不会发出任何事件的。</p>
-<p>Observable负责在发生什么事件或者是订阅的对应条件产生时，就会发送事件去通知Observer，而具体的如何操作是有Observer接收到之后自己处理的，也就是说Observable只负责发，其余的处理由Observer自己来处理。</p>
-<p>变化的原理<br>-<br>在Rxjava中存在flatMap以及Map，他们可以将一些指定的要发送的对象类型转换为另一个需要的对象类型，而这一个在Rxjava中是如何实现的呢？下面是我自己的一些理解，可能会有错误或偏差，欢迎指点。</p>
-<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 这是摘自扔物线的精简后的lift代码</span></span><br><span class="line"><span class="keyword">public</span> &lt;R&gt; Observable&lt;R&gt; lift(Operator&lt;? extends R, ? <span class="keyword">super</span> T&gt; operator) &#123;</span><br><span class="line">    <span class="keyword">return</span> Observable.create(<span class="keyword">new</span> <span class="type">OnSubscribe</span>&lt;R&gt;() &#123;</span><br><span class="line">        @Override</span><br><span class="line">        <span class="keyword">public</span> void call(Subscriber subscriber) &#123;</span><br><span class="line">            Subscriber <span class="keyword">new</span><span class="type">Subscriber</span> = operator.call(subscriber);</span><br><span class="line">            <span class="keyword">new</span><span class="type">Subscriber</span>.onStart();</span><br><span class="line">            onSubscribe.call(<span class="keyword">new</span><span class="type">Subscriber</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>代码中存在一个lift()方法，这个方法就是flatMap以及Map能够转换对象类型的关键。这里就只总结一下思路：<br>通过这个lift方法会创建一个新的observable，这个observable里面包含一个新的OnSubscribe，一个新的subscriber。</p>
-<blockquote>
-<p>当用户调用经过 lift() 后的 Observable 的 subscribe() 的时候，使用的是新的 Observable<br>于是它所触发的 onSubscribe.call(subscriber)，也是用的新 Observable 中的新<br>OnSubscribe。  而这个新 OnSubscribe 的 call() 方法中的 onSubscribe ，就是指的原始<br>Observable 中的原始 OnSubscribe ，在这个 call() 方法里，新 OnSubscribe 利用<br>operator.call(subscriber) 生成了一个新的 Subscriber（Operator 就是在这里，通过自己的<br>call() 方法将新 Subscriber 和原始 Subscriber 进行关联，并插入自己的『变换』代码以实现变换），然后利用这个新<br>Subscriber 向原始 Observable 进行订阅。</p>
-</blockquote>
-<p>也就是说，原始的onSubscribe方法会发送数据发送到这个新的Subscriber中，而在这个新的Subscriber中会对数据进行一个处理，处理完成之后再发送给目标订阅者，也就是最原始的observer。而至于为什么要先发送数据到一个新的subscriber中，上面也提到过了，observable只管发，数据的处理是在subscriber中处理，这样分工明确。而当新的这个观察者处理完数据之后，再转发给原始的观察者。</p>
-<p>线程切换<br>-<br>最开始我接触到Rxjava有三个原因：<br>第一个是代码的简洁度，链式。<br>第二个是响应式框架，观察者模式。<br>第三个就是它是一个异步的框架，线程切换功能极其强大，可任意指定观察者发生的线程以及被观察者的线程，随意调整极其强大（观察者发生的线程只能更改一次，被观察的可以随意切换）。</p>
-<p>而之前也是一直都很好奇它的这个切换的流程是怎么样的，为什么只能观察者发生的线程只能更改一次而被观察的可以随意切换多次？</p>
-<p>##切换的流程##<br>线程的切换其实也是使用了上面介绍到的lift方法，被观察者切换线程使用observeOn()，观察者切换线程使用subscriberOn(),可切换为多种线程，例如主线程，IO线程，新线程等等，具体的可以查看我的第一篇Rxjava博文，<a href="http://blog.csdn.net/jonstank2013/article/details/50366109" target="_blank" rel="noopener">Rxjava学习笔记</a>。</p>
-<p><strong>observeOn()</strong><br><img src="http://7xn2zf.com1.z0.glb.clouddn.com/rxjavarxjava_11.png" alt=""><br>在lift方法后，会创建一个新onSubscribe和一个新的subscriber。新的onSubscribe会通知原始的onSubscribe，原始的在收到通知后就会把信息发送到新的subscriber中，而这个时候如果设置了切换线程的话就会发生切换线程的操作</p>
-<p><strong>subscribeOn()</strong><br><img src="http://7xn2zf.com1.z0.glb.clouddn.com/rxjavarxjava_10.png" alt="subscribeOn() 原理图"></p>
-<p>而subscribeOn()方法就不同了，它切换线程的位置是在新onSubscribe通知原始onSubscribe之前，这也就导致了如果设置了多个切换线程操作始终只有有第一个subscribeOn()方法切换成功，因为它切换线程是在整个的流程发生之前，而当第二个subscribeOn()方法调用时它已经是处于整个流程之中了，因此就无法设置多个。而observeOn()则不同，它的线程切换是发生在流程之中的，所以多个切换是被允许的。</p>
-<p>##疑问##<br>总结到了这里，我产生了一个疑问，subscribeOn切换观察者的线程为什么要设置在整个流程之前而为什么observeOn方法会设置到整个流程之间？这个应该是创造者指定的一个规则吧，但是我很好奇为什么要这样设置。</p>
-<p>————————————————— 更新<br>通过在stackOverFlow以及知乎上提问获得了想要的答案：</p>
-<blockquote>
-<p>我的理解是subscribeOn是影响生产者（Observable）生产数据的线程的，通常我们只需要指定生产者在某一个特定的线程生产数据就可以满足我们的需求，至少我还没遇到过需要在生产数据的过程中去切换生产者所在的线程的情况。绝大多数我们需要变化线程的场景都是在数据生产之后，Rx里面就使用observeOn来指定各种operator和subcriber的线程，因为这些本质上都是数据的消费者。消费者可以任意切换自己接受处理数据的线程，足以满足我们的需求。<br>作者：hi大头鬼hi</p>
-</blockquote>
-
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    <h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><p><a href="https://golang.org/dl/" target="_blank" rel="noopener">https://golang.org/dl/</a> 进入这个网址，选择对应的版本进行下载，需要翻墙。</p>
                     
+                        <a href="/2016/02/26/Go语言学习笔记（一）：Linux下的安装与配置/" class="postShorten-excerpt_link link">
+                            阅读全文
+                        </a>
                         
-
-                    
-                    
-                        <p>
-                            <a href="/2018/02/11/Rxjava原理探索：切换线程，变换/#post-footer" class="postShorten-excerpt_link link">
-                                评论和共享
-                            </a>
-                        </p>
                     
                 </div>
             
@@ -603,21 +402,21 @@
     </article>
     
     
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
         <div class="postShorten-wrap">
             
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2018/02/11/个人知识点总结——Java并发/">
-                            (无标题)
+                        <a class="link-unstyled" href="/2016/02/24/总结及梳理：Fragment/">
+                            总结及梳理：Fragment
                         </a>
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-02-11T17:33:05+08:00">
+    <time itemprop="datePublished" datetime="2016-02-24T15:46:13+08:00">
 	
-		    2月 11, 2018
+		    2月 24, 2016
     	
     </time>
     
@@ -625,104 +424,14 @@
 
             </div>
             
-                <div class="postShorten-content" itemprop="articleBody">
-                    <p>Java并发实在是一个很深的问题，这里只简单记录一下Java并发的知识点。水太深，如果不花大量的时间感觉完全hold不住，但是目前的精力完全不够，兴趣也不在这</p>
-<p>什么是线程安全性<br>-</p>
-<blockquote>
-<p>某个类的行为和其规范完全一致<br>当多个线程访问某个类时，不管运行时环境采用何种调度方式或者这些线程将如何交替执行，并且在主调代码中不需要任何额外的同步或协同，这个类都能表现出正确的行为，那么就称这个类是线程安全的</p>
-</blockquote>
-<p>原子操作(Atomic Operation)<br>-<br>原子操作是指不会被线程调度机制打断的操作，这种操作一旦开始，就会一直运行到结束，中间不会有任何的上下文切换，它是不可分割的。</p>
-<p>举一个常见的例子：a++，这个操作就不是一个原子性的操作，那么在多个线程访问调用的时候，a的最终结果就很有可能不是我们的预期值。因为实际上a++这个操作可以分为已下三步：获取a的值，更新a的值，写回a的值。</p>
-<p>缓存一致性<br>-<br>在共享内存的多处理器体系架构中，每个处理器都拥有自己的缓存，并且定期地与主内存进行协调，在不同的处理器架构中提供了不同级别的缓存一致性。</p>
-<p>这个缓存一致性可以通过volatile关键字来加深理解。</p>
-<p>Volatile关键字<br>-<br>Volatile是一种较弱的同步机制，用来确保将变量的更新操作通知到其他线程，当把变量声明为volatile类型后，编译器与运行时都会注意到这个变量是共享的，因此不会将该变量上的操作一起重排序。volatile变量不会被缓存在寄存器或者对其他处理器不可见的地方，因此在读取volatile类型的变量时总会返回最新写入的值。<br>但是有一点是需要注意的，被volatile修饰的变量的的操作也应该是原子性的，不然同样会出先问题。<br>例如：</p>
-<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Volatile</span> <span class="built_in">int</span> a = <span class="number">0</span><span class="comment">;</span></span><br><span class="line"></span><br><span class="line">// 非原子性操作，使用<span class="keyword">volatile</span>不能保证同步，改用Synchronized</span><br><span class="line">a++<span class="comment">;</span></span><br></pre></td></tr></table></figure>
-<p>而为什么Volatile能够实现这种功能呢？<br>这个要从它的实现原理说起，在x86处理器下通过工具获取JIT编译器生成的汇编指令来看Volatile的写操作实际上做了什么吧。</p>
-<figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0x01a3de1d</span>: movb $0x0,<span class="number">0x1104800</span>(%esi);</span><br><span class="line"><span class="number">0x01a3de24</span>: lock addl $0x0,(%esp);</span><br></pre></td></tr></table></figure>
-<p>有Volatile变量修饰的共享变量进行写操作的时候会多第二行代码，lock指令修饰。<br>而lock指令会做什么事呢？</p>
-<ul>
-<li>将当前处理器缓存行的数据写回到系统内存</li>
-<li>该写回内存的操作会引起在其他CPU里缓存了该内存地址的数据无效</li>
-</ul>
-<p>在上面介绍缓存一致性的时候提到了，在共享内存的多处理器体系架构中，每个处理器都拥有自己的缓存，并且定期地与主内存进行协调，在不同的处理器架构中提供了不同级别的缓存一致性。<br>那么这个时候也就有了下面的事情：<br>处理器为了提高处理速度，不直接和内存进行通讯，而是先将系统内存的数据读到内部缓存中再进行操作，但操作完成后不确定什么时候会写回到内存，如果对声明了Volatile变量进行些操作，JVM就会向处理器发送一条Lock前缀的指令，将这个变量所在缓存行的数据写回到系统内存。而由于缓存一致性协议，每个处理器会通过嗅探在总线上传播的数据在来检查自己缓存的值是不是国旗了，当处理器发现自己缓存行对应的内存地址被修改，就会将当前处理器的缓存行设置为无效状态。当处理器要对这个数据进行修改操作的时候，就会强制从系统内存中重新读取数据到处理器缓存里。<br>这也就是Volatile实现的原理。</p>
-<p>重排序<br>-<br>刚才上面总结到了重排序的概念，那什么是重排序呢？</p>
-<p>简单的理解就是，当程序在执行的时候，如果JVM认为两行代码之间的结果互不影响，那么在执行的过程中可能就会产生一个乱序的结果。<br>例如：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">a = <span class="number">3</span>; </span><br><span class="line">b = <span class="number">4</span>;</span><br></pre></td></tr></table></figure></p>
-<p>正常情况下我们会觉得a = 3肯定是比b=4先执行的，因为它在b的上面，但是实际上并不是这样，因为b的运行结果并不依赖上一行a的结果，因此JVM就能够对两行代码进行一个重排序，可能a先执行，也可能b先执行</p>
-<p><strong>为什么要采用重排序？</strong><br>重排序通常是编译器或运行时环境为了优化程序性能而采取的。它可以分为两类：编译器重排序和运行时重排序。</p>
-<p>顺序一致性模型：理想的模型是，各种指令执行的顺序是唯一且有序的，这个顺序就是它们被编写在代码中的顺序，与处理器或其他因素无关</p>
-<p>顺序一致性模型的缺点：效率过低</p>
-<p>编译器重排序的典型就是通过调整指令顺序，在不改变程序语义的前提下，尽可能的减少寄存器的读取、存储次数、充分服用寄存器的存储值。</p>
-<p>假设第一条指令计算一个值赋给变量A并存放在寄存器中，第二条指令与A无关但需要占用寄存器（假设它将占用A所在的那个寄存器），第三条指令使用A的值且与第二条指令无关。那么如果按照顺序一致性模型，A在第一条指令执行过后被放入寄存器，在第二条指令执行时A不再存在，第三条指令执行时A重新被读入寄存器，而这个过程中，A的值没有发生变化。通常编译器都会交换第二和第三条指令的位置，这样第一条指令结束时A存在于寄存器中，接下来可以直接从寄存器中读取A的值，降低了重复读取的开销。</p>
-<p>并发时的乱序问题<br>-<br>上面总结的重排序可以引起乱序，同样的，在并发时对局部变量进行操作也有可能会产生乱序的问题。因为在每个线程中都拥有一个独立的栈，也就是独立的线程空间，当它运行时，会从主内存中读取该变量的值并存放到自己的线程栈中，对变量操作完成后就会把值写回主内存空间。<br>但是这里就有一个问题了，那就是变量的写回操作发生的时间并不能够确定。就算是线程A比线程B先读取数据，仍然有可能线程B先把值写回主内存，最终同样会造成一个得到的结果并不是我们想要的值。</p>
-<p>Happens-before（先行发生）<br>-<br>Java内存模型（JMM）为程序中所有的操作定义了一个偏序关系，称之为Happens-before。如果想要保证执行操作B的线程看到操作A的结果（无论A和B是否在同一个线程中执行），那么在A和B之间必须满足Happens-Before关系。如果两个操作时间缺乏Happens-Before关系，那么JVM可以对它们任意地重排序。</p>
-<p>当一个变量被多个线程读取并且至少被一个线程写入时，如果在读写操作之间没有按照Happens-Before来排序，那么就会产生数据竞争的问题。</p>
-<p>Happens-Before规则包括：</p>
-<ul>
-<li><strong>程序顺序规则</strong>：如果程序中操作A在操作B之前，那么在线程中A操作将在B操作之前执行</li>
-<li><strong>监视器锁规则</strong>：在监视器锁上的解锁操作必须在同一个监视器锁上的加锁操作之前执行</li>
-<li><strong>volatile变量规则</strong>：对volatile变量的写入操作必须在对该变量的读操作之前执行</li>
-<li><strong>线程启动规则</strong>：在线程上对Thread.Start的调用必须在该县城中执行任何操作之前执行</li>
-<li><strong>线程结束规则</strong>：县城中的任何操作都必须在其他线程检测到该线程已经结束之前执行，或者在Thread.join中成功返回，或者在调用THread.isAlive时返回false</li>
-<li><strong>中断规则</strong>：当一个线程在另一个线程上调用interrupt时，必须在被中断线程检测到interrupt调用之前执行</li>
-<li><strong>终结器规则</strong>：对象的构造函数必须在启动终结器之前执行</li>
-<li><strong>传递性</strong>：操作A在B之前，B在C之前，那么A就必须在C之前执行</li>
-</ul>
-<p>例如线程A：y=1 -》 lock M -》 x=1 -》unlock M<br>线程B： lock M -》 i=x -》 unlock M -》 j=y</p>
-<p>当两个线程使用同一个锁进行同步时，在它们之间的happens-Before关系就是：A的unlock M执行完成之后才能执行B的lock M方法，如果这两个线程是在不同的锁上进行同步的，那么就不能推断它们之间的动作顺序，因为在这两个线程的操作之间并不存在Happens-Before关系</p>
-<p>Lock / Synchronized / ReentrantLock（独占锁 / 悲观锁）<br>-<br><strong>Synchronized</strong><br>内置锁，当它用来修饰一个方法或者一个代码块的时候，能够保证在同一时刻最多只有一个线程执行该段代码，另一个线程必须等待当前线程执行完这个代码快以后才能执行该代码块（未执行之前，该线程被阻塞）。同时，它也是一个可重入锁（Lock均可重入）</p>
-<p>但是这里有一个很关键的地方：当一个线程访问object的一个synchronized(this)同步代码块时，另一个线程仍然可以访问该object中的非synchronized(this)同步代码块。</p>
-<p>之前在单例模式中总结到了双重检查锁定模式，但是由于双重检查锁定模式在一定情况下存在很严重的Bug，就没有在该博客中写出。这里就对双重检查锁定模式进行一个分析</p>
-<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="function">Singleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">        <span class="keyword">if</span> (singleton == <span class="keyword">null</span>) &#123;    </span><br><span class="line">            <span class="keyword">synchronized</span> (Singleton.class) &#123;    </span><br><span class="line">               <span class="keyword">if</span> (singleton == <span class="keyword">null</span>) &#123;    </span><br><span class="line">                  singleton = <span class="keyword">new</span> Singleton();   </span><br><span class="line">               &#125;    </span><br><span class="line">            &#125;    </span><br><span class="line">        &#125;    </span><br><span class="line">        <span class="keyword">return</span> singleton;   </span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<p>因为在new Singleton()的过程中，实际上是可以分为很多步的，可大致分为三件事情：</p>
-<ul>
-<li>给Singleton的实例分配内存</li>
-<li>调用Singleton的构造函数，初始化字段</li>
-<li>将singleton对象指向分配的内存空间（singleton != null）</li>
-</ul>
-<p>但是，Java编译器是允许处理器乱序执行的，所有有可能让第二步和第三步乱序执行，也就是说如果在第二步被乱序（安排到了最后一步执行），当他还没执行的时候切换到了线程B，这个时候就会因为singleton已经不为null而直接跳出if判断，这样的话在我们以后的代码运行过程中使用的就是一个未经构造函数初始化的一个对象。<strong>【现在好像有在JDK层面有改进因此可以正常使用，具体的不清楚，以后再修改】</strong></p>
-<p><strong>Lock</strong></p>
-<p>Lock是一个接口，它里面主要包含了下面的几个方法：<br>P.S.源码里的注释太多，这里就不贴了<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">lock</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">lockInterruptibly</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">tryLock</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">tryLock</span><span class="params">(<span class="keyword">long</span> time, TimeUnit unit)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">unlock</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function">Condition <span class="title">newCondition</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure></p>
-<p>Lock它与内置加锁机制不同，它提供的是一种无条件的、可轮训的、定时的以及可中断的锁获取操作，所有的加锁和解锁的方法都是显式的。</p>
-<p>一句话总结：Synchronized算是Lock的简化版本，功能比之较少但是在程序执行完成后会自动释放锁，而Lock必须手动释放锁</p>
-<p><strong>ReentrantLock</strong><br>ReentrantLock它实现了Lock接口，并提供了与synchronized相同的互斥性和内存可见性。<br>那为什么还要提供一种机制跟内置锁十分相似的新加锁机制呢？<br>因为内置锁在一定情况下存在局限性，例如无法中断一个正在等待获取锁的进程，或者无法在请求获取一个锁时无限地等待下去，；无法实现非阻塞结构的加锁规则。</p>
-<p>而在ReentrantLock中，它可以实现轮询锁、定时锁、中断锁等多种加锁方式，这也让它的应用场景变的更多。</p>
-<p>同时在性能上：如果有越多的资源被耗费在锁的管理和调度上，那么应用程序得到的资源就越少。锁的实现方式越好，就需要越少的系统调用和上下文切换，并且在共享内存总线上的内存同步通信量也越少。<br>在Java5中，ReentrantLock的性能比内置锁高了很多，但是在Java6中内置锁采取了一种类似与ReentrantLock中使用的算法来管理内置锁，有效地提高了可伸缩性，因此在Java6中，它们的吞吐量就非常接近了。</p>
-<p>在公平性上，ReentrantLock可以创建一个非公平锁（默认）也可以创建一个公平锁。<br>公平锁：线程按照发出请求的顺序来获得锁（先到先得，不准插队）<br>非公平锁：当一个线程请求非公平锁时，如果在发出请求的同时该锁的状态变为可用，那么就跳过队列中所有的等待队列立刻获得锁（也就是允许插队。申请的时候锁为可用状态就直接获取）</p>
-<p>而对于公平锁和非公平锁来说，它们的效率也是显而易见的：<br>公平性将由于在挂起线程和恢复线程时存在的开销而极大的降低效率。<br>而非公平性由于是在请求时锁已经为可用状态就直接获取，不需要进行什么额外的操作，因此效率更高。<br>实际上：确保被阻塞的线程能最终获得锁就已经够用了，并且实际开销也小很多。</p>
-<p>当在一个激烈竞争的情况下，恢复一个被挂起的线程与这个线程真正开始运行之间存在着严重的延迟，这样的话就影响了效率。而如果我们采用非公平锁（也就是ReentrantLock的默认方式），线程A释放锁时，B被唤醒然后尝试获取锁，与此同时C也请求这个锁，那么C很有可能会在B被完全唤醒之前获得、使用以及释放这个锁。也就有可能会造成B获得锁的时刻并没有推迟，C也更早的获得了锁</p>
-<p>那什么时候应该使用公平锁呢？<br>当持有锁的时间相对较长，或者请求锁的平均时间间隔较长，那么就应该使用公平锁。</p>
-<p><strong>在Synchronize和ReentrantLock中如何选择</strong><br>上面总结了这么多，好像ReentrantLock的优点比Synchronize好太多，那为什么不直接取消掉Synchronize呢？我们自己该怎么选择呢？</p>
-<p>Synchronize很重要的几个优点就是：</p>
-<ul>
-<li>无需手动释放锁，程序自动完成。如果在使用Lock的过程中忘记在finally中释放锁，那么虽然代码表面上能正式运行，但是实际上已经出了大问题，还有可能伤到其他代码。所以一般仅仅是在做一些内置锁不能完成的需求时才考虑使用ReentrantLock，例如中断锁、轮询锁等等</li>
-<li>调试的问题：Synchronized在线程存储中能够给出在哪些调用帧中获得了哪些锁，并能够检测和识别发生死锁的进程。而ReentrantLock它只是一个对象，JVM不知道哪些线程持有这个。</li>
-</ul>
-<p>非阻塞同步机制（乐观锁）<br>-<br>加锁机制始终会存在一个挂起唤醒的操作，如果有多个线程同时请求锁，那么JVM就需要借助操作系统的功能，而在挂起和恢复线程等过程中存在着很大的开销，并且通常存在着较长时间的中断。如果在竞争激烈的时候，调度开销与工作开销的比值会非常高。</p>
-<p>此外，如果一个线程正在等待锁时，它不能做任何其他事情，同时如果被阻塞线程的优先级较高，而持有锁的线程优先级较低，那么问题更严重，也就是发生了优先级反转。即：高优先级的线程必须等到低优先级的线程释放锁，从而导致它的优先级会降低至低优先级线程的级别。</p>
-<p>而最近的很多并发算法研究都侧重于非阻塞同步的机制，例如：Lock-free算法</p>
-<p>Lock-free算法（无锁）<br>-<br>这个算法中主要使用到了一个CAS机制（Compare and swap），它包含了3个值，需要读写的内存位置V，需要进行比较的值A， 要写入的新值B。<br>它的原理就是：</p>
-<blockquote>
-<p>当且仅当V的值等于A时，CAS才会通过原子方式用新值B来更新V的值，否则不执行任何操作</p>
-</blockquote>
-<p>而当多个线程常识使用CAS同时更新同一个变量时，只有其中一个线程能更新变量的值，而其他的线程都将失败。但是失败的线程并不会被挂起，而是被告知在这次竞争中失败，并可以尝试再次尝试。由于一个线程在竞争CAS时失败不会阻塞，因此它可以决定是否重新尝试，或者执行一些恢复操作，再或者不执行任何操作，这种灵活性就大大减少了与锁相关的活跃性风险。</p>
-<p>结语<br>-<br>并发的水实在太深，不花精力实在难以hold住，这里简单记录一下Java并发的知识点</p>
-<p>参考<br>-</p>
-<ul>
-<li>《Java并发编程实战》</li>
-<li><a href="http://ifeve.com/volatile/" target="_blank" rel="noopener">聊聊并发系列博客</a></li>
-<li><a href="http://www.jb51.net/article/49699.htm" target="_blank" rel="noopener">JAVA中JVM的重排序详细介绍</a> ——也就是Java中为什么要使用重排序</li>
-</ul>
-
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Fragment，中文译为碎片。被设计为在一定程度上可代替activity部分功能的组件（但是必须依赖于某一activity）。较之于Activity来说，Fragment更为轻量级，也可以适应不同平板和手机的分辨率，实现响应式UI。这也是谷歌比较推崇的一种方式-&gt;一个Activity对应多个fragment来构建app。 虽然现在fragment存在着许多的坑，但是在一定程度上是一种趋势吧（PS：虽然现在有很多开发者表示自己不用fragment， 因为坑太多）。</p>
+<p>在这里就对fragment的相关知识点进行一个简单的总结及梳理。</p>
                     
+                        <a href="/2016/02/24/总结及梳理：Fragment/" class="postShorten-excerpt_link link">
+                            阅读全文
+                        </a>
                         
-
-                    
-                    
-                        <p>
-                            <a href="/2018/02/11/个人知识点总结——Java并发/#post-footer" class="postShorten-excerpt_link link">
-                                评论和共享
-                            </a>
-                        </p>
                     
                 </div>
             
@@ -731,21 +440,21 @@
     </article>
     
     
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
         <div class="postShorten-wrap">
             
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2018/02/11/Android重构记录及其模块化/">
-                            (无标题)
+                        <a class="link-unstyled" href="/2016/01/24/RxJava使用示例：实现Rxbus代替eventbus/">
+                            RxJava使用示例：实现Rxbus代替eventbus
                         </a>
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-02-11T17:15:22+08:00">
+    <time itemprop="datePublished" datetime="2016-01-24T19:14:06+08:00">
 	
-		    2月 11, 2018
+		    1月 24, 2016
     	
     </time>
     
@@ -753,47 +462,14 @@
 
             </div>
             
-                <div class="postShorten-content" itemprop="articleBody">
-                    <p><strong>本文仅为个人观点，不完全符合模块化的标准定义及其拓展。思路类似，仅此而已。不可当做模块化的标准理解</strong></p>
-<p><strong>如果各位对于本博客中提到的任何思路或者架构有任何看法，欢迎讨论。以下仅是这3天的个人考虑，基于个人能力及视野的限制，很有可能不完善，欢迎批评指正，共同进步</strong></p>
-<p><strong>转载请注明出处：<a href="http://blog.csdn.net/jonstank2013?viewmode=contents" target="_blank" rel="noopener">http://blog.csdn.net/jonstank2013?viewmode=contents</a></strong></p>
-<p>##项目基础情况##<br>项目人群：百万日活<br>整体大小：类数量未记，Size 500+M</p>
-<p>##起因##<br>这几天正在重构公司的项目，因为本月16日看项目源码时发现项目的内部架构极其冗余（4年前的项目，延伸至今），不管是从业务的拓展还是现有架构的维护上的体验都极其恶劣。一个接触该项目的新人很难在没有需求文档的情况下理清整体的业务流程及架构。而由于业务需求太多导致团队没有足够的时间去做全新的重构。</p>
-<p><strong>以下为原架构的示例图：</strong><br><img src="http://img.blog.csdn.net/20170224100151701?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSm9uc1RhbmsyMDEz/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="原始架构"></p>
-<p>这种架构也就是最原始的Activity-Fragment-Manager模式，Activity或者Fragment通过接口与各Manager沟通联系。这种模式的弊端在于Activity承担了太多的工作，随着项目的进行Activity会越来越大，导致其越来越难以维护。单从MainActivity来说，就足有2500多行。所有的业务代码和逻辑代码全都冗余在一块，甚至还包含了很多Lisenter和Callback的定义，而这些都绝对不应该是Activity的功能。为了更好的维护（当项目变得非常庞大时），我们可以从Activity中把逻辑功能分离处理，交由另外的一个逻辑管理类处理，而逻辑管理类再和其他的工具类联系。这样就可以极大的增加代码的可维护性。</p>
-<p>而上面提到的逻辑、业务分离的方式实际上也就是MVP/MVVM的方式。</p>
-<p>##事件总线##<br>项目中还存在着事件总线（一个自定义的EventManager），跟EventBus类似，只是更轻量级。<br>EventManager的功能为Subscribe，Send。实际上也就是一旦Event发生了事件，那么EventManager就会通知所有订阅了该事件的对象处理该事件，实现“何处订阅，何处处理”。<br>从一个第三方通用库的角度来说，这种方式是绝对可行且意义非凡的。但对于一个模块化或者MVP/MVVM来说，它的一些通用配置就有点多余了。<br>例如”何处订阅，何处处理“，在Activity-Managers-Callback的模式中，可以有多个不同的对象订阅同一个事件，发生Event后这些对象都会受到通知。但这会造成一个非常大的弊端，也就是代码的维护性非常差。因为开发者不会知道究竟是谁订阅了这个事件，而这个事件又从哪发送到了哪去解决，一旦发生问题，非常难以调试及定位。<br>而在MVP中，所有的逻辑操作都应在Presenter中处理并分发，也就是说EventBus只应与Presenter进行联系。它不行也绝对不能与其他的类绑定，因为这会违背架构的定义，以及破坏架构的原则。</p>
-<p>因此EventManager在MVP中就变成了一个简化版的Rxbus。Rxbus相关信息可见我之前的博客：<a href="http://blog.csdn.net/jonstank2013/article/details/50574871" target="_blank" rel="noopener">http://blog.csdn.net/jonstank2013/article/details/50574871</a></p>
-<p>Github地址为：<a href="https://github.com/CytQ/Rxbus" target="_blank" rel="noopener">https://github.com/CytQ/Rxbus</a></p>
-<p><strong>Rxbus和EventBus在事件的处理上有着很明显的不同</strong></p>
-<p>EventBus是针对Event做订阅，一旦发生事件，EventBus会通知所有订阅的对象进行处理。<br>而Rxbus订阅的则是事件总线，一旦事件总线上存在事件（也就是Event被触发），那么所有订阅了事件总线的对象都会收到Event的通知。</p>
-<p>根据他们俩的性质，可以很明确的了解到，EventBus可以针对所有情况，不管是Activity-Manager-Callback模式还是MVP/MVVM。而Rxbus就有了局限性，它只能使用于MVP/MVVM等业务逻辑分离的情况。<br>但除此之外，Rxbus还具有一些EventBus不具有的特性，那就是他可以使用Rxjava带来的一系列好处。例如快速切换线程，一行代码即可。而在EventBus中，如果想要对Event切换处理线程，那么就必须人为的控制一个线程管理类或者线程池。</p>
-<p>而将Rxbus应用于MVP中，只需处理好他的订阅及取消就可以了。因为同一时间最好只能存在一个Presenter处理逻辑事件。而如果存在多个Presenter，对效率的影响也不高，一个函数调用而已。</p>
-<p><strong>现存在我Git中的Rxbus功能不是特别完善，但我会接下来的时间里不断的拓展它，让他更能符合开发的实际情况。例如多个Presenter同时存在时，如何正确的分发Event</strong></p>
-<p>##定义新架构##<br>因此在经过考虑之后，我提出了以下的重构建议。<br><img src="http://img.blog.csdn.net/20170224114905196?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSm9uc1RhbmsyMDEz/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="NewArchitecture"></p>
-<p>MVP结合Rxjava构建全响应式架构。将逻辑代码从View层中完全剥离出来，交由Presenter处理。同时将之前存在的大量Manager和工具类交给DataManager管理。Presenter与Model之间、Presenter与Rxbus使用Observable交流。</p>
-<p><strong>而在具体实现时，在View与Presenter之间再独立一层Contract，使View依赖于Contract中的Presenter，而Presenter依赖于Contract中的View。从而实现接口隔离：对象应关联于接口，而不应该是其具体实现类。另外还可解决一个Case：业务代码难以理清（一个新人只需了解Contract中相关的定义即可快速了解View和Presenter的功能，一目了然）</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainContract</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">interface</span> <span class="title">Presenter</span> <span class="keyword">extends</span> <span class="title">BasePresenter</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">interface</span> <span class="title">View</span> <span class="keyword">extends</span> <span class="title">BaseView</span>&lt;<span class="title">Presenter</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">void</span> <span class="title">showMsg</span><span class="params">(String eventName)</span></span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">BasePresenter</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">subscribe</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">unSubscribe</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">BaseView</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">setPresenter</span><span class="params">(T presenter)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>这种方案可以很好的解决Activity代码冗余，整体架构耦合性高的问题。缺点在于需要控制很多的Presenter及Contract，代码的流程变复杂。但我认为在项目过大时，这种缺点比之其优势来说，不值一提。</p>
-<p>##发现新问题##<br>在评审并通过上述新架构方案后，我开始尝试部分重构。而前天与昨天，就遇到了一个以前重构小项目时从来没遇到的问题：依赖项实在是太多。</p>
-<p>因为依赖项众多以及需要针对每一个依赖项都做单独的模块处理（编译器不支持自动批量导入和修改），因此前天及昨天均花费了大量的时间在导入及Fix依赖类上，3个类简单类最后延伸为了150多个类，这还是我注释掉了很多业务代码的结果。总时间超过半天，这是完完全全的体力劳动，并且会极大的降低重构的效率，但对此又无可奈何。因为一个项目大了之后，势必会存在很多的业务代码及其管理类，即便架构设计得再完美，耦合性再低，也很难避免这种情况的发生。引入一个类，就意味着需要引入它的继承类、实现类、使用的工具类等等。</p>
-<p>##模块化思路##</p>
-<p>那么在编译器不能实现自动导入自动匹配的时候，我们是否可以采用一种编程协议去规范代码，让任何独立的功能都能快速或者直接模块化，让它与其他的功能模块松耦合，（可能？）从而避免或者减缓以上的情况。同时还可以避免65535，可支持动态加载（不更新APK的情况下完成新业务的下载及显示）</p>
-<p><img src="http://img.blog.csdn.net/20170224120252522?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSm9uc1RhbmsyMDEz/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="Module"></p>
-<p>这种高度模块化的结构还有一种优势，就是方便加载及快速卸载（MultiDex），还可以结合【动态加载】实现本地APP功能的快速更新（无需下载更新本地APK）。<br>【待定】如果我们以后开始一个新的项目时，可预见性的了解到该项目肯定会非常庞大或者易引起65535，不如考虑一下这种高度模块化的方式？提高项目灵活性的同时还可以为以后可能的重构铺路（假设性原则？假如会发生）</p>
-<p><strong>方法二：</strong>创建一个AS的插件，使其支持自动导入和自动Fix。但难度较高，需要判断很多条件</p>
-<p><strong>以上就是这段时间内重构项目时的经历及部分个人想法，如果以后有新的想法会及时更新本文。</strong></p>
-<p><strong>另外，如果各位对于本博客中提到的任何思路或者架构有任何看法，欢迎讨论。这是这3天的个人考虑，基于个人能力及视野的限制，很有可能不完善，欢迎各位批评指正，共同进步</strong></p>
-
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    <p>之前学习了Rxjava（<a href="http://blog.csdn.net/jonstank2013/article/details/50366109" target="_blank" rel="noopener">RxJava学习笔记</a>），但是一直找不到使用它的地方。最近做项目的时候遇到需要使用eventbus的时候，突然想起来Rxjava的一个拓展面就是Rxbus，果断用来试试</p>
+<p>下一篇博文：<a href="http://blog.csdn.net/jonstank2013/article/details/50981404" target="_blank" rel="noopener">RxJava实现原理探索</a></p>
                     
+                        <a href="/2016/01/24/RxJava使用示例：实现Rxbus代替eventbus/" class="postShorten-excerpt_link link">
+                            阅读全文
+                        </a>
                         
-
-                    
-                    
-                        <p>
-                            <a href="/2018/02/11/Android重构记录及其模块化/#post-footer" class="postShorten-excerpt_link link">
-                                评论和共享
-                            </a>
-                        </p>
                     
                 </div>
             
@@ -802,21 +478,21 @@
     </article>
     
     
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
         <div class="postShorten-wrap">
             
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2018/02/11/hello-world/">
-                            Hello World
+                        <a class="link-unstyled" href="/2016/01/14/发布自己项目让别人可以在dependencies中compile的更简单方法/">
+                            发布自己项目让别人可以在dependencies中compile的更简单方法
                         </a>
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-02-11T17:13:11+08:00">
+    <time itemprop="datePublished" datetime="2016-01-14T18:39:50+08:00">
 	
-		    2月 11, 2018
+		    1月 14, 2016
     	
     </time>
     
@@ -824,27 +500,51 @@
 
             </div>
             
-                <div class="postShorten-content" itemprop="articleBody">
-                    <p>Welcome to <a href="http://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="http://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="http://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    <p>昨天写了一篇文章<a href="http://blog.csdn.net/jonstank2013/article/details/50512487" target="_blank" rel="noopener">《 使用Gradle发布项目到JCenter仓库》</a><br>方法较为繁琐，同时也需要等待审核才能发布。<br>今天查找到了一个更简单的方法，利用JitPack，可以两步完成。</p>
                     
+                        <a href="/2016/01/14/发布自己项目让别人可以在dependencies中compile的更简单方法/" class="postShorten-excerpt_link link">
+                            阅读全文
+                        </a>
                         
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2016/01/13/使用Gradle发布项目到JCenter仓库/">
+                            使用Gradle发布项目到JCenter仓库
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2016-01-13T18:24:21+08:00">
+	
+		    1月 13, 2016
+    	
+    </time>
+    
+</div>
 
+            </div>
+            
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    <p>如果想在AndroidStudio中直接使用别人的项目或者是库，一般的做法是在dependencies中进行compile，而compile的东西就是存放在JCenter或者Maven仓库中的。</p>
+<p>在这里我上传到JCenter，因为现在默认是支持JCenter，同时JCenter也兼容Maven</p>
                     
-                    
-                        <p>
-                            <a href="/2018/02/11/hello-world/#post-footer" class="postShorten-excerpt_link link">
-                                评论和共享
-                            </a>
-                        </p>
+                        <a href="/2016/01/13/使用Gradle发布项目到JCenter仓库/" class="postShorten-excerpt_link link">
+                            阅读全文
+                        </a>
+                        
                     
                 </div>
             
@@ -863,7 +563,14 @@
           </li>
         
         
-        <li class="pagination-number">第 3 页 共 3 页</li>
+          <li class="pagination-next">
+            <a class="btn btn--default btn--small" href="/archives/page/4/">
+              <span>下一页</span>
+              <i class="fa fa-angle-right text-base icon-ml"></i>
+            </a>
+          </li>
+        
+        <li class="pagination-number">第 3 页 共 5 页</li>
     </ul>
 </div>
 
