@@ -40,8 +40,8 @@
     <title>x86汇编示例、代码梳理和演示</title>
     <link href="http://imlzq.com/2018/01/30/x86%E6%B1%87%E7%BC%96%E7%A4%BA%E4%BE%8B%E3%80%81%E4%BB%A3%E7%A0%81%E6%A2%B3%E7%90%86%E5%92%8C%E6%BC%94%E7%A4%BA/"/>
     <id>http://imlzq.com/2018/01/30/x86汇编示例、代码梳理和演示/</id>
-    <published>2018-01-29T16:00:00.000Z</published>
-    <updated>2018-04-04T07:00:56.946Z</updated>
+    <published>2018-01-30T15:00:00.000Z</published>
+    <updated>2018-04-05T12:50:28.937Z</updated>
     
     <content type="html"><![CDATA[<p>x86跟ARM在一些指令集上有区别，但是大致逻辑一直。下面是以一个有栈溢出漏洞的vc6.0编写的C程序做示例。</p><a id="more"></a>    <p><strong>C中，函数调用的逻辑为：</strong></p><p>##1. 函数参数入栈</p><p>如func(int a, int b, int c)<br>会将三个参数从右到左依次入栈。也就是<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">push c</span><br><span class="line">push b</span><br><span class="line">push a</span><br></pre></td></tr></table></figure></p><p>##2.函数的返回地址入栈</p><p>让程序知道执行完当前程序后怎么处理下一步。在汇编中的表现形式和3合并</p><p>##3.代码区跳转</p><p>跳转到被调用函数的入口地址，方便执行。<br>它和2的表现为<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">call 函数地址</span><br></pre></td></tr></table></figure></p><p>##4.栈帧调整</p><p>这里会有3步</p><pre><code>1. 保存当前的栈帧：push ebp2. 设置新栈帧的底部：move ebp, esp3. 抬高esp，也就是分配栈帧空间： sub esp, xx</code></pre><p>##5. 【本函数调用完后】降低栈帧，释放空间</p><p>add esp, xx</p><p><strong>这样也就完成了一个函数的整体调用，具体的看下面的截图和其中的注释</strong></p><blockquote><p>对于下面的局部变量申明，有一点需要注意的。<br>比如第2张图，var_444 = -444h，这个负号是因为它比当前的ebp先入栈。对于当前函数来说，高于ebp是正数，低于的就是负数。ebp可以理解为0这个基线，-444h就能找到它的指定位置</p></blockquote><p><img src="http://bos.nj.bpc.baidu.com/v1/agroup/9db03478a7c26d09e292d5de2ccaee55fba888e1" alt="x86汇编7"><br><img src="http://bos.nj.bpc.baidu.com/v1/agroup/3ccc297a5046230c0a2a2833f5eac13e28464aa1" alt="x86汇编1"><br><img src="http://bos.nj.bpc.baidu.com/v1/agroup/67b739dbe7196b2b63df67c16a5281a842d3c0c2" alt="x86汇编2"><br><img src="http://bos.nj.bpc.baidu.com/v1/agroup/1c27973a000662e8ff0cb4d636da661eec1c70dd" alt="x86汇编3"><br><img src="http://bos.nj.bpc.baidu.com/v1/agroup/f7d7dd01054ec84e5505ecc96a496b3ecc8cbaa3" alt="x86汇编4"><br><img src="http://bos.nj.bpc.baidu.com/v1/agroup/14e5790bbe380bcd7eb7674ee1a3ec5db3a7a139" alt="x86汇编5"><br><img src="http://bos.nj.bpc.baidu.com/v1/agroup/52c078db92a32c0de0d7ed69f5b098a5d33cd938" alt="x86汇编6"></p><p><img src="http://bos.nj.bpc.baidu.com/v1/agroup/1bea2f9369aa419f2e49f5e324c9028f5aea8491" alt="x86汇编8"></p><p>对于verify_password函数来说，它的栈帧为（从下到上）：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> buff[<span class="number">0</span>~<span class="number">3</span>]</span><br><span class="line"><span class="keyword">char</span> buff[<span class="number">4</span>~<span class="number">7</span>]</span><br><span class="line"><span class="keyword">int</span> ret</span><br><span class="line">上一个栈帧的EBP</span><br><span class="line">verify_password函数的返回地址</span><br><span class="line">形参password</span><br></pre></td></tr></table></figure></p><p>此时的EBP指针指向”上一个栈帧的EBP”, ESP指向”char buff[0~3]”。</p><p>##绕过密码检测</p><p>对于ret来说，int值为4个字节，所以只需要在strcpy时让buff越界四位，那么buff[8]，buff[9], buff[10], buff[11]就会覆盖ret的值。这里有个tips，对于字符串而言，末尾会自动加入一个NULL结束符，所以只要我们输入任意的8个字符，如12345678，就能通过这个密码程序（正确的密码是1234567）。<br>ret的值其实来源于strcmp的返回值，根据字符串的串顺序，如果password&gt;1234567如12345678），那么ret=0x00000001，这个时候我们就可以用NULL覆盖的方法让它变为0x00000000。而如果password&lt;1234567（如12345668），函数返回-1，此时ret=0xFFFFFF00，这时候用NULL就覆盖不了了</p><p>下图为输入1234567后栈顶保存的数据，它指向0018FB44这个地址，而这个地址的内容为（ASCII码）31,32,33,34,35,36,37。也就是数字的1234567.最后的00，是存放字符串的NULL的<br><img src="http://bos.nj.bpc.baidu.com/v1/agroup/751d9617eecf24590d26c53e20cecb53d6b48ec8" alt="图片"></p><p><img src="http://bos.nj.bpc.baidu.com/v1/agroup/cc3d43d6bcea77d2a5d5d621d0edd619ff520561" alt="图片"></p>]]></content>
     
@@ -55,6 +55,39 @@
       <category term="漏洞" scheme="http://imlzq.com/tags/%E6%BC%8F%E6%B4%9E/"/>
     
       <category term="汇编" scheme="http://imlzq.com/tags/%E6%B1%87%E7%BC%96/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Java函数签名</title>
+    <link href="http://imlzq.com/2018/01/30/%E5%85%B6%E4%BB%96/"/>
+    <id>http://imlzq.com/2018/01/30/其他/</id>
+    <published>2018-01-30T13:00:00.000Z</published>
+    <updated>2018-04-05T12:50:17.373Z</updated>
+    
+    <content type="html"><![CDATA[<p><strong>表现形式：</strong></p><p>(参数类型参数类型参数类型参数类型)函数类型</p><p><strong>例如：</strong></p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">encrypt</span><span class="params">(<span class="keyword">int</span> res, String test, <span class="keyword">long</span> key)</span></span></span><br></pre></td></tr></table></figure><p><strong>函数方法体为：</strong></p><p>(ILjava/lang/String;J)I</p><ul><li>I   代表int</li><li>Ljava/lang/String;  代表String。因为它不属于基本数据类型，是一个类，所以需要指定完整的路径</li><li>J代表long</li></ul><p>参数与参数之间无间隔，用括号包裹，紧接着跟函数的数据类型。</p><a id="more"></a>    <h2 id="获取函数的方法签名"><a href="#获取函数的方法签名" class="headerlink" title="获取函数的方法签名"></a>获取函数的方法签名</h2><p>如：针对Hello.class，</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">javap -s Hello</span><br></pre></td></tr></table></figure><p>即可获取其内部所有的函数方法签名</p><p>##Java方法签名中特殊字符/字母含义</p><table><thead><tr><th>特殊字符</th><th>数据类型</th><th>特殊说明</th></tr></thead><tbody><tr><td>V</td><td>void</td><td>返回值</td></tr><tr><td>Z</td><td>boolean</td><td></td></tr><tr><td>B</td><td>byte</td><td></td></tr><tr><td>C</td><td>char</td><td></td></tr><tr><td>S</td><td>short</td><td></td></tr><tr><td>I</td><td>int</td><td></td></tr><tr><td>J</td><td>long</td><td></td></tr><tr><td>F</td><td>float</td><td></td></tr><tr><td>D</td><td>double</td><td></td></tr><tr><td>[</td><td>数组</td><td>以[开头，配合其他的特殊字符，表示对应数据类型的数组，几个[表示几维数组</td></tr><tr><td>L全类名;</td><td>引用类型</td><td>以L开头、;结尾，中间是引用类型的全类名</td></tr></tbody></table>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;strong&gt;表现形式：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;(参数类型参数类型参数类型参数类型)函数类型&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;例如：&lt;/strong&gt;&lt;/p&gt;
+&lt;figure class=&quot;highlight java&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;encrypt&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; res, String test, &lt;span class=&quot;keyword&quot;&gt;long&lt;/span&gt; key)&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;&lt;strong&gt;函数方法体为：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;(ILjava/lang/String;J)I&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;I   代表int&lt;/li&gt;
+&lt;li&gt;Ljava/lang/String;  代表String。因为它不属于基本数据类型，是一个类，所以需要指定完整的路径&lt;/li&gt;
+&lt;li&gt;J代表long&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;参数与参数之间无间隔，用括号包裹，紧接着跟函数的数据类型。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Android" scheme="http://imlzq.com/tags/Android/"/>
+    
+      <category term="Java" scheme="http://imlzq.com/tags/Java/"/>
     
   </entry>
   
@@ -421,26 +454,6 @@
     
       &lt;p&gt;原型模式： Prototype Module&lt;/p&gt;
 &lt;p&gt;顾名思义，这个模式有一个样板实例，用户从这个样板对象中复制出一个内部属性一致的对象，这个过程也就是我们俗称的克隆。被复制的实例就被成为“原型”。&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="设计模式" scheme="http://imlzq.com/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>设计模式_Builder模式</title>
-    <link href="http://imlzq.com/2016/03/16/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F_Builder%E6%A8%A1%E5%BC%8F/"/>
-    <id>http://imlzq.com/2016/03/16/设计模式_Builder模式/</id>
-    <published>2016-03-16T04:13:50.000Z</published>
-    <updated>2018-02-12T03:51:01.620Z</updated>
-    
-    <content type="html"><![CDATA[<p>Builder模式是一步一步创建一个复杂对象的创建型模式，他允许用户在不知道内部构造细节的情况下，可以更精细地控制对象的构造流程。该模式是为了将一个复杂对象的构建与他的表示分离，使得同样的构建过程可以创建不同的表示。</p><a id="more"></a><p>##使用场景</p><p>例如，在创建一个对象时，如果该对象的构造方法需要多个参数，而多个参数势必会增加开发者调用该构造方法时的难度，一两个参数还好，如果说参数有5个，甚至是更多的时候，开发者在调用方法的时候就需要一个个的比对参数的作用，而如果中途构造方法的参数改变了，就需要改动很多个地方，也就是增加了维护及拓展的难度。</p><p>而使用Builder模式，可以直接通过setMethodName()来设置参数，而如果setMethodName()返回的是Builder本身，还可以实现链式创建。这让代码变得更为的清晰，同时也容易维护及拓展。</p><figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Builder setName(<span class="keyword">String</span> name) &#123;</span><br><span class="line"><span class="built_in">this</span>.name = name;</span><br><span class="line"><span class="keyword">return</span> builder;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> Builder setAge(<span class="keyword">String</span> name) &#123;</span><br><span class="line"><span class="built_in">this</span>.name = name;</span><br><span class="line"><span class="keyword">return</span> builder;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> <span class="type">TestBuilder</span>().setName(<span class="string">"haha"</span>).setAge(<span class="number">20</span>);</span><br></pre></td></tr></table></figure><p>上面介绍的这个使用场景是Builder模式使用在创建对象时，在Android中，AlertDialog.Builder就采用了这种方式，具体的各位可以查看一下相关的源码。<br>除了这个使用场景之外，Builder模式也可以用于正常的开发中，不仅仅是构造方法，但是由于它们的思路是一样的，这里就不再赘述，毕竟思想最重要 : )</p><p>##额外的</p><p>Builder模式可以将一个对象的创建分为必要参数和可选参数，这样也增加了一个组件或者是一个函数的用途。在Builder的构造方法中填入必要的参数，而可选的参数就可以使用setMethodName()这种方法来动态的添加，这在Android中相当重要，可以多使用使用</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Builder模式是一步一步创建一个复杂对象的创建型模式，他允许用户在不知道内部构造细节的情况下，可以更精细地控制对象的构造流程。该模式是为了将一个复杂对象的构建与他的表示分离，使得同样的构建过程可以创建不同的表示。&lt;/p&gt;
     
     </summary>
     
