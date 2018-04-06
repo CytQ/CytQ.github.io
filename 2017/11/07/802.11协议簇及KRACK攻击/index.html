@@ -22,7 +22,7 @@
 <meta property="og:description" content="最近暴露的KRACK攻击可以理解为钻了协议的空子，故本文就对其内部原理及实现做大致的剖析。因802.11协议簇所涉极广，暂做部分解析。详情可参考：知乎：无线技术大讲堂， 维基百科 顺便学习一下wifi相关协议">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="http://bos.nj.bpc.baidu.com/v1/agroup/b7487b5c93477b6632d9fb0f452e70a65e7c7d70">
-<meta property="og:updated_time" content="2018-02-12T04:20:37.698Z">
+<meta property="og:updated_time" content="2018-04-06T15:51:26.762Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="802.11协议簇及KRACK攻击">
 <meta name="twitter:description" content="最近暴露的KRACK攻击可以理解为钻了协议的空子，故本文就对其内部原理及实现做大致的剖析。因802.11协议簇所涉极广，暂做部分解析。详情可参考：知乎：无线技术大讲堂， 维基百科 顺便学习一下wifi相关协议">
@@ -208,7 +208,7 @@
     
     
         <div class="post-meta">
-    <time itemprop="datePublished" datetime="2017-11-07T00:00:00+08:00">
+    <time itemprop="datePublished" datetime="2017-11-07T22:00:00+08:00">
 	
 		    Nov 07, 2017
     	
@@ -285,13 +285,11 @@
 </ol>
 </blockquote>
 <p>在握手过程中，所有信息都以EAPOL帧发送(Extensible Authentication Protocol Over LAN，基于局域网的扩展认证协议)。</p>
-<ol>
-<li>AP（认证方）发起，发送一个ANonce到STA（终端）。ANonce作为重放保护，必须时这个PMK之前没用过的值</li>
-<li>STA在收到信息后结合ANonce和自行构造的SNonce构造PTK，然后发送SNonce和MIC（消息验证码）到AP。</li>
-<li>AP也利用（ANonce和SNonce）构造PTK，并且验证STA发过来的MIC等信息。验证成功后生成GTK并发送消息。消息包括GTK、告诉STA安装PTK和GTK、接收顺序计数器RSC（receive sequence counter， 即当前GTK的顺序号），并让STA允许检测重播的广播信息</li>
-<li>STA接收到AP返还的消息，验证MIC，安装密钥，返还确认信息给AP。AP在收到确认后，验证MIC，安装相同的密钥。此时，双方都安装了相同的PTK和GTK。</li>
-</ol>
-<p>之后通信双方就可以使用进行安全的通信了。<br><img src="http://bos.nj.bpc.baidu.com/v1/agroup/b7487b5c93477b6632d9fb0f452e70a65e7c7d70" alt="4-way handshake"><br>图片摘自<a href="https://en.wikipedia.org/wiki/IEEE_802.11i-2004" target="_blank" rel="noopener">维基百科</a></p>
+<pre><code>1. AP（认证方）发起，发送一个ANonce到STA（终端）。ANonce作为重放保护，必须时这个PMK之前没用过的值
+2. STA在收到信息后结合ANonce和自行构造的SNonce构造PTK，然后发送SNonce和MIC（消息验证码）到AP。
+3. AP也利用（ANonce和SNonce）构造PTK，并且验证STA发过来的MIC等信息。验证成功后生成GTK并发送消息。消息包括GTK、告诉STA安装PTK和GTK、接收顺序计数器RSC（receive sequence counter， 即当前GTK的顺序号），并让STA允许检测重播的广播信息
+4. STA接收到AP返还的消息，验证MIC，安装密钥，返还确认信息给AP。AP在收到确认后，验证MIC，安装相同的密钥。此时，双方都安装了相同的PTK和GTK。
+</code></pre><p>之后通信双方就可以使用进行安全的通信了。<br><img src="http://bos.nj.bpc.baidu.com/v1/agroup/b7487b5c93477b6632d9fb0f452e70a65e7c7d70" alt="4-way handshake"><br>图片摘自<a href="https://en.wikipedia.org/wiki/IEEE_802.11i-2004" target="_blank" rel="noopener">维基百科</a></p>
 <p><strong>所以总结一下流程也就是：AP和STA在交换随机数的同时进行数据校验，并用这个随机数以及自身已知的一些数据构建PTK、GTK。</strong></p>
 <p>##常见的WIFI类型</p>
 <p>###WEP<br>WEP（Wired Equivalent Privacy，有线等效保密协议）是对在两台设备间无线传输的数据进行加密的方式，用以防止非法用户窃听或侵入无线网络。它使用RC4（Rivest Cipher）对分组信息进行加密，并使用 CRC-32 验证达到资料的正确性。</p>
@@ -312,11 +310,9 @@
 <p>##Tip1<br>WPA2的标准中若WiFi偶尔断开连接，则允许重新使用相同的值进行第三次握手（用于建立快速的重新连接和保持连续性）进行连接。</p>
 <p>##Tip2<br>在四向握手的第三次完成后，STA就会认为生成的PTK是正确的，安装PTK并开始使用其派生的密钥作为CCMP的会话密钥，然后通过802.1x进行通信。</p>
 <p>##Tip3<br>协议规定：</p>
-<ol>
-<li>每次生成PTK后，都要重设CCMP的计数器的值</li>
-<li>处在已经安装PTK状态下的STA要处理重传的第一和第三个握手包</li>
-</ol>
-<p>##Tip4<br>STA方给AP发送确认包之后并不能确认认证方是否收到了Ack，而如果AP在第三次握手完成后一直没有收到Ack确认包，则会重传第三次的握手包，同时递增其中的replay-counter值来使其有效。</p>
+<pre><code>1. 每次生成PTK后，都要重设CCMP的计数器的值
+2. 处在已经安装PTK状态下的STA要处理重传的第一和第三个握手包
+</code></pre><p>##Tip4<br>STA方给AP发送确认包之后并不能确认认证方是否收到了Ack，而如果AP在第三次握手完成后一直没有收到Ack确认包，则会重传第三次的握手包，同时递增其中的replay-counter值来使其有效。</p>
 <p>##Tip5<br>Android和Linux中的wpa_supplicant基本都存在例外，允许未完整加密的EAPOL包和未验证PTK密钥来源</p>
 <p>##Tip6<br>WPA加密协议采用的是stream cipher加密（即用一个伪随机密钥流逐字节去异或明文）。</p>
 <blockquote>
@@ -324,11 +320,9 @@
 </blockquote>
 <p>在正常的过程中，key和IV是不变的，counter值每次都递增，这也就导致每次生成的密钥都不同。<br>但在重安装过程中，counter值会被反复置为0，这也就导致每次生成的密钥都是一样的。<br>所以数据的结果也就变为了：使用同一密钥加密多组不同的明文。对于两组密文来说，相互异或就能抵消掉密钥，只剩加密后的明文。而如果其中一组明文对于攻击者而言已知，那么就可推出另一组明文的具体内容。</p>
 <p>##我的理解<br>攻击者事先在STA和AP中充当中间人，通过拦截第四次握手包让AP重传第三次握手包，这样就会导致STA重装本地密钥。重装密钥之后，就能诱使STA连接到一个钓鱼AP上了（AP连接的验证机制可以简单理解为AP名+密码，密码全零即可）</p>
-<ol>
-<li>对于Android 6.0以上的手机来说（Linux上的wpa_supplicant版本为2.4~2.6的wifi客户端），在初始化密钥后，它们会直接将包含密钥材料的缓冲区内存清零。但程序并不知道缓冲区已经被清零，因此又会再去读取一次那块内存区域，那这个时候的密钥就一定是由全零的数据衍生来的。如Nonce为0，那么攻击者就可以直接计算出加密数据包所使用的密钥，也就能直接解析用户发送的数据了。</li>
-<li>对于非Android6.0和Linux对应wpa_supplicant的wifi客户端来说，STA加密所用的密钥不可知，但如果攻击者知晓其中一组数据包的明文是什么，那么就可以推出其他数据包的明文（此过程不需要知晓加密密钥，直接异或）。但从<a href="https://zhuanlan.zhihu.com/p/30281357?group_id=904476874034634752" target="_blank" rel="noopener">其他文章</a>上发现，每次可推导出的明文内容有限且可能具有很大的不确定性。</li>
-</ol>
-<p>这个过程只能说是绕过而不能说是破解WPA2（发现者也说是bypass），因为wifi的密钥在整个流程中并没有被破解，也没有破解四向握手过程中新生成的加密密钥。</p>
+<pre><code>1. 对于Android 6.0以上的手机来说（Linux上的wpa_supplicant版本为2.4~2.6的wifi客户端），在初始化密钥后，它们会直接将包含密钥材料的缓冲区内存清零。但程序并不知道缓冲区已经被清零，因此又会再去读取一次那块内存区域，那这个时候的密钥就一定是由全零的数据衍生来的。如Nonce为0，那么攻击者就可以直接计算出加密数据包所使用的密钥，也就能直接解析用户发送的数据了。
+2. 对于非Android6.0和Linux对应wpa_supplicant的wifi客户端来说，STA加密所用的密钥不可知，但如果攻击者知晓其中一组数据包的明文是什么，那么就可以推出其他数据包的明文（此过程不需要知晓加密密钥，直接异或）。但从[其他文章](https://zhuanlan.zhihu.com/p/30281357?group_id=904476874034634752)上发现，每次可推导出的明文内容有限且可能具有很大的不确定性。
+</code></pre><p>这个过程只能说是绕过而不能说是破解WPA2（发现者也说是bypass），因为wifi的密钥在整个流程中并没有被破解，也没有破解四向握手过程中新生成的加密密钥。</p>
 <ul>
 <li>Android 6.0以上和部分Linux之所以成为目标是因为它的wpa_supplicant代码实现上有问题。windows和ios因为实现不同因此不会受zero-encrypt key的攻击。</li>
 <li>如果敏感信息进行了加密或者其他安全保护比如https，那就是安全的</li>
@@ -368,7 +362,7 @@
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/11/07/汇编基础及个人理解/" data-tooltip="汇编基础及个人理解" aria-label="PREVIOUS: 汇编基础及个人理解">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/30/Java函数签名/" data-tooltip="Java函数签名" aria-label="PREVIOUS: Java函数签名">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -377,7 +371,7 @@
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/10/30/Dex/" data-tooltip="Dex文件结构分析" aria-label="NEXT: Dex文件结构分析">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/11/07/汇编基础及个人理解/" data-tooltip="汇编基础及个人理解" aria-label="NEXT: 汇编基础及个人理解">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -470,7 +464,7 @@
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/11/07/汇编基础及个人理解/" data-tooltip="汇编基础及个人理解" aria-label="PREVIOUS: 汇编基础及个人理解">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/30/Java函数签名/" data-tooltip="Java函数签名" aria-label="PREVIOUS: Java函数签名">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -479,7 +473,7 @@
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/10/30/Dex/" data-tooltip="Dex文件结构分析" aria-label="NEXT: Dex文件结构分析">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/11/07/汇编基础及个人理解/" data-tooltip="汇编基础及个人理解" aria-label="NEXT: 汇编基础及个人理解">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
