@@ -6,30 +6,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Hello! CytQ">
-    <title>Python学习笔记(四) 多重继承及内部算法解析 - Hello! CytQ</title>
+    <title>Archives: 2018/3 - Hello! CytQ</title>
     <meta name="author" content="CytQ">
     
     
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="Python学习笔记：四">
-<meta name="keywords" content="Python">
+    <meta name="description" content="Catch your time">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="Python学习笔记(四) 多重继承及内部算法解析">
-<meta property="og:url" content="http://imlzq.com/2016/02/27/NotePython4/index.html">
+<meta property="og:title" content="Hello! CytQ">
+<meta property="og:url" content="http://imlzq.com/archives/2018/03/index.html">
 <meta property="og:site_name" content="Hello! CytQ">
-<meta property="og:description" content="Python学习笔记：四">
+<meta property="og:description" content="Catch your time">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://img.blog.csdn.net/20160227122311980">
-<meta property="og:image" content="http://img.blog.csdn.net/20160227122311980">
-<meta property="og:image" content="http://img.blog.csdn.net/20160227122917066">
-<meta property="og:image" content="http://img.blog.csdn.net/20160227123533825">
-<meta property="og:updated_time" content="2018-02-12T10:24:32.806Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Python学习笔记(四) 多重继承及内部算法解析">
-<meta name="twitter:description" content="Python学习笔记：四">
-<meta name="twitter:image" content="http://img.blog.csdn.net/20160227122311980">
+<meta name="twitter:title" content="Hello! CytQ">
+<meta name="twitter:description" content="Catch your time">
     
     
         
@@ -53,7 +46,7 @@
             <!-- Define author's picture -->
 
 
-<header id="header" data-behavior="5">
+<header id="header" data-behavior="2">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <div class="header-title">
         <a class="header-title-link" href="/ ">Hello! CytQ</a>
@@ -77,7 +70,7 @@
         
     
 
-<nav id="sidebar" data-behavior="5">
+<nav id="sidebar" data-behavior="2">
     <div class="sidebar-container">
         
             <div class="sidebar-profile">
@@ -195,170 +188,73 @@
 </nav>
 
             
-            <div id="main" data-behavior="5"
+            <div id="main" data-behavior="2"
                  class="
                         hasCoverMetaIn
                         ">
                 
-<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    <section class="postShorten-group main-content-wrap">
     
     
-        <div class="post-header main-content-wrap text-left">
-    
-        <h1 class="post-title" itemprop="headline">
-            Python学习笔记(四) 多重继承及内部算法解析
-        </h1>
-    
-    
-        <div class="post-meta">
-    <time itemprop="datePublished" datetime="2016-02-27T13:23:35+08:00">
+    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2018/03/18/Jni_load/">
+                            System.loadLibrary() 做的事情
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-03-18T13:05:35+08:00">
 	
-		    Feb 27, 2016
+		    Mar 18, 2018
     	
     </time>
     
 </div>
 
-    
-</div>
-    
-    <div class="post-content markdown" itemprop="articleBody">
-        <div class="main-content-wrap">
-            <p>Python学习笔记：四</p>
-<a id="more"></a>
-<h2 id="多重继承"><a href="#多重继承" class="headerlink" title="多重继承"></a>多重继承</h2><p>Python可实现多重继承<br><figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="type">Student</span>(<span class="type">A</span>,<span class="type">B</span>)</span></span><br><span class="line"><span class="class">    def __init__(<span class="title">self</span>, <span class="title">a</span>, <span class="title">b</span>, <span class="title">c</span>):</span></span><br><span class="line"><span class="class">        <span class="type">A</span>.__init__(<span class="title">a</span>)</span></span><br><span class="line"><span class="class">        <span class="type">B</span>.__init__(<span class="title">b</span>)</span></span><br></pre></td></tr></table></figure></p>
-<p>存在的问题：<br>多重继承时如果两个父类存在同名方法如何解决：</p>
-<p>Python的类分为经典类 和 新式类。<br>经典类是python2.2之前的东西,但是在2.7还在兼容,但是在3之后的版本就只承认新式类了。<br>新式类在python2.2之后的版本中都可以使用。<br>经典类和新式类的区别在于:</p>
-<ul>
-<li>经典类是默认没有派生自某个基类的,而新式类是默认派生自object这个基类的</li>
-<li>经典类在类多重继承的时候是采用从左到右深度优先原则匹配方法的.而新式类是采用C3算法(不同于广度优先)进行匹配的</li>
-<li>经典类是没有__MRO__和instance.mro()调用的,而新式类是有的。</li>
-</ul>
-<p>另外，现在是推荐采用新式类来代替经典类。因为经典类对于多重继承采用的从左到右深度优先匹配算法存在一些问题。也就是如果方法同名，有的时候会绕过一些想要访问的方法，只指向一个方法。</p>
-<p>首先，先复习一下数据结构：<br>深度优先算法，广度优先算法，还有Python采用的C3算法</p>
-<p><strong>深度优先算法</strong><br>可从某个定点v出发，访问此顶点，然后一次从v的违背访问的邻接点触发深度优先遍历图，直至途中所有和v有路径相同的顶点都被访问到；若此时途中尚有顶点未被访问，则另选途中一个未曾被访问的顶点做开始点。</p>
-<p>通俗一点，就是从顶点开始遍历，从左到右。例如，先选顶点v，顶点v存在左右两个子节点v1, v2，就先选则左边的v1节点。这个时候就又可以把v1当成一个顶点来判断了，判断它是否有左右两个点，原理同上。等左边的节点v1包含它的所有子节点都被遍历完了之后，再开始右边节点v2的遍历，此时又把v2当成一个顶点。<br><img src="http://img.blog.csdn.net/20160227122311980" alt="这里写图片描述"><br>图画得略微有点丑，将就看看。: )<br>这张图用深度优先算法来遍历就是： v1, v2, v4, v5, v3, v6<br>如果v3还存在一个左节点v7，那结果就是 v1, v2, v4, v5, v3, v7, v6</p>
-<p><strong>广度优先算法</strong><br>通俗理解，就是按树的层次从左到右依次遍历。这一层遍历完了之后就开始遍历下一层，每一层都从左到右遍历<br><img src="http://img.blog.csdn.net/20160227122311980" alt="这里写图片描述"><br> 还是这张丑图 : )<br>用广度优先算法就是： v1, v2,v3,v4, v6, v5。一层层的来，从左到右</p>
-<p><strong>C3算法</strong><br>有点类似与广度优先算法，但是存在一些区别。<br>例如，如果是上面的那张图的话，结果和广度优先是一样的（只是结果一样，算法原理不同）。但是由于算法存在一些区别，例如下一个例子就可以看出它们的区别了。<br>　<img src="http://img.blog.csdn.net/20160227122917066" alt="这里写图片描述"><br>这图大致的意思是： A有两个父类B和C，B类又有一个父类D，D类的父类是O，而父类C的直接父类是O，少掉了D类这一层。<br>这样的话用C3算法遍历出来的结果就是ABDCO，而广度优先算法则是ABCDO。</p>
-<p>这里就要介绍一下C3算法的核心merge了。</p>
-<blockquote>
-<p>取第一个列表的头，也就是L[B,object] ，如果这个头不在任何表的尾部，那么将它加到Ｃｌａｓｓ D的线性化中，并且从合并中的列表里删除 ；否则查找下一个列表的头，如果是个好的表头则取出它。 需要注意的是： 表头指是第一个元素 ，尾部是指除表头之外的其它所有元素 。如[A,B,C,D,E,F],A是表头，[B,C,D,E,F]是尾部。</p>
-</blockquote>
-<p>这段话取自《python高级编程》<br>用一个更简单的例子来表示此算法。<br><img src="http://img.blog.csdn.net/20160227123533825" alt="这里写图片描述"></p>
-<p>算法表达式：<br>L(D(B,C)) =  D + merge( [B,object] ,[C,object] , [B,C] )<br>               =  [D, B] + merge( [object], [C,object] , [C] )<br>               =  [D, B,C] + merge( [object] , [object] )<br>               =  [D, B,C,object]    </p>
-<p>注解：</p>
-<ul>
-<li>第一行中列表[B,object]的表头是Ｂ，没有出现在其它表([C,object] 、[B,C] )的尾部。因此取出B并与D结合,  删除其余Ｂ  </li>
-<li>第二行中列表[Ｃ,object]的表头是Ｃ，没有出现在其它表([object] 、[C] )的尾部 ，注意 [C] 这个列表只有表头，没有尾部。同样的，取出C与[D,B]结合，删除其余C<br>​<br>因此，这个图遍历的结果就是　D,B,C,A,Object</li>
-</ul>
-<h2 id="多重继承时同名方法的冲突问题"><a href="#多重继承时同名方法的冲突问题" class="headerlink" title="多重继承时同名方法的冲突问题"></a>多重继承时同名方法的冲突问题</h2><p>就上面的图来说，如果采用经典类，也就是使用深度优先算法，依次遍历的结果为 DBAC，　这样的话就存在一个问题。如果C重写了A当中的一个方法，那么只会调用A当中的方法而不会调用Ｃ的。<br>而使用新式类，也就是C3算法，遍历结果为DBCA。这样可以保证相邻父类的方法能够被优先遍历，如果不存在，才会调用更上一层的父类方法。</p>
-<p>因此，新式类在这里首先就解决了一个优先顺序的问题，因为C很有可能重写了A的方法，而我们很多时候需要的就是C的方法。<br>第二个解决的问题就是单调性的问题。保证在不断的继承中同样能够保持顺序</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这个C3算法是现在Python中已经封装好了的算法，当遇到多重继承的时候会自动选择该算法，这里总结归纳它只是为了了解它里面的层次与结构。</p>
-
-            
-
-        </div>
-    </div>
-    <div id="post-footer" class="post-footer main-content-wrap">
-        
-            <div class="post-footer-tags">
-                <span class="text-color-light text-small">TAGGED IN</span><br/>
-                
-    <a class="tag tag--primary tag--small t-link" href="/tags/Python/">Python</a>
-
             </div>
-        
-        
-            <div class="post-actions-wrap">
-    <nav>
-        <ul class="post-actions post-action-nav">
-            <li class="post-action">
-                
+            
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    <p>本文源码摘自 android-6.0.0_r24分支</p>
+<p>主要内容为梳理Android调用 System.loadLibrary()加载so库时的调用链</p>
+<h1 id="总括"><a href="#总括" class="headerlink" title="总括"></a>总括</h1><p>在能找到ClassLoader的情况下调用的顺序为：</p>
+<ul>
+<li>System.loadLibrary</li>
+<li>Runtime.getRuntime().loadLibrary</li>
+<li>构建本地文件系统和应用的库路径（创建该APP进程时就构建好了）。拼接so的全称，匹配搜索so的全路径并返回</li>
+<li>Runtime.getRuntime().doLoad()：获取从当前加载的Classloader获取LD_LIBRARY_PATH路径，传入底层的nativeLoad</li>
+<li>获取虚拟机对象并调用其内部的LoadNativeLibrary方法。</li>
+<li>判断目标库是否已加载。如果已加载，判断加载的ClassLoader和本次的ClassLoader是否相同，如果不同，则警告。如果未加载，使用dlopen打开并加载目标库的本进程的虚拟地址空间中，返回handle句柄。如果打开失败（handle为null），使用nativeBridge做二次尝试加载（会有是否支持nativeBridge加载的判断）。</li>
+<li>如果两次加载都失败，直接返回。</li>
+<li>如果加载成功，开始创建一个共享库对象。因为是多线程，所以在创建完成后需要判断是否有其他线程先于我们加载完成。如果是，则释放本次的资源。否，则使用dlsym加载JNI_OnLoad方法。</li>
+<li>如果目标库不存在JNI_OnLoad，返回false</li>
+<li>如果存在，则调用并执行JNI_OnLoad。</li>
+</ul>
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/02/MVP 深引用方式的简单实现/" data-tooltip="MVP 深引用方式的简单实现" aria-label="PREVIOUS: MVP 深引用方式的简单实现">
-                
-                    <i class="fa fa-angle-left" aria-hidden="true"></i>
-                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
-                </a>
-            </li>
-            <li class="post-action">
-                
+                        <a href="/2018/03/18/Jni_load/" class="postShorten-excerpt_link link">
+                            Continue reading
+                        </a>
+                        
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/02/27/NotePython3/" data-tooltip="Python学习笔记（三）" aria-label="NEXT: Python学习笔记（三）">
-                
-                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
-                    <i class="fa fa-angle-right" aria-hidden="true"></i>
-                </a>
-            </li>
-        </ul>
-    </nav>
-    <ul class="post-actions post-action-share">
-        <li class="post-action hide-lg hide-md hide-sm">
-            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
-                <i class="fa fa-share-alt" aria-hidden="true"></i>
-            </a>
-        </li>
+                </div>
+            
+        </div>
         
-            
-            
-            <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2016/02/27/NotePython4/" title="Share on Weibo">
-                    <i class="fa fa-weibo" aria-hidden="true"></i>
-                </a>
-            </li>
-        
-            
-            
-            <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2016/02/27/NotePython4/&amp;title=Python学习笔记(四) 多重继承及内部算法解析" title="Share on QQ">
-                    <i class="fa fa-qq" aria-hidden="true"></i>
-                </a>
-            </li>
-        
-            
-            
-            <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2016/02/27/NotePython4/" title="Share on Qzone">
-                    <i class="fa fa-star" aria-hidden="true"></i>
-                </a>
-            </li>
-        
-            
-            
-            <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2016/02/27/NotePython4/" title="Share on Renren">
-                    <i class="fa fa-renren" aria-hidden="true"></i>
-                </a>
-            </li>
+    </article>
+    
+    <div class="pagination-bar">
+    <ul class="pagination">
         
         
-            
-                <li class="post-action">
-                    <a class="post-action-btn btn btn--default" href="#gitment">
-                         <i class="fa fa-comment-o"></i>
-                    </a>
-                </li>
-            
-        
-        <li class="post-action">
-            
-                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
-            
-                <i class="fa fa-list" aria-hidden="true"></i>
-            </a>
-        </li>
+        <li class="pagination-number">page 1 of 1</li>
     </ul>
 </div>
 
-
-        
-        
-            
-                <div id="gitment"></div>
-            
-        
-    </div>
-</article>
+</section>
 
 
 
@@ -369,130 +265,6 @@
 </footer>
 
             </div>
-            
-                <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
-                    <div class="post-actions-wrap">
-    <nav>
-        <ul class="post-actions post-action-nav">
-            <li class="post-action">
-                
-                    
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/02/MVP 深引用方式的简单实现/" data-tooltip="MVP 深引用方式的简单实现" aria-label="PREVIOUS: MVP 深引用方式的简单实现">
-                
-                    <i class="fa fa-angle-left" aria-hidden="true"></i>
-                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
-                </a>
-            </li>
-            <li class="post-action">
-                
-                    
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/02/27/NotePython3/" data-tooltip="Python学习笔记（三）" aria-label="NEXT: Python学习笔记（三）">
-                
-                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
-                    <i class="fa fa-angle-right" aria-hidden="true"></i>
-                </a>
-            </li>
-        </ul>
-    </nav>
-    <ul class="post-actions post-action-share">
-        <li class="post-action hide-lg hide-md hide-sm">
-            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
-                <i class="fa fa-share-alt" aria-hidden="true"></i>
-            </a>
-        </li>
-        
-            
-            
-            <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2016/02/27/NotePython4/" title="Share on Weibo">
-                    <i class="fa fa-weibo" aria-hidden="true"></i>
-                </a>
-            </li>
-        
-            
-            
-            <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2016/02/27/NotePython4/&amp;title=Python学习笔记(四) 多重继承及内部算法解析" title="Share on QQ">
-                    <i class="fa fa-qq" aria-hidden="true"></i>
-                </a>
-            </li>
-        
-            
-            
-            <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2016/02/27/NotePython4/" title="Share on Qzone">
-                    <i class="fa fa-star" aria-hidden="true"></i>
-                </a>
-            </li>
-        
-            
-            
-            <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2016/02/27/NotePython4/" title="Share on Renren">
-                    <i class="fa fa-renren" aria-hidden="true"></i>
-                </a>
-            </li>
-        
-        
-            
-                <li class="post-action">
-                    <a class="post-action-btn btn btn--default" href="#gitment">
-                         <i class="fa fa-comment-o"></i>
-                    </a>
-                </li>
-            
-        
-        <li class="post-action">
-            
-                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
-            
-                <i class="fa fa-list" aria-hidden="true"></i>
-            </a>
-        </li>
-    </ul>
-</div>
-
-
-                </div>
-                <div id="share-options-bar" class="share-options-bar" data-behavior="5">
-    <i id="btn-close-shareoptions" class="fa fa-close"></i>
-    <ul class="share-options">
-        
-            
-            
-            <li class="share-option">
-                <a class="share-option-btn" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2016/02/27/NotePython4/">
-                    <i class="fa fa-weibo" aria-hidden="true"></i><span>Share on Weibo</span>
-                </a>
-            </li>
-        
-            
-            
-            <li class="share-option">
-                <a class="share-option-btn" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2016/02/27/NotePython4/&amp;title=Python学习笔记(四) 多重继承及内部算法解析">
-                    <i class="fa fa-qq" aria-hidden="true"></i><span>Share on QQ</span>
-                </a>
-            </li>
-        
-            
-            
-            <li class="share-option">
-                <a class="share-option-btn" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2016/02/27/NotePython4/">
-                    <i class="fa fa-star" aria-hidden="true"></i><span>Share on Qzone</span>
-                </a>
-            </li>
-        
-            
-            
-            <li class="share-option">
-                <a class="share-option-btn" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2016/02/27/NotePython4/">
-                    <i class="fa fa-renren" aria-hidden="true"></i><span>Share on Renren</span>
-                </a>
-            </li>
-        
-    </ul>
-</div>
-
             
         </div>
         
@@ -784,37 +556,6 @@
         <!--SCRIPTS-->
 <script src="/assets/js/script-peofhqjkzcghmndknakluequy1y6owxdwpaqyju9ntl9zxnk7rdolb3rjjoj.min.js"></script>
 <!--SCRIPTS END-->
-
-    
-        <script type="text/javascript">
-            (function() {
-                function render() {
-                    new Gitment({
-                        id: 'http://imlzq.com/2016/02/27/NotePython4/',
-                        owner: 'CytQ',
-                        repo: 'BlogComments',
-                        oauth: {
-                            client_id: 'eddb24a604957d55b0fc',
-                            client_secret: '5c1a27d80b9c1978faa1d488b34d606b77529b77',
-                        }
-                    }).render('gitment');
-                }
-                var gc = document.createElement('script');
-                gc.type = 'text/javascript';
-                gc.src = '//imsun.github.io/gitment/dist/gitment.browser.js';
-                gc.charset = 'UTF-8';
-                gc.onload = render;
-                gc.async = true;
-                document.querySelector('body').appendChild(gc);
-                var gcs = document.createElement('link');
-                gcs.href = '//imsun.github.io/gitment/style/default.css';
-                gcs.type = 'text/css';
-                gcs.rel = 'stylesheet';
-                gcs.media = 'screen,print';
-                document.querySelector('head').appendChild(gcs);
-            })();
-	    </script>
-    
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment-with-locales.min.js"></script>
