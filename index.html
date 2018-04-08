@@ -246,7 +246,7 @@
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-03-18T13:05:35+08:00">
+    <time itemprop="datePublished" datetime="2018-03-18T13:05:36+08:00">
 	
 		    Mar 18, 2018
     	
@@ -259,19 +259,6 @@
                 <div class="postShorten-excerpt" itemprop="articleBody">
                     <p>本文源码摘自 android-6.0.0_r24分支</p>
 <p>主要内容为梳理Android调用 System.loadLibrary()加载so库时的调用链</p>
-<h1 id="总括"><a href="#总括" class="headerlink" title="总括"></a>总括</h1><p>在能找到ClassLoader的情况下调用的顺序为：</p>
-<ul>
-<li>System.loadLibrary</li>
-<li>Runtime.getRuntime().loadLibrary</li>
-<li>构建本地文件系统和应用的库路径（创建该APP进程时就构建好了）。拼接so的全称，匹配搜索so的全路径并返回</li>
-<li>Runtime.getRuntime().doLoad()：获取从当前加载的Classloader获取LD_LIBRARY_PATH路径，传入底层的nativeLoad</li>
-<li>获取虚拟机对象并调用其内部的LoadNativeLibrary方法。</li>
-<li>判断目标库是否已加载。如果已加载，判断加载的ClassLoader和本次的ClassLoader是否相同，如果不同，则警告。如果未加载，使用dlopen打开并加载目标库的本进程的虚拟地址空间中，返回handle句柄。如果打开失败（handle为null），使用nativeBridge做二次尝试加载（会有是否支持nativeBridge加载的判断）。</li>
-<li>如果两次加载都失败，直接返回。</li>
-<li>如果加载成功，开始创建一个共享库对象。因为是多线程，所以在创建完成后需要判断是否有其他线程先于我们加载完成。如果是，则释放本次的资源。否，则使用dlsym加载JNI_OnLoad方法。</li>
-<li>如果目标库不存在JNI_OnLoad，返回false</li>
-<li>如果存在，则调用并执行JNI_OnLoad。</li>
-</ul>
                     
                         <a href="/2018/03/18/Jni_load/" class="postShorten-excerpt_link link">
                             Continue reading
