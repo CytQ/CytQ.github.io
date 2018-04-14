@@ -13,18 +13,18 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="so注入的主要思路是：  保存目标进程的状态 使用ptrace跟踪目标进程 获得mmap、dlopen、dlsym等库函数在目标进程中的偏移地址 调用mmap在目标进程内部申请一段内存空间 将我们的ShellCode写入到刚才申请的内存空间中 修改目标进程PC寄存器的值，使其跳转到Shellcode执行，然后调用Shellcode库的函数 恢复原so状态">
+    <meta name="description" content="so注入的主要思路是：  找到目标进程 使用ptrace跟踪目标进程，保存目标进程的状态 获得mmap、dlopen、dlsym等库函数在目标进程中的偏移地址 调用mmap在目标进程内部申请一段内存空间 将我们的ShellCode写入到刚才申请的内存空间中 dlopen打开Shellcode，dlsym调用Shellcode库的函数 恢复原so状态，detach">
 <meta name="keywords" content="Android">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="So注入">
 <meta property="og:url" content="http://imlzq.com/2018/01/09/so_inject/index.html">
 <meta property="og:site_name" content="Hello! CytQ">
-<meta property="og:description" content="so注入的主要思路是：  保存目标进程的状态 使用ptrace跟踪目标进程 获得mmap、dlopen、dlsym等库函数在目标进程中的偏移地址 调用mmap在目标进程内部申请一段内存空间 将我们的ShellCode写入到刚才申请的内存空间中 修改目标进程PC寄存器的值，使其跳转到Shellcode执行，然后调用Shellcode库的函数 恢复原so状态">
+<meta property="og:description" content="so注入的主要思路是：  找到目标进程 使用ptrace跟踪目标进程，保存目标进程的状态 获得mmap、dlopen、dlsym等库函数在目标进程中的偏移地址 调用mmap在目标进程内部申请一段内存空间 将我们的ShellCode写入到刚才申请的内存空间中 dlopen打开Shellcode，dlsym调用Shellcode库的函数 恢复原so状态，detach">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2018-04-14T07:58:52.315Z">
+<meta property="og:updated_time" content="2018-04-14T08:02:48.118Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="So注入">
-<meta name="twitter:description" content="so注入的主要思路是：  保存目标进程的状态 使用ptrace跟踪目标进程 获得mmap、dlopen、dlsym等库函数在目标进程中的偏移地址 调用mmap在目标进程内部申请一段内存空间 将我们的ShellCode写入到刚才申请的内存空间中 修改目标进程PC寄存器的值，使其跳转到Shellcode执行，然后调用Shellcode库的函数 恢复原so状态">
+<meta name="twitter:description" content="so注入的主要思路是：  找到目标进程 使用ptrace跟踪目标进程，保存目标进程的状态 获得mmap、dlopen、dlsym等库函数在目标进程中的偏移地址 调用mmap在目标进程内部申请一段内存空间 将我们的ShellCode写入到刚才申请的内存空间中 dlopen打开Shellcode，dlsym调用Shellcode库的函数 恢复原so状态，detach">
     
     
         
@@ -221,13 +221,13 @@
         <div class="main-content-wrap">
             <p><strong>so注入的主要思路是：</strong></p>
 <ol>
-<li>保存目标进程的状态</li>
-<li>使用ptrace跟踪目标进程</li>
+<li>找到目标进程</li>
+<li>使用ptrace跟踪目标进程，保存目标进程的状态</li>
 <li>获得mmap、dlopen、dlsym等库函数在目标进程中的偏移地址</li>
 <li>调用mmap在目标进程内部申请一段内存空间</li>
 <li>将我们的ShellCode写入到刚才申请的内存空间中</li>
-<li>修改目标进程PC寄存器的值，使其跳转到Shellcode执行，然后调用Shellcode库的函数</li>
-<li>恢复原so状态</li>
+<li>dlopen打开Shellcode，dlsym调用Shellcode库的函数</li>
+<li>恢复原so状态，detach</li>
 </ol>
 <a id="more"></a>
 <h1 id="核心点"><a href="#核心点" class="headerlink" title="核心点"></a>核心点</h1><h2 id="ptrace"><a href="#ptrace" class="headerlink" title="ptrace"></a>ptrace</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ptrace.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">long</span> ptrace（<span class="keyword">enum</span> _ptrace_request request,<span class="keyword">pid_t</span> pid,<span class="keyword">void</span> * addr ,<span class="keyword">void</span> *data）;</span><br><span class="line"></span><br><span class="line">    <span class="number">1</span>). <span class="keyword">enum</span> __ptrace_request request：指示了ptrace要执行的命令。</span><br><span class="line">    <span class="number">2</span>). <span class="keyword">pid_t</span> pid: 指示ptrace要跟踪的进程。</span><br><span class="line">    <span class="number">3</span>). <span class="keyword">void</span> *addr: 指示要监控的内存地址。</span><br><span class="line">    <span class="number">4</span>). <span class="keyword">void</span> *data: 存放读取出的或者要写入的数据。</span><br></pre></td></tr></table></figure>

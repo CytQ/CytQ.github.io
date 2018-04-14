@@ -307,13 +307,13 @@
                 <div class="postShorten-excerpt" itemprop="articleBody">
                     <p><strong>so注入的主要思路是：</strong></p>
 <ol>
-<li>保存目标进程的状态</li>
-<li>使用ptrace跟踪目标进程</li>
+<li>找到目标进程</li>
+<li>使用ptrace跟踪目标进程，保存目标进程的状态</li>
 <li>获得mmap、dlopen、dlsym等库函数在目标进程中的偏移地址</li>
 <li>调用mmap在目标进程内部申请一段内存空间</li>
 <li>将我们的ShellCode写入到刚才申请的内存空间中</li>
-<li>修改目标进程PC寄存器的值，使其跳转到Shellcode执行，然后调用Shellcode库的函数</li>
-<li>恢复原so状态</li>
+<li>dlopen打开Shellcode，dlsym调用Shellcode库的函数</li>
+<li>恢复原so状态，detach</li>
 </ol>
                     
                         <a href="/2018/01/09/so_inject/" class="postShorten-excerpt_link link">
