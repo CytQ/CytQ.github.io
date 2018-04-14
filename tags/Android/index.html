@@ -288,6 +288,95 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2018/01/09/so_inject/">
+                            So注入
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-01-09T22:26:24+08:00">
+	
+		    Jan 09, 2018
+    	
+    </time>
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    <p><strong>so注入的主要思路是：</strong></p>
+<ol>
+<li>保存目标进程的状态</li>
+<li>使用ptrace跟踪目标进程</li>
+<li>获得mmap、dlopen、dlsym等库函数在目标进程中的偏移地址</li>
+<li>调用mmap在目标进程内部申请一段内存空间</li>
+<li>将我们的ShellCode写入到刚才申请的内存空间中</li>
+<li>修改目标进程PC寄存器的值，使其跳转到Shellcode执行，然后调用Shellcode库的函数</li>
+<li>恢复原so状态</li>
+</ol>
+                    
+                        <a href="/2018/01/09/so_inject/" class="postShorten-excerpt_link link">
+                            Continue reading
+                        </a>
+                        
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2018/01/08/Xposed/">
+                            Xposed
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-01-08T00:00:00+08:00">
+	
+		    Jan 08, 2018
+    	
+    </time>
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    <p><strong>Xposed的表现形式：</strong></p>
+<p>可以拦截任意应用的任意方法实现，将它替换为自设的功能代码。</p>
+<p><strong>主要逻辑：</strong></p>
+<ul>
+<li>通过包名匹配查看是否有需要hook的模块。如果有，修改它的java方法为本地方法（通过修改accessFlag实现）</li>
+<li>当目标方法被调用时，由xposed方法的本地方法调度逻辑分发，回调java层的方法，一般就是各个hook模块，从而实现使用自行实现的方法替换原方法。</li>
+</ul>
+                    
+                        <a href="/2018/01/08/Xposed/" class="postShorten-excerpt_link link">
+                            Continue reading
+                        </a>
+                        
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/10/30/Dex/">
                             Dex文件结构分析
                         </a>
@@ -499,83 +588,6 @@
                     <p>已经很久没有写博客，就再利用这段时间把该以前总结过的又再总结一次吧，好多东西光记在脑子里也不行。那首先就用Android的ClassLoader开个头，接着就再总结一下Volley, Retrofit, OKHttp, Rxjava, HashMap，Gson,Fresco，动态加载，热点修复以及算法吧。</p>
                     
                         <a href="/2016/05/29/classloader/" class="postShorten-excerpt_link link">
-                            Continue reading
-                        </a>
-                        
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2016/04/12/EventsFromAppClick/">
-                            【置顶】杂谈——Android从启动到程序运行发生的事情
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2016-04-12T00:00:00+08:00">
-	
-		    Apr 12, 2016
-    	
-    </time>
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    <p>转载请注明出处<br>博客地址：imlzq.com<br>作者：李中权</p>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>好久没有写博客了，瞬间感觉好多学了的东西不进行一个自我的总结与消化总归变不成自己的。通过博客可能还可以找到一些当初在学习的时候没有想到的问题。想了半天，从大二上学期自学Android以来还没有对Android从启动到程序运行期间进行一个完整的归纳，刚好最近又学到了一些新东西，那就以这篇博客为媒介，总结一下从Android启动到程序运行期间发生的所有事吧。包括什么ClassLoader, JVM,IPC, 消息处理机制要是总结到了就顺带BB一下。但是这里就不包含很多细节了，比如为什么PMS内部为什么要这么构造，好处是什么，如果我来设计的话我会怎么设计啊这种暂时就不总结了，因为我觉得以我现在的水平还有学习精力来说把这些细节都一个个的弄清楚有点没抓住重点。现阶段还是先能够了解整个流程，有个大局观才是最重要的。至于以后如果有需要或者是有精力的时候再一个个的突破。</p>
-<p><strong>发现本文的错误或者遗漏后会立刻更改</strong></p>
-                    
-                        <a href="/2016/04/12/EventsFromAppClick/" class="postShorten-excerpt_link link">
-                            Continue reading
-                        </a>
-                        
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2016/03/25/rxjava/">
-                            Rxjava原理探索：切换线程，变换
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2016-03-25T16:11:30+08:00">
-	
-		    Mar 25, 2016
-    	
-    </time>
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    <p>在之前的几篇博客中，我编写了一篇有关<a href="http://blog.csdn.net/jonstank2013/article/details/50366109" target="_blank" rel="noopener">Rxjava学习笔记</a>的，还有一个是<a href="http://blog.csdn.net/jonstank2013/article/details/50574871" target="_blank" rel="noopener">RxJava使用示例（一）： 实现Rxbus代替eventbus</a>（这篇博文其实还不算完善，因为没有对被观察者发出的时间进行一个筛选，一次发送所有订阅者都会收到，这样不太好，可以再新加一个筛选器，等以后有空或者是遇到的时候再来改一改，现在不急）。</p>
-<p>之前在写那边Rxjava学习笔记的时候，就突出了一点是只涉及使用，不涉及原理，现在就对Rxjava的原理进行一个简单的探索。</p>
-                    
-                        <a href="/2016/03/25/rxjava/" class="postShorten-excerpt_link link">
                             Continue reading
                         </a>
                         
@@ -890,7 +902,7 @@
                 data-message-zero="no post found"
                 data-message-one="1 post found"
                 data-message-other="{n} posts found">
-                47 posts found
+                49 posts found
             </p>
         </div>
     </div>

@@ -21,10 +21,14 @@
 <meta property="og:site_name" content="Hello! CytQ">
 <meta property="og:description" content="这篇文章主要介绍汇编、计算机组成原理等基本内容，属于基础篇。方便其他人快速查阅。每一段的基础介绍都参杂一些个人理解">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2018-04-06T16:02:51.649Z">
+<meta property="og:image" content="https://github.com/CytQ/BlogImgs/blob/master/%E6%B1%87%E7%BC%96%E5%9F%BA%E7%A1%80%E5%8F%8A%E4%B8%AA%E4%BA%BA%E7%90%86%E8%A7%A3/CPSR.png?raw=true">
+<meta property="og:image" content="https://github.com/CytQ/BlogImgs/blob/master/%E6%B1%87%E7%BC%96%E5%9F%BA%E7%A1%80%E5%8F%8A%E4%B8%AA%E4%BA%BA%E7%90%86%E8%A7%A3/getJniString.png?raw=true">
+<meta property="og:image" content="https://github.com/CytQ/BlogImgs/blob/master/%E6%B1%87%E7%BC%96%E5%9F%BA%E7%A1%80%E5%8F%8A%E4%B8%AA%E4%BA%BA%E7%90%86%E8%A7%A3/encrypt.png?raw=true">
+<meta property="og:updated_time" content="2018-04-11T04:42:45.431Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="汇编基础及个人理解">
 <meta name="twitter:description" content="这篇文章主要介绍汇编、计算机组成原理等基本内容，属于基础篇。方便其他人快速查阅。每一段的基础介绍都参杂一些个人理解">
+<meta name="twitter:image" content="https://github.com/CytQ/BlogImgs/blob/master/%E6%B1%87%E7%BC%96%E5%9F%BA%E7%A1%80%E5%8F%8A%E4%B8%AA%E4%BA%BA%E7%90%86%E8%A7%A3/CPSR.png?raw=true">
     
     
         
@@ -230,7 +234,85 @@
 <p>它的主要特点是将程序和数据存储在不同的存储空间中，即程序存储器和数据存储器是两个独立的存储器，每个存储器独立编址、独立访问。与两个存储器相对应的是系统的4条总线：程序的数据总线与地址总线，数据的数据总线与地址总线。这种分离的程序总线和数据总线允许在一个机器周期内同时获得指令字（来自程序存储器）和操作数（来自数据存储器），从而提高了执行速度，使数据的吞吐率提高了1倍。又由于程序和数据存储器在两个分开的物理空间中，因此取指和执行能完全重叠。CPU首先到程序指令存储器中读取程序指令内容，解码后得到数据地址，再到相应的数据存储器中读取数据，并进行下一步的操作（通常是执行）。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>上面的这两种体系都属于存储器体系，前者是将程序指令和数据放在一块，后者是拆分。<br>哈佛体系的速度快是显而易见的，但我认为这两者都有点理想模型的意思。在实际的使用中，都允许存在一些例外。</p>
 <p>拿哈佛体系来说，它效率高，但设计复杂。如果我们要动态加载程序，那么就需要从外存中读取一段程序然后加载到RAM，如果这个程序在数据内存中，我们就需要一种机制将数据内存再传输到程序内存中，这就增加了设备复杂度。到RAM，如果这个程序在数据内存中，我们就需要一种机制将数据内存再传输到程序内存中，这就增加了设备复杂度。此外，此外，，绝对不允许CPU/DSP读取程序内存来当作数据，这也是不现实的，程序一般都有只读数据区和静态数据区，烧写程序的时候会当作程序的一部分烧进ROM中，如果为了把程序和数据分开，而需要设置两块ROM，再把其中一块ROM和RAM通过复用器接起来，结构就太复杂了就太复杂了，更不用说每次烧写都要分开烧两块ROM。实际上即使是DSP通常也允许从程序内存的总线上读取一些数据。</p>
-<h1 id="ARM寄存器"><a href="#ARM寄存器" class="headerlink" title="ARM寄存器"></a>ARM寄存器</h1><p><strong>未完待续</strong></p>
+<h1 id="ARM寄存器"><a href="#ARM寄存器" class="headerlink" title="ARM寄存器"></a>ARM寄存器</h1><blockquote>
+<p>arm指令集分为arm指令和thumb指令等，在IDA中对于一个函数或地址判断是否是ARM还是thrumb看调用的地址是否为奇数，如果为奇数则为thrumb指令，如果是4字节对齐则为ARM指令</p>
+</blockquote>
+<h2 id="寻址方式：9种"><a href="#寻址方式：9种" class="headerlink" title="寻址方式：9种"></a>寻址方式：9种</h2><ul>
+<li>立即寻址：MOV R0, #1234 地址码部分为立即数</li>
+<li>寄存器寻址：MOV R0, R1</li>
+<li>寄存器间接寻址： LDR R0, [R1]</li>
+<li>寄存器移位寻址： MOV R0, R1, LSL #2</li>
+<li>多寄存器寻址：LDMIA R0, {R1,R2,R3,R4}. 指令后缀IA表示每次执行完加载操作后R0寄存器的值自增1.R1=[R0], R2=[R0+#4],R3=[R0+#8],R4=[R0+#12]</li>
+<li>基址寻址</li>
+<li>堆栈寻址: STMFD SP!， {R1-R7， LR} 将R1-R7，LR入栈。多用于保存子程序“现场”</li>
+<li>块拷贝寻址: </li>
+<li>相对寻址</li>
+</ul>
+<p><strong>R7: 栈帧指针(Frame Pointer).指向前一个保存的栈帧(stack frame)和链接寄存器(link register， lr)在栈上的地址</strong></p>
+<h2 id="LR"><a href="#LR" class="headerlink" title="LR"></a>LR</h2><p>链接寄存器。它与子程序调用密切相关，用于存放子程序的返回地址，它是ARM程序实现子程序调用的关键所在</p>
+<ul>
+<li>保存子程序返回地址；</li>
+<li>当异常发生时，LR中保存的值等于异常发生时PC的值减4（或者减2），因此在各种异常模式下可以根据LR的值返回到异常发生前的相应位置继续执行。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span> <span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function">2 </span>&#123;</span><br><span class="line"><span class="number">3</span>    <span class="keyword">int</span> k, i = <span class="number">1</span>, j = <span class="number">2</span>;</span><br><span class="line"><span class="number">4</span>    addsub(i, j);</span><br><span class="line"><span class="number">5</span>    k = <span class="number">3</span>;</span><br><span class="line"><span class="number">6</span>	 <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"><span class="number">7</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="number">8</span> <span class="function"><span class="keyword">int</span> <span class="title">addsub</span><span class="params">(inta, <span class="keyword">int</span> b)</span></span></span><br><span class="line"><span class="function">9 </span>&#123;</span><br><span class="line"><span class="number">10</span>    <span class="keyword">int</span> c;</span><br><span class="line"><span class="number">11</span>    c = a+ b;</span><br><span class="line"><span class="number">12</span>    <span class="keyword">return</span> c;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于上面的程序，编译器会将第4行编译为指令：BL addsub，将第12行编译为指令：MOV pc, lr</p>
+<p>在这里，关键指令BL addsub会完成2件事情：                 </p>
+<ol>
+<li>将子程序的返回地址（也就是第5行代码在内存中的位置）保存到寄存器LR中；</li>
+<li>跳转到子程序addsub的第１条指令处。</li>
+</ol>
+<p>这样就完成了子程序的调用。</p>
+<p>如果子程序又调用了孙子程序（LR又会变为BL孙子程序的下一行），所以需要先将当前的LR入栈（一般是在子程序的入口出），等到子程序返回时POP出来就可以了</p>
+<h2 id="SP"><a href="#SP" class="headerlink" title="SP"></a>SP</h2><p>堆栈寄存器</p>
+<p>按照后进先出(LIFO)原则组织起来的连续存储区域。用于程序保存或恢复数据，或用于子程序调用及中断响应时保护与恢复现场。SP是堆栈指针寄存器，存放着当前堆栈栈顶地址。<br>一般情况下，对SP有影响的指令，对SP的操作都是隐式的，就是说SP并不出现在指令操作数当中。</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">PUSH</span> <span class="built_in">AX</span><span class="comment">;累加器AX的内容压栈保存，（SP）=（SP）-2</span></span><br><span class="line"><span class="keyword">POP</span> <span class="built_in">BX</span><span class="comment">;堆栈内保存的累加器AX的内容弹出到BX寄存器中，（SP）=（SP）+2</span></span><br></pre></td></tr></table></figure>
+<h1 id="常见汇编指令"><a href="#常见汇编指令" class="headerlink" title="常见汇编指令"></a>常见汇编指令</h1><h2 id="LDR"><a href="#LDR" class="headerlink" title="LDR"></a>LDR</h2><p>LDR 从基址寄存器Rn 的和立即数的偏移之和 得出内存地址的位置，从内存地址里面Load（装载）一个字的值写到 Rt 寄存器。</p>
+<p>从存储器（确切地说是地址空间）中装载数据到通用寄存器。</p>
+<p>此外，ARM中还存在一个LDR伪指令，它和LDR是不同的东西。区别在于它可以在立即数前增加=，表示把某一地址写到寄存器中</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">LDR </span><span class="built_in">r0</span>, <span class="number">0x12345678</span>  # <span class="keyword">LDR指令 </span></span><br><span class="line"><span class="keyword">LDR </span><span class="built_in">r0</span>, = <span class="number">0x12345678</span> # <span class="keyword">LDR伪指令</span></span><br></pre></td></tr></table></figure>
+<p>它和MOV的作用类似，但ARM是RISC结构，数据从内存到CPU之间的移动只能通过L/S指令来完成，也就是ldr/str指令。mov只能在寄存器之间移动数据，或者把立即数移动到寄存器中。</p>
+<p>mov指令限制了立即数的长度为8位，也就是不能超过512。而ldr伪指令没有这个限制。如果使用ldr伪指令时，后面跟的立即数没有超过8位，那么在实际汇编的时候该ldr伪指令是被转换为mov指令的。</p>
+<h2 id="STR"><a href="#STR" class="headerlink" title="STR"></a>STR</h2><p>STR（立即数） 指令计算出从基址寄存器的数值和立即数的偏移（通过这，得出内存（memory）地址)，然后从一个寄存器（register）读取它的值（store）到内存（memory）中</p>
+<p>说人话就是，STR{条件}  源寄存器，&lt;存储器地址&gt;</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">STR </span><span class="built_in">R0</span>，[<span class="built_in">R1</span>]，＃<span class="number">8</span>             ；将<span class="built_in">R0</span>中的字数据写入以<span class="built_in">R1</span>为地址的存储器中，并将新地址<span class="built_in">R1</span>＋<span class="number">8</span>写入<span class="built_in">R1</span>。</span><br><span class="line"><span class="keyword">STR </span><span class="built_in">R0</span>，[<span class="built_in">R1</span>，＃<span class="number">8</span>]             ；将<span class="built_in">R0</span>中的字数据写入以<span class="built_in">R1</span>＋<span class="number">8</span>为地址的存储器中。”</span><br><span class="line"><span class="keyword">STR </span><span class="built_in">R1</span>, [<span class="built_in">R0</span>]                  ；将<span class="built_in">r1</span>寄存器的值，传送到地址值为<span class="built_in">r0</span>的（存储器）内存中</span><br><span class="line"><span class="keyword">STR </span><span class="built_in">R1</span>, [<span class="built_in">R0</span>, <span class="symbol">#var_c</span>]	     <span class="comment">; 将R1的值赋给var_c</span></span><br></pre></td></tr></table></figure>
+<h1 id="B-BNE-BEQ-BL-BLX-BX"><a href="#B-BNE-BEQ-BL-BLX-BX" class="headerlink" title="B\BNE\BEQ\BL\BLX\BX"></a>B\BNE\BEQ\BL\BLX\BX</h1><p><strong>首先了解一下CPSR程序状态寄存器</strong>：它用于在用户编程时存储标志，包括条件码标志，中断禁止位，当前处理器模式以及其他状态和控制信息。</p>
+<p><img src="https://github.com/CytQ/BlogImgs/blob/master/%E6%B1%87%E7%BC%96%E5%9F%BA%E7%A1%80%E5%8F%8A%E4%B8%AA%E4%BA%BA%E7%90%86%E8%A7%A3/CPSR.png?raw=true" alt="CPSR"></p>
+<ul>
+<li>N标志位：运算结果的最高位反映在该标志位。对于有符号二进制补码，结果为负数时N=1，结果为正数或零时N=0</li>
+<li>Z标识位：Z=1表示运算的结果为零；Z=0表示运算的结果不为零。CMP指令的结果可以直接影响Z</li>
+<li>C标志位：加法指令中（包括比较指令CMN），当结果产生了进位,则C=1,表示无符号运算发生溢出；其他情况C=0。减法指令中（包括比较指令CMP），当运算中发生借位，则C=0，表示无符号运算数发生进位；其他情况下C=1。对于包含移位操作的非加减运算指令，C中包含最后一次溢出的位的数值。对于其他非加减运算指令，C位的值通常不受影响</li>
+<li>V标志位：对于加减运算指令，当<a href="https://baike.baidu.com/item/%E6%93%8D%E4%BD%9C%E6%95%B0" target="_blank" rel="noopener">操作数</a>和运算结果为二进制的<a href="https://baike.baidu.com/item/%E8%A1%A5%E7%A0%81/6854613" target="_blank" rel="noopener">补码</a>表示的带符号数时，V=1表示符号位溢出；通常其他指令不影响V位。</li>
+</ul>
+<h3 id="B"><a href="#B" class="headerlink" title="B"></a>B</h3><blockquote>
+<p>B 指令是最简单的跳转指令。一旦遇到一个 B 指令，ARM 处理器将立即跳转到给定的目标地址，从那里继续执行。注意存储在跳转指令中的实际值是<strong>相对当前PC 值的一个偏移量</strong>，而不是一个绝对地址，它的值由汇编器来计算（参考寻址方式中的相对寻址）。它是 24 位有符号数，左移两位后有符号扩展为 32 位，表示的有效偏移为 26 位(前后32MB 的地址空间)</p>
+</blockquote>
+<p>相对跳转指令，跳转的位置是相对于当前PC值的偏移量</p>
+<h3 id="BEQ"><a href="#BEQ" class="headerlink" title="BEQ"></a>BEQ</h3><p>如果CPSR的Z标识位为为1，则跳转。</p>
+<h3 id="BNE"><a href="#BNE" class="headerlink" title="BNE"></a>BNE</h3><p>如果CPSR的Z标志位为0， 则跳转</p>
+<h3 id="BL"><a href="#BL" class="headerlink" title="BL"></a>BL</h3><p>将下一个指令的地址复制到 r14（链接寄存器）中，跳转</p>
+<h3 id="BLX"><a href="#BLX" class="headerlink" title="BLX"></a>BLX</h3><p>将处理器的状态从 ARM 更改为 Thumb，或从 Thumb 更改为 ARM，将下一个指令的地址复制到r14中，跳转</p>
+<h3 id="BX"><a href="#BX" class="headerlink" title="BX"></a>BX</h3><p>将处理器的状态从 ARM 更改为 Thumb，或从 Thumb 更改为 ARM，跳转</p>
+<h1 id="示例1"><a href="#示例1" class="headerlink" title="示例1"></a>示例1</h1><p><strong>源码：</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">JNIEXPORT jstring JNICALL Java_com_example_lizhongquan_hellojni_JniUtils_getJniString</span><br><span class="line">        (JNIEnv *env, jclass) &#123;</span><br><span class="line">    <span class="keyword">return</span> env-&gt;NewStringUTF(<span class="string">"Hello World"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>汇编：</strong></p>
+<p><img src="https://github.com/CytQ/BlogImgs/blob/master/%E6%B1%87%E7%BC%96%E5%9F%BA%E7%A1%80%E5%8F%8A%E4%B8%AA%E4%BA%BA%E7%90%86%E8%A7%A3/getJniString.png?raw=true" alt="getJniString"></p>
+<p>首先，R0 = env</p>
+<ul>
+<li>LDR R1, [R0]：R1 = env</li>
+<li>LDR.W R2, [R1, #0x29c] :  等价于R2=R1+0x29c。也就是获得env中指定偏移地址的方法在内存中的位置</li>
+<li>ADR R1， aHelloWorld：   R1指向hello world对应的地址。ADR是指获取对于当前PC的相对地址。</li>
+<li>BX R2            这时候R0 = env， R1 = hello world， R2是env中的指定方法。也就是说调用env-&gt;NewStringUTF(“hello world”)</li>
+</ul>
+<h1 id="示例2"><a href="#示例2" class="headerlink" title="示例2"></a>示例2</h1><p><strong>源码：</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="string">"C"</span></span><br><span class="line"><span class="function">JNIEXPORT jint JNICALL <span class="title">encrypt</span><span class="params">(JNIEnv *env, jclass type, jint key)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> key + <span class="number">5</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>汇编：</strong></p>
+<p><img src="https://github.com/CytQ/BlogImgs/blob/master/%E6%B1%87%E7%BC%96%E5%9F%BA%E7%A1%80%E5%8F%8A%E4%B8%AA%E4%BA%BA%E7%90%86%E8%A7%A3/encrypt.png?raw=true" alt="encrypt"></p>
+<p>R0 = env, R1 = type, R2 = key.</p>
+<ul>
+<li>ADDS R0,R2,#5 :       key+5，结果放入R0</li>
+<li>BX LR：                     回调，值为R0</li>
+</ul>
+<p><strong>未完待续</strong></p>
 
             
 
@@ -749,7 +831,7 @@
                 data-message-zero="no post found"
                 data-message-one="1 post found"
                 data-message-other="{n} posts found">
-                47 posts found
+                49 posts found
             </p>
         </div>
     </div>

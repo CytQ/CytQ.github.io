@@ -1,0 +1,881 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hello! CytQ">
+    <title>So注入 - Hello! CytQ</title>
+    <meta name="author" content="CytQ">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="so注入的主要思路是：  保存目标进程的状态 使用ptrace跟踪目标进程 获得mmap、dlopen、dlsym等库函数在目标进程中的偏移地址 调用mmap在目标进程内部申请一段内存空间 将我们的ShellCode写入到刚才申请的内存空间中 修改目标进程PC寄存器的值，使其跳转到Shellcode执行，然后调用Shellcode库的函数 恢复原so状态">
+<meta name="keywords" content="Android">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="So注入">
+<meta property="og:url" content="http://imlzq.com/2018/01/09/so_inject/index.html">
+<meta property="og:site_name" content="Hello! CytQ">
+<meta property="og:description" content="so注入的主要思路是：  保存目标进程的状态 使用ptrace跟踪目标进程 获得mmap、dlopen、dlsym等库函数在目标进程中的偏移地址 调用mmap在目标进程内部申请一段内存空间 将我们的ShellCode写入到刚才申请的内存空间中 修改目标进程PC寄存器的值，使其跳转到Shellcode执行，然后调用Shellcode库的函数 恢复原so状态">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-04-14T07:58:52.315Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="So注入">
+<meta name="twitter:description" content="so注入的主要思路是：  保存目标进程的状态 使用ptrace跟踪目标进程 获得mmap、dlopen、dlsym等库函数在目标进程中的偏移地址 调用mmap在目标进程内部申请一段内存空间 将我们的ShellCode写入到刚才申请的内存空间中 修改目标进程PC寄存器的值，使其跳转到Shellcode执行，然后调用Shellcode库的函数 恢复原so状态">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="http://imlzq.com/assets/images/headicon.png"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-pz4cc6y13wt2trzqa8l3n9v0yykr0sstdaheem7qj628nhjmhp9pfawvqawz.min.css">
+    <!--STYLES END-->
+    
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+<header id="header" data-behavior="5">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/ ">Hello! CytQ</a>
+    </div>
+    
+        
+            <a  class="header-right-icon "
+                href="#about">
+        
+        
+            <i class="fa fa-lg fa-global.avatar"></i>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="5">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a href="/#about">
+                    <img class="sidebar-profile-picture" src="/assets/images/headicon.png" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">CytQ</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>Software Engineer<br>Android、移动安全、逆向、漏洞挖掘</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/ "
+                            
+                            title="Home"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Home</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-tags"
+                            
+                            title="Tags"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Tags</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-archives"
+                            
+                            title="Archives"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Archives</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link open-algolia-search"
+                             href="#search"
+                            
+                            title="Search"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Search</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="#about"
+                            
+                            title="About"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">About</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="mailto:cytlzq@gmail.com" target="_blank" rel="noopener" title="Mail">
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-envelope-o" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Mail</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/atom.xml"
+                            
+                            title="RSS"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="5"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            So注入
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time itemprop="datePublished" datetime="2018-01-09T22:26:24+08:00">
+	
+		    Jan 09, 2018
+    	
+    </time>
+    
+</div>
+
+    
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <p><strong>so注入的主要思路是：</strong></p>
+<ol>
+<li>保存目标进程的状态</li>
+<li>使用ptrace跟踪目标进程</li>
+<li>获得mmap、dlopen、dlsym等库函数在目标进程中的偏移地址</li>
+<li>调用mmap在目标进程内部申请一段内存空间</li>
+<li>将我们的ShellCode写入到刚才申请的内存空间中</li>
+<li>修改目标进程PC寄存器的值，使其跳转到Shellcode执行，然后调用Shellcode库的函数</li>
+<li>恢复原so状态</li>
+</ol>
+<a id="more"></a>
+<h1 id="核心点"><a href="#核心点" class="headerlink" title="核心点"></a>核心点</h1><h2 id="ptrace"><a href="#ptrace" class="headerlink" title="ptrace"></a>ptrace</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ptrace.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">long</span> ptrace（<span class="keyword">enum</span> _ptrace_request request,<span class="keyword">pid_t</span> pid,<span class="keyword">void</span> * addr ,<span class="keyword">void</span> *data）;</span><br><span class="line"></span><br><span class="line">    <span class="number">1</span>). <span class="keyword">enum</span> __ptrace_request request：指示了ptrace要执行的命令。</span><br><span class="line">    <span class="number">2</span>). <span class="keyword">pid_t</span> pid: 指示ptrace要跟踪的进程。</span><br><span class="line">    <span class="number">3</span>). <span class="keyword">void</span> *addr: 指示要监控的内存地址。</span><br><span class="line">    <span class="number">4</span>). <span class="keyword">void</span> *data: 存放读取出的或者要写入的数据。</span><br></pre></td></tr></table></figure>
+<p>简单点，ptrace是个系统调用，功能是提供一个进程（父进程）监控和管理另一个进程（子进程）的能力，并允许父进程检查和替换子进程的内核镜像(包括寄存器)的值。</p>
+<p>基本原理是: 当使用了ptrace跟踪后，所有发送给被跟踪的子进程的信号(除了SIGKILL)，都会被转发给父进程，而子进程则会被阻塞，这时子进程的状态就会被系统标注为TASK_TRACED。而父进程收到信号后，就可以对停止下来的子进程进行检查和修改，然后让子进程继续运行。   </p>
+<blockquote>
+<p>ptrace命令</p>
+<p>1). 用PTRACE_ATTACH或者PTRACE_TRACEME 建立进程间的跟踪关系。<br>2). PTRACE_PEEKTEXT, PTRACE_PEEKDATA, PTRACE_PEEKUSR等读取子进程内存/寄存器中保留的值。<br>3). PTRACE_POKETEXT, PTRACE_POKEDATA, PTRACE_POKEUSR等把值写入到被跟踪进程的内存/寄存器中<br>4). 用PTRACE_CONT，PTRACE_SYSCALL, PTRACE_SINGLESTEP控制被跟踪进程以何种方式继续运行。<br>5). PTRACE_DETACH, PTRACE_KILL 脱离进程间的跟踪关系。</p>
+<p>TIPS:</p>
+<pre><code>1. 进程状态TASK_TRACED用以表示当前进程因为被父进程跟踪而被系统停止。
+2. 如在子进程结束前，父进程结束，则trace关系解除。
+3. 利用attach建立起来的跟踪关系，虽然ps看到双方为父子关系，但在&quot;子进程&quot;中调用getppid()仍会返回原来的父进程id。
+4. 不能attach到自己不能跟踪的进程，如non-root进程跟踪root进程。
+5. 已经被trace的进程，不能再次被attach。
+6. 即使是用PTRACE_TRACEME建立起来的跟踪关系，也可以用DETACH的方式予以解除。
+7. 因为进入/退出系统调用都会触发一次SIGTRAP，所以通常的做法是在第一次(进入)的时候读取系统调用的参数，在第二次(退出)的时候读取系统调用的返回值。但注意execve是个例外。
+8. 程序调试时的断点由int 3设置完成，而单步跟踪则可由ptrace(PTRACE_SINGLESTEP)实现。
+</code></pre></blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">switch</span>(pid = fork())  </span><br><span class="line">   &#123;  </span><br><span class="line">   <span class="keyword">case</span> <span class="number">-1</span>:  </span><br><span class="line">       <span class="keyword">return</span> <span class="number">-1</span>;  </span><br><span class="line">   <span class="keyword">case</span> <span class="number">0</span>: <span class="comment">//子进程  </span></span><br><span class="line">       ptrace(PTRACE_TRACEME,<span class="number">0</span>,<span class="literal">NULL</span>,<span class="literal">NULL</span>);  </span><br><span class="line">       execl(<span class="string">"./HelloWorld"</span>, <span class="string">"HelloWorld"</span>, <span class="literal">NULL</span>);  </span><br><span class="line">   <span class="keyword">default</span>: <span class="comment">//父进程  </span></span><br><span class="line">       wait(&amp;val); <span class="comment">//等待并记录execve  </span></span><br><span class="line">       <span class="keyword">if</span>(WIFEXITED(val))  </span><br><span class="line">           <span class="keyword">return</span> <span class="number">0</span>;  </span><br><span class="line">       syscallID=ptrace(PTRACE_PEEKUSER, pid, ORIG_EAX*<span class="number">4</span>, <span class="literal">NULL</span>);  </span><br><span class="line">       <span class="built_in">printf</span>(<span class="string">"Process executed system call ID = %ld/n"</span>,syscallID);  </span><br><span class="line">       ptrace(PTRACE_SYSCALL,pid,<span class="literal">NULL</span>,<span class="literal">NULL</span>);  </span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>在上面的程序中，fork出的子进程先调用了ptrace(PTRACE_TRACEME)表示子进程让父进程跟踪自己。然后子进程调用execl加载执行了HelloWorld。</p>
+<p>而在父进程中则使用wait系统调用等待子进程的中断或结束。子进程因为设置了PTRACE_TRACEME而在执行系统调用被系统停止(设置为TASK_TRACED)，这时父进程被唤醒，使用ptrace(PTRACE_PEEKUSER,pid,…)分别去读取子进程执行的系统调用ID(放在ORIG_EAX中)以及系统调用返回时的值(放在EAX中)。然后使用ptrace(PTRACE_SYSCALL,pid,…)指示子进程运行到下一次执行系统调用的时候(进入或者退出)，直到子进程退出为止。</p>
+<blockquote>
+<p>wait指令会让父进程挂起，等待子进程的中断或结束</p>
+</blockquote>
+<h3 id="断点原理"><a href="#断点原理" class="headerlink" title="断点原理"></a>断点原理</h3><p>断点是大家在调试程序时常用的一个功能,如break linenumber，当执行到linenumber那一行的时候被调试程序会停止，等待debugger的进一步操作。<br>断点的实现原理，就是在指定的位置插入断点指令，当被调试的程序运行到断点的时候，产生SIGTRAP信号。该信号被gdb捕获并进行断点命中判定，当gdb判断出这次SIGTRAP是断点命中之后就会转入等待用户输入进行下一步处理，否则继续。</p>
+<p>断点的设置原理: 在程序中设置断点，就是先将该位置的原来的指令保存，然后向该位置写入int 3。当执行到int 3的时候，发生软中断，内核会给子进程发出SIGTRAP信号，当然这个信号会被转发给父进程。然后用保存的指令替换int3,等待恢复运行。<br>断点命中判定:gdb把所有的断点位置都存放在一个链表中，命中判定即把被调试程序当前停止的位置和链表中的断点位置进行比较，看是断点产生的信号，还是无关信号。</p>
+<h3 id="单步调试"><a href="#单步调试" class="headerlink" title="单步调试"></a>单步调试</h3><p>单步跟踪就是指在调试程序的时候，让程序运行一条指令/语句后就停下。GDB中常用的命令有next, step, nexti, stepi。单步跟踪又常分为语句单步(next, step)和指令单步(如nexti, stepi)。</p>
+<p>在linux上，指令单步可以通过ptrace来实现。调用ptrace(PTRACE_SINGLESTEP,pid,…)可以使被调试的进程在每执行完一条指令后就触发一个SIGTRAP信号，让GDB运行</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">child = fork();  </span><br><span class="line">   <span class="keyword">if</span>(child == <span class="number">0</span>) &#123;  </span><br><span class="line">        execl(<span class="string">"./HelloWorld"</span>, <span class="string">"HelloWorld"</span>, <span class="literal">NULL</span>);  </span><br><span class="line">   &#125;  </span><br><span class="line">   <span class="keyword">else</span> &#123;  </span><br><span class="line">       ptrace(PTRACE_ATTACH,child,<span class="literal">NULL</span>,<span class="literal">NULL</span>);  </span><br><span class="line">       <span class="keyword">while</span>(<span class="number">1</span>)&#123;  </span><br><span class="line">       wait(&amp;val);  </span><br><span class="line">       <span class="keyword">if</span>(WIFEXITED(val))  </span><br><span class="line">           <span class="keyword">break</span>;  </span><br><span class="line">       count++;  </span><br><span class="line">       ptrace(PTRACE_SINGLESTEP,child,<span class="literal">NULL</span>,<span class="literal">NULL</span>);  </span><br><span class="line">       &#125;  </span><br><span class="line">   <span class="built_in">printf</span>(<span class="string">"Total Instruction number= %d/n"</span>,count);  </span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<h1 id="找到目标进程"><a href="#找到目标进程" class="headerlink" title="找到目标进程"></a>找到目标进程</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pid_t</span> target_pid;</span><br><span class="line"></span><br><span class="line"><span class="comment">// PS命令能找到的进程</span></span><br><span class="line">target_pid = find_pid_of(<span class="string">"/system/bin/logwrapper"</span>);</span><br><span class="line"><span class="keyword">if</span> (<span class="number">-1</span> == target_pid) &#123;  </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Can't find the process\n"</span>);  </span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span>;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>找到目标进程的实现方式为：通过proc文件系统来一一比较。</p>
+<blockquote>
+<p>在Linux上，proc是一个伪文件系统，提供了访问内核数据的方法，一般挂载在“/proc”目录</p>
+</blockquote>
+<p>每个正在运行着的进程都proc下都会有个目录，目录名为pid。</p>
+<p>例如init进程，它的pid为1，所以对应/proc/1/，这个目录下保存的就是Init进程相关的数据。</p>
+<p><strong>找到目标进程的逻辑：</strong></p>
+<ul>
+<li>打开proc目录</li>
+<li>读取该目录，并转为dirent</li>
+<li>读取dirent-&gt;d_name值，并转为int号，也就是pid号</li>
+<li>在循环遍历每一个读取到的pid目录下的cmdline，用\0’分割其中的字符串得到进程的args[]，拿到args[0]，也就是进程的绝对路径</li>
+<li>匹配进程名是否一致</li>
+</ul>
+<p><strong>dirent：</strong>是一个结构体，</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">dirent</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">  <span class="keyword">long</span> d_ino; <span class="comment">/* inode number 索引节点号 */</span></span><br><span class="line">  <span class="keyword">off_t</span> d_off; <span class="comment">/* offset to this dirent 在目录文件中的偏移 */</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">short</span> d_reclen; <span class="comment">/* length of this d_name 文件名长 */</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">char</span> d_type; <span class="comment">/* the type of d_name 文件类型 */</span></span><br><span class="line">  <span class="keyword">char</span> d_name [NAME_MAX+<span class="number">1</span>]; <span class="comment">/* file name (null-terminated) 文件名，最长256字符 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>cmdline：</strong>存储的是main方法用的参数，也就是args，args[0]就是进程的绝对路径</p>
+<p>代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">find_pid_of</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *process_name)</span>    </span></span><br><span class="line"><span class="function"></span>&#123;    </span><br><span class="line">    <span class="keyword">int</span> id;    </span><br><span class="line">    <span class="keyword">pid_t</span> pid = <span class="number">-1</span>;    </span><br><span class="line">    DIR* dir;    </span><br><span class="line">    FILE *fp;    </span><br><span class="line">    <span class="keyword">char</span> filename[<span class="number">32</span>];    </span><br><span class="line">    <span class="keyword">char</span> cmdline[<span class="number">256</span>];    </span><br><span class="line">    </span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">dirent</span> * <span class="title">entry</span>;</span>    </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (process_name == <span class="literal">NULL</span>)    </span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;    </span><br><span class="line">    </span><br><span class="line">    dir = opendir(<span class="string">"/proc"</span>);    </span><br><span class="line">    <span class="keyword">if</span> (dir == <span class="literal">NULL</span>)    </span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;    </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span>((entry = readdir(dir)) != <span class="literal">NULL</span>) &#123;    </span><br><span class="line">        id = atoi(entry-&gt;d_name);    </span><br><span class="line">        <span class="keyword">if</span> (id != <span class="number">0</span>) &#123;    </span><br><span class="line">            <span class="built_in">sprintf</span>(filename, <span class="string">"/proc/%d/cmdline"</span>, id);    </span><br><span class="line">            fp = fopen(filename, <span class="string">"r"</span>);    </span><br><span class="line">            <span class="keyword">if</span> (fp) &#123;    </span><br><span class="line">                fgets(cmdline, <span class="keyword">sizeof</span>(cmdline), fp);    </span><br><span class="line">                fclose(fp);    </span><br><span class="line">    </span><br><span class="line">                <span class="keyword">if</span> (<span class="built_in">strcmp</span>(process_name, cmdline) == <span class="number">0</span>) &#123;    </span><br><span class="line">                    <span class="comment">/* process found */</span>    </span><br><span class="line">                    pid = id;    </span><br><span class="line">                    <span class="keyword">break</span>;    </span><br><span class="line">                &#125;    </span><br><span class="line">            &#125;    </span><br><span class="line">        &#125;    </span><br><span class="line">    &#125;    </span><br><span class="line">    </span><br><span class="line">    closedir(dir);    </span><br><span class="line">    <span class="keyword">return</span> pid;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="ptrace跟踪目标进程"><a href="#ptrace跟踪目标进程" class="headerlink" title="ptrace跟踪目标进程"></a>ptrace跟踪目标进程</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (ptrace_attach(target_pid) == <span class="number">-1</span>)   </span><br><span class="line">&#123; </span><br><span class="line">    <span class="keyword">goto</span> <span class="built_in">exit</span>;    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ptrace_attach</span><span class="params">(<span class="keyword">pid_t</span> pid)</span>    </span></span><br><span class="line"><span class="function"></span>&#123;    </span><br><span class="line">    <span class="keyword">if</span> (ptrace(PTRACE_ATTACH, pid, <span class="literal">NULL</span>, <span class="number">0</span>) &lt; <span class="number">0</span>) &#123;    </span><br><span class="line">        perror(<span class="string">"ptrace_attach"</span>);    </span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;    </span><br><span class="line">    &#125;    </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> status = <span class="number">0</span>;    </span><br><span class="line">    <span class="comment">// 挂起父进程，等待子进程中断或结束</span></span><br><span class="line">    waitpid(pid, &amp;status , WUNTRACED);    </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="保存目标进程寄存器的值"><a href="#保存目标进程寄存器的值" class="headerlink" title="保存目标进程寄存器的值"></a>保存目标进程寄存器的值</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (ptrace_getregs(target_pid, &amp;regs) == <span class="number">-1</span>) </span><br><span class="line">&#123;   </span><br><span class="line">    <span class="keyword">goto</span> <span class="built_in">exit</span>;    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 将读取到的寄存器值存放在regs中</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ptrace_getregs</span><span class="params">(<span class="keyword">pid_t</span> pid, struct pt_regs * regs)</span>    </span></span><br><span class="line"><span class="function"></span>&#123;    </span><br><span class="line">    <span class="keyword">if</span> (ptrace(PTRACE_GETREGS, pid, <span class="literal">NULL</span>, regs) &lt; <span class="number">0</span>) &#123;    </span><br><span class="line">        perror(<span class="string">"ptrace_getregs: Can not get register values"</span>);    </span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;    </span><br><span class="line">    &#125;    </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;    </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="comment">/* save original registers */</span>    </span><br><span class="line"><span class="built_in">memcpy</span>(&amp;original_regs, &amp;regs, <span class="keyword">sizeof</span>(regs));</span><br></pre></td></tr></table></figure>
+<h1 id="获得mmap、dlopen等库函数在目标进程中的偏移地址"><a href="#获得mmap、dlopen等库函数在目标进程中的偏移地址" class="headerlink" title="获得mmap、dlopen等库函数在目标进程中的偏移地址"></a>获得mmap、dlopen等库函数在目标进程中的偏移地址</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">char</span> *linker_path = <span class="string">"/system/bin/linker"</span>;   </span><br><span class="line"></span><br><span class="line">mmap_addr = get_remote_addr(target_pid, libc_path, (<span class="keyword">void</span> *)mmap);</span><br><span class="line">dlopen_addr = get_remote_addr( target_pid, linker_path, (<span class="keyword">void</span> *)dlopen );    </span><br><span class="line">dlsym_addr = get_remote_addr( target_pid, linker_path, (<span class="keyword">void</span> *)dlsym );    </span><br><span class="line">dlclose_addr = get_remote_addr( target_pid, linker_path, (<span class="keyword">void</span> *)dlclose );    </span><br><span class="line">dlerror_addr = get_remote_addr( target_pid, linker_path, (<span class="keyword">void</span> *)dlerror );</span><br></pre></td></tr></table></figure>
+<h1 id="调用mmap在目标进程申请内存空间"><a href="#调用mmap在目标进程申请内存空间" class="headerlink" title="调用mmap在目标进程申请内存空间"></a>调用mmap在目标进程申请内存空间</h1><p>构建mmap调用需要的参数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* call mmap */</span>    </span><br><span class="line">parameters[<span class="number">0</span>] = <span class="number">0</span>;  <span class="comment">// addr    </span></span><br><span class="line">parameters[<span class="number">1</span>] = <span class="number">0x4000</span>; <span class="comment">// size    </span></span><br><span class="line">parameters[<span class="number">2</span>] = PROT_READ | PROT_WRITE | PROT_EXEC;  <span class="comment">// prot    </span></span><br><span class="line">parameters[<span class="number">3</span>] =  MAP_ANONYMOUS | MAP_PRIVATE; <span class="comment">// flags    </span></span><br><span class="line">parameters[<span class="number">4</span>] = <span class="number">0</span>; <span class="comment">//fd    </span></span><br><span class="line">parameters[<span class="number">5</span>] = <span class="number">0</span>; <span class="comment">//offset    </span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (ptrace_call_wrapper(target_pid, <span class="string">"mmap"</span>, mmap_addr, parameters, <span class="number">6</span>, &amp;regs) == <span class="number">-1</span>)  </span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">goto</span> <span class="built_in">exit</span>;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ptrace_call_wrapper</span><span class="params">(<span class="keyword">pid_t</span> target_pid, <span class="keyword">const</span> <span class="keyword">char</span> * func_name, <span class="keyword">void</span> * func_addr, <span class="keyword">long</span> * parameters, <span class="keyword">int</span> param_num, struct pt_regs * regs)</span>     </span></span><br><span class="line"><span class="function"></span>&#123;    </span><br><span class="line">  DEBUG_PRINT(<span class="string">"[+] Calling %s in target process.\n"</span>, func_name);    </span><br><span class="line">  <span class="keyword">if</span> (ptrace_call(target_pid, (<span class="keyword">uint32_t</span>)func_addr, parameters, param_num, regs) == <span class="number">-1</span>)    </span><br><span class="line">      <span class="keyword">return</span> <span class="number">-1</span>;    </span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (ptrace_getregs(target_pid, regs) == <span class="number">-1</span>)    </span><br><span class="line">      <span class="keyword">return</span> <span class="number">-1</span>;    </span><br><span class="line">  DEBUG_PRINT(<span class="string">"[+] Target process returned from %s, return value=%x, pc=%x \n"</span>,     </span><br><span class="line">          func_name, ptrace_retval(regs), ptrace_ip(regs));    </span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里做个平台判断，区分arm和x86，他们的实现方式不一样。下面只介绍arm</p>
+<ul>
+<li>首先将前面构建的mmap参数放入寄存器当中，对于arm来说，R0~R3是存放参数的，对于超过4位的参数一律放在栈中</li>
+<li>将目标进程的PC寄存器指向mmap的函数地址，重置CPSR状态寄存器，重置LR寄存器</li>
+<li>将配置完的寄存器应用到进程中</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(__arm__)    </span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ptrace_call</span><span class="params">(<span class="keyword">pid_t</span> pid, <span class="keyword">uint32_t</span> addr, <span class="keyword">long</span> *params, <span class="keyword">uint32_t</span> num_params, struct pt_regs* regs)</span>    </span></span><br><span class="line"><span class="function"></span>&#123;    </span><br><span class="line">    <span class="keyword">uint32_t</span> i;   </span><br><span class="line">  	<span class="comment">// 参数先放寄存器中，R0~R3</span></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; num_params &amp;&amp; i &lt; <span class="number">4</span>; i ++) &#123;    </span><br><span class="line">        regs-&gt;uregs[i] = params[i];    </span><br><span class="line">    &#125;    </span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 多于4位的放在栈中   </span></span><br><span class="line">    <span class="keyword">if</span> (i &lt; num_params) &#123;    </span><br><span class="line">        regs-&gt;ARM_sp -= (num_params - i) * <span class="keyword">sizeof</span>(<span class="keyword">long</span>) ;    </span><br><span class="line">        ptrace_writedata(pid, (<span class="keyword">void</span> *)regs-&gt;ARM_sp, (<span class="keyword">uint8_t</span> *)&amp;params[i], (num_params - i) * <span class="keyword">sizeof</span>(<span class="keyword">long</span>));    </span><br><span class="line">    &#125;    </span><br><span class="line">    </span><br><span class="line">  	<span class="comment">// 将ARM的PC寄存器指向addr，也就是上面传来的需要调用的函数地址</span></span><br><span class="line">    regs-&gt;ARM_pc = addr;    </span><br><span class="line">  	</span><br><span class="line">    <span class="comment">// 判断ARM当前所处的状态是thumb还是arm，它们的区别在于thumb是16位，arm是32位。属于arm的子集</span></span><br><span class="line">    <span class="comment">// 然后重置CPSR程序状态寄存器</span></span><br><span class="line">    <span class="keyword">if</span> (regs-&gt;ARM_pc &amp; <span class="number">1</span>) &#123;    </span><br><span class="line">        <span class="comment">/* thumb */</span>    </span><br><span class="line">        regs-&gt;ARM_pc &amp;= (~<span class="number">1u</span>);    </span><br><span class="line">        regs-&gt;ARM_cpsr |= CPSR_T_MASK;    </span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;    </span><br><span class="line">        <span class="comment">/* arm */</span>    </span><br><span class="line">        regs-&gt;ARM_cpsr &amp;= ~CPSR_T_MASK;    </span><br><span class="line">    &#125;    </span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 重置LR寄存器</span></span><br><span class="line">    <span class="comment">// LR寄存器存放的是子程序的返回地址</span></span><br><span class="line">    regs-&gt;ARM_lr = <span class="number">0</span>;        </span><br><span class="line">    </span><br><span class="line">  	<span class="comment">// 设置寄存器的值</span></span><br><span class="line">    <span class="keyword">if</span> (ptrace_setregs(pid, regs) == <span class="number">-1</span>     </span><br><span class="line">            || ptrace_continue(pid) == <span class="number">-1</span>) &#123;    </span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"error\n"</span>);    </span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;    </span><br><span class="line">    &#125;    </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> stat = <span class="number">0</span>;  </span><br><span class="line">    waitpid(pid, &amp;stat, WUNTRACED);  </span><br><span class="line">    <span class="keyword">while</span> (stat != <span class="number">0xb7f</span>) &#123;  </span><br><span class="line">        <span class="keyword">if</span> (ptrace_continue(pid) == <span class="number">-1</span>) &#123;  </span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"error\n"</span>);  </span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;  </span><br><span class="line">        &#125;  </span><br><span class="line">        waitpid(pid, &amp;stat, WUNTRACED);  </span><br><span class="line">    &#125;  </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;    </span><br><span class="line">&#125;    </span><br><span class="line">    </span><br><span class="line"><span class="meta">#<span class="meta-keyword">elif</span> defined(__i386__)    </span></span><br><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">ptrace_call</span><span class="params">(<span class="keyword">pid_t</span> pid, <span class="keyword">uint32_t</span> addr, <span class="keyword">long</span> *params, <span class="keyword">uint32_t</span> num_params, struct user_regs_struct * regs)</span>    </span></span><br><span class="line"><span class="function"></span>&#123;    </span><br><span class="line">    regs-&gt;esp -= (num_params) * <span class="keyword">sizeof</span>(<span class="keyword">long</span>) ;    </span><br><span class="line">    ptrace_writedata(pid, (<span class="keyword">void</span> *)regs-&gt;esp, (<span class="keyword">uint8_t</span> *)params, (num_params) * <span class="keyword">sizeof</span>(<span class="keyword">long</span>));    </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">long</span> tmp_addr = <span class="number">0x00</span>;    </span><br><span class="line">    regs-&gt;esp -= <span class="keyword">sizeof</span>(<span class="keyword">long</span>);    </span><br><span class="line">    ptrace_writedata(pid, regs-&gt;esp, (<span class="keyword">char</span> *)&amp;tmp_addr, <span class="keyword">sizeof</span>(tmp_addr));     </span><br><span class="line">    </span><br><span class="line">    regs-&gt;eip = addr;    </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (ptrace_setregs(pid, regs) == <span class="number">-1</span>     </span><br><span class="line">            || ptrace_continue( pid) == <span class="number">-1</span>) &#123;    </span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"error\n"</span>);    </span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;    </span><br><span class="line">    &#125;    </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> stat = <span class="number">0</span>;  </span><br><span class="line">    waitpid(pid, &amp;stat, WUNTRACED);  </span><br><span class="line">    <span class="keyword">while</span> (stat != <span class="number">0xb7f</span>) &#123;  </span><br><span class="line">        <span class="keyword">if</span> (ptrace_continue(pid) == <span class="number">-1</span>) &#123;  </span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"error\n"</span>);  </span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;  </span><br><span class="line">        &#125;  </span><br><span class="line">        waitpid(pid, &amp;stat, WUNTRACED);  </span><br><span class="line">    &#125;  </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;    </span><br><span class="line">&#125;    </span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span>     </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">error</span> <span class="meta-string">"Not supported"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ptrace_writedata</span><span class="params">(<span class="keyword">pid_t</span> pid, <span class="keyword">uint8_t</span> *dest, <span class="keyword">uint8_t</span> *data, <span class="keyword">size_t</span> size)</span>    </span></span><br><span class="line"><span class="function"></span>&#123;    </span><br><span class="line">    <span class="keyword">uint32_t</span> i, j, remain;    </span><br><span class="line">    <span class="keyword">uint8_t</span> *laddr;    </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">union</span> u &#123;    </span><br><span class="line">        <span class="keyword">long</span> val;    </span><br><span class="line">        <span class="keyword">char</span> chars[<span class="keyword">sizeof</span>(<span class="keyword">long</span>)];    </span><br><span class="line">    &#125; d;    </span><br><span class="line">    </span><br><span class="line">    j = size / <span class="number">4</span>;    </span><br><span class="line">    remain = size % <span class="number">4</span>;    </span><br><span class="line">    </span><br><span class="line">    laddr = data;    </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; j; i ++) &#123;    </span><br><span class="line">        <span class="built_in">memcpy</span>(d.chars, laddr, <span class="number">4</span>);    </span><br><span class="line">        ptrace(PTRACE_POKETEXT, pid, dest, d.val);    </span><br><span class="line">    </span><br><span class="line">        dest  += <span class="number">4</span>;    </span><br><span class="line">        laddr += <span class="number">4</span>;    </span><br><span class="line">    &#125;    </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (remain &gt; <span class="number">0</span>) &#123;    </span><br><span class="line">        d.val = ptrace(PTRACE_PEEKTEXT, pid, dest, <span class="number">0</span>);    </span><br><span class="line">        <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; remain; i ++) &#123;    </span><br><span class="line">            d.chars[i] = *laddr ++;    </span><br><span class="line">        &#125;    </span><br><span class="line">    </span><br><span class="line">        ptrace(PTRACE_POKETEXT, pid, dest, d.val);    </span><br><span class="line">    &#125;    </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 设置寄存器</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ptrace_setregs</span><span class="params">(<span class="keyword">pid_t</span> pid, struct pt_regs * regs)</span>    </span></span><br><span class="line"><span class="function"></span>&#123;    </span><br><span class="line">    <span class="keyword">if</span> (ptrace(PTRACE_SETREGS, pid, <span class="literal">NULL</span>, regs) &lt; <span class="number">0</span>) &#123;    </span><br><span class="line">        perror(<span class="string">"ptrace_setregs: Can not set register values"</span>);    </span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;    </span><br><span class="line">    &#125;    </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="写入Shellcode"><a href="#写入Shellcode" class="headerlink" title="写入Shellcode"></a>写入Shellcode</h1><p>首先拿到mmap映射的基地址，方便后续操作</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">map_base = ptrace_retval(&amp;regs);   </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">ptrace_retval</span><span class="params">(struct pt_regs * regs)</span>    </span></span><br><span class="line"><span class="function"></span>&#123;    </span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(__arm__)    </span></span><br><span class="line">    <span class="keyword">return</span> regs-&gt;ARM_r0;    </span><br><span class="line"><span class="meta">#<span class="meta-keyword">elif</span> defined(__i386__)    </span></span><br><span class="line">    <span class="keyword">return</span> regs-&gt;eax;    </span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span>    </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">error</span> <span class="meta-string">"Not supported"</span>    </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span>    </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将我们的Shellcode写入到目标进程中</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ptrace_writedata(target_pid, map_base, library_path, <span class="built_in">strlen</span>(library_path) + <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+<h1 id="执行Shellcode"><a href="#执行Shellcode" class="headerlink" title="执行Shellcode"></a>执行Shellcode</h1><p>构建dlopen的执行参数，打开shellcode</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">parameters[<span class="number">0</span>] = map_base;       </span><br><span class="line">parameters[<span class="number">1</span>] = RTLD_NOW| RTLD_GLOBAL;     </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (ptrace_call_wrapper(target_pid, <span class="string">"dlopen"</span>, dlopen_addr, parameters, <span class="number">2</span>, &amp;regs) == <span class="number">-1</span>)  </span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">goto</span> <span class="built_in">exit</span>;     </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>拿到shellcode的句柄，找到shellcode中目标方法的偏移地址，执行dlsym加载</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> * sohandle = ptrace_retval(&amp;regs); </span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> FUNCTION_NAME_ADDR_OFFSET       0x100    </span></span><br><span class="line">    ptrace_writedata(target_pid, map_base + FUNCTION_NAME_ADDR_OFFSET, function_name, <span class="built_in">strlen</span>(function_name) + <span class="number">1</span>);    </span><br><span class="line">    parameters[<span class="number">0</span>] = sohandle;       </span><br><span class="line">    parameters[<span class="number">1</span>] = map_base + FUNCTION_NAME_ADDR_OFFSET;     </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (ptrace_call_wrapper(target_pid, <span class="string">"dlsym"</span>, dlsym_addr, parameters, <span class="number">2</span>, &amp;regs) == <span class="number">-1</span>)    </span><br><span class="line">        <span class="keyword">goto</span> <span class="built_in">exit</span>;    </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">void</span> * hook_entry_addr = ptrace_retval(&amp;regs);    </span><br><span class="line">    DEBUG_PRINT(<span class="string">"hook_entry_addr = %p\n"</span>, hook_entry_addr);    </span><br><span class="line">    </span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> FUNCTION_PARAM_ADDR_OFFSET      0x200    </span></span><br><span class="line">    ptrace_writedata(target_pid, map_base + FUNCTION_PARAM_ADDR_OFFSET, param, <span class="built_in">strlen</span>(param) + <span class="number">1</span>);    </span><br><span class="line">    parameters[<span class="number">0</span>] = map_base + FUNCTION_PARAM_ADDR_OFFSET;      </span><br><span class="line">  </span><br><span class="line">    <span class="keyword">if</span> (ptrace_call_wrapper(target_pid, <span class="string">"hook_entry"</span>, hook_entry_addr, parameters, <span class="number">1</span>, &amp;regs) == <span class="number">-1</span>)    </span><br><span class="line">        <span class="keyword">goto</span> <span class="built_in">exit</span>;</span><br></pre></td></tr></table></figure>
+<h1 id="恢复原so的状态，detach"><a href="#恢复原so的状态，detach" class="headerlink" title="恢复原so的状态，detach"></a>恢复原so的状态，detach</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">printf</span>(<span class="string">"Press enter to dlclose and detach\n"</span>);    </span><br><span class="line">getchar();    </span><br><span class="line">parameters[<span class="number">0</span>] = sohandle;       </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (ptrace_call_wrapper(target_pid, <span class="string">"dlclose"</span>, dlclose, parameters, <span class="number">1</span>, &amp;regs) == <span class="number">-1</span>)    </span><br><span class="line">    <span class="keyword">goto</span> <span class="built_in">exit</span>;    </span><br><span class="line"></span><br><span class="line"><span class="comment">/* restore */</span>    </span><br><span class="line">ptrace_setregs(target_pid, &amp;original_regs);    </span><br><span class="line">ptrace_detach(target_pid);    </span><br><span class="line">ret = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ptrace_detach</span><span class="params">(<span class="keyword">pid_t</span> pid)</span>    </span></span><br><span class="line"><span class="function"></span>&#123;    </span><br><span class="line">    <span class="keyword">if</span> (ptrace(PTRACE_DETACH, pid, <span class="literal">NULL</span>, <span class="number">0</span>) &lt; <span class="number">0</span>) &#123;    </span><br><span class="line">        perror(<span class="string">"ptrace_detach"</span>);    </span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;    </span><br><span class="line">    &#125;    </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>完结，撒花</p>
+<hr>
+<p><strong>参考链接：</strong></p>
+<p>本文代码来自网络，地址没找到了，注释自己写的</p>
+
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/Android/">Android</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/30/Java函数签名/" data-tooltip="Java函数签名" aria-label="PREVIOUS: Java函数签名">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/08/Xposed/" data-tooltip="Xposed" aria-label="NEXT: Xposed">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2018/01/09/so_inject/" title="Share on Weibo">
+                    <i class="fa fa-weibo" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2018/01/09/so_inject/&amp;title=So注入" title="Share on QQ">
+                    <i class="fa fa-qq" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2018/01/09/so_inject/" title="Share on Qzone">
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2018/01/09/so_inject/" title="Share on Renren">
+                    <i class="fa fa-renren" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#gitment">
+                         <i class="fa fa-comment-o"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="gitment"></div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2018 CytQ. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/30/Java函数签名/" data-tooltip="Java函数签名" aria-label="PREVIOUS: Java函数签名">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/08/Xposed/" data-tooltip="Xposed" aria-label="NEXT: Xposed">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2018/01/09/so_inject/" title="Share on Weibo">
+                    <i class="fa fa-weibo" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2018/01/09/so_inject/&amp;title=So注入" title="Share on QQ">
+                    <i class="fa fa-qq" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2018/01/09/so_inject/" title="Share on Qzone">
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2018/01/09/so_inject/" title="Share on Renren">
+                    <i class="fa fa-renren" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#gitment">
+                         <i class="fa fa-comment-o"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="5">
+    <i id="btn-close-shareoptions" class="fa fa-close"></i>
+    <ul class="share-options">
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2018/01/09/so_inject/">
+                    <i class="fa fa-weibo" aria-hidden="true"></i><span>Share on Weibo</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2018/01/09/so_inject/&amp;title=So注入">
+                    <i class="fa fa-qq" aria-hidden="true"></i><span>Share on QQ</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2018/01/09/so_inject/">
+                    <i class="fa fa-star" aria-hidden="true"></i><span>Share on Qzone</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2018/01/09/so_inject/">
+                    <i class="fa fa-renren" aria-hidden="true"></i><span>Share on Renren</span>
+                </a>
+            </li>
+        
+    </ul>
+</div>
+
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/headicon.png" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">CytQ</h4>
+        
+            <div id="about-card-bio"><p>Software Engineer<br>Android、移动安全、逆向、漏洞挖掘</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>17本科，现任职百度</p>
+
+            </div>
+        
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                Beijing
+            </div>
+        
+    </div>
+</div>
+
+        
+            <div id="algolia-search-modal" class="modal-container">
+    <div class="modal">
+        <div class="modal-header">
+            <span class="close-button"><i class="fa fa-close"></i></span>
+            <a href="https://algolia.com" target="_blank" rel="noopener" class="searchby-algolia text-color-light link-unstyled">
+                <span class="searchby-algolia-text text-color-light text-small">by</span>
+                <img class="searchby-algolia-logo" src="https://www.algolia.com/static_assets/images/press/downloads/algolia-light.svg">
+            </a>
+            <i class="search-icon fa fa-search"></i>
+            <form id="algolia-search-form">
+                <input type="text" id="algolia-search-input" name="search"
+                    class="form-control input--large search-input" placeholder="Search "
+                    />
+            </form>
+        </div>
+        <div class="modal-body">
+            <div class="no-result text-color-light text-center">no post found</div>
+            <div class="results">
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/11/22/序言/">
+                            <h3 class="media-heading">序言</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Nov 22, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/11/23/Volley-Lrucache-DiskLrucache/">
+                            <h3 class="media-heading">三级缓存 + AndroidStudio导出jar包 + upload to github</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Nov 23, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>　　想了半天都没想出来写什么作为第一篇博客比较好，突然发现这次项目的版本控制是github，三级缓存和屏幕适配又是一个跑不掉的话题，就以这些话题开始我的博客之旅吧，同时总结一下在AndroidStudio中如何导出jar包。    </p>
+<pre><code>([参考郭霖的blog](http://blog.csdn.net/guolin_blog/article/details/28863651))
+([参考李晨玮的blog](http://www.cnblogs.com/lichenwei)/)
+
+不管是提升用户体验还是提升APP的流畅度，三级缓存都是必不可少的，在这里就先总结一下三级缓存的使用。
+</code></pre><p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/11/23/screensuit/">
+                            <h3 class="media-heading">三种屏幕适配的方式</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Nov 23, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>​    第一篇博客总结了三级缓存／AndroidStudio打包jar包／上传基本文件到github,　第二篇就接着总结一下三种屏幕适配的方式。</p>
+<p>在这里也推荐一下<a href="http://blog.csdn.net/lmj623565791?viewmode=contents" target="_blank" rel="noopener">张鸿洋</a>的博客，关注挺久了，和<a href="http://blog.csdn.net/guolin_blog" target="_blank" rel="noopener">郭霖</a>的都很好。</p>
+<p>第一种方式，dimens中设置不同dp值，来达到适配的目的<br>第二种方式，利用第三方百分比库<br>第三种方式，利用第三方库：AutoLayout </p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/11/24/全局变量的处理/">
+                            <h3 class="media-heading">全局变量的处理</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Nov 24, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>　　很多时候APP会莫名其妙的崩溃，尤其是一些配置很低的收集，重现场景就是在APP切换到后台后，闲置了一段时间后再继续使用时，就会崩溃。<br>　　导致上述崩溃发生的一个可能罪魁祸首就是全局变量，在内存不足的时候，系统会回收一部分闲置的资源，由于APP被切换到了后台，所以之前存放的全局变量很容易被回收，这是再切换到前台继续使用，在使用某个全局变量的时候，就会因为全局变量的值为空而崩溃。<br>　　要解决这个问题，就一定要使用序列化技术。</p>
+<p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/11/25/Android自动填写验证码/">
+                            <h3 class="media-heading">Android自动填写验证码</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Nov 25, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>　　第四篇博客就来总结下项目中使用到的一个提升用户体验的功能：　Android自动填写验证码<br>　　从字面上来看，很明显的可以看出它的实现流程：监听-&gt;有改变-&gt;获取信息-&gt;改变ui</p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/12/01/引导页_视差显示/">
+                            <h3 class="media-heading">引导页_视差显示</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Dec 1, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>当用户下载完APP后，第一次启动时通常会有一个引导页，而这个引导页对于引导用户或介绍本产品有着很好的作用。一般三种方式实现：</p>
+<ol>
+<li>Viewpager<br>这种方式很简单，易实现，但是在观赏性上来说很差，没有任何动画</li>
+<li>视差显示<br>这种方式是基于ViewPager的，通过自定义其中的类，或者调整其中的方法来达到显示的效果。<br>　在ViewPager中，有一个接口叫做PageTransformer，其中有一个方法transformPage,我们通过在这个方法中编写逻辑就可以实现视差显示。而之所以叫做视差显示，是因为实现这种方式是对不同的控件设置不同的速度来达到的。例如，ViewPager移动了10dp,　图片A移动了15dp, 图片B移动了7.5dp，这就产生了一个视差。</li>
+<li>Html5<br>这种方式也是最近使用得越来越多的方式，通过加载h5来实现引导页的炫目效果。</li>
+</ol></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/12/01/手势/">
+                            <h3 class="media-heading">手势</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Dec 1, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>这里介绍的只是一个简单的DEMO，根据官方的API还可以进行自定义手势的编写，具体的内容就以后遇到了再说，在本项目中也只起一个开后门的验证作用,毕竟一个没有后门的APP不是一个好APP。</p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/12/07/Json数据的解析_Gson/">
+                            <h3 class="media-heading">Json数据的解析_Gson</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Dec 7, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>一些简单的JSON格式解析可以直接使用JSONObject和JSONArray来解析，但是面对比较复杂或者是数据量较大的JSON数据时就需要使用fastJSON和Gson来解析了，这样的效率和效果都更好。</p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/12/08/ViewPager取消预加载/">
+                            <h3 class="media-heading">ViewPager取消预加载</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Dec 8, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>ViewPager在设计的时候有一个预加载的机制，也就是如果你处于当前这个page界面时,会预先加载下一个page。但是有的时候设计到网络请求，就需要取消掉这个预加载。</p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/12/20/Note-&gt;Rxjava/">
+                            <h3 class="media-heading">RxJava学习笔记</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Dec 20, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>学习自扔物线的文章<a href="http://gank.io/post/560e15be2dca930e00da1083。" target="_blank" rel="noopener">http://gank.io/post/560e15be2dca930e00da1083。</a></p>
+<p>粗略学习了最近越来越火的RxJava，进行一个简单的学习总结，这篇博客只涉及使用，不涉及原理</p>
+<blockquote>
+<p>Github：<br><a href="https://github.com/ReactiveX/RxJava" target="_blank" rel="noopener">https://github.com/ReactiveX/RxJava</a><br><a href="https://github.com/ReactiveX/RxAndroid" target="_blank" rel="noopener">https://github.com/ReactiveX/RxAndroid</a> </p>
+</blockquote>
+<p>使用方式:</p>
+<blockquote>
+<p>compile ‘io.reactivex:rxjava:1.0.14’<br>compile ‘io.reactivex:rxandroid:1.0.1’ </p>
+</blockquote>
+<p>我的相关博文：<br><a href="http://blog.csdn.net/jonstank2013/article/details/50574871" target="_blank" rel="noopener">RxJava使用示例（一）： 实现Rxbus代替eventbus</a><br><a href="http://blog.csdn.net/jonstank2013/article/details/50981404" target="_blank" rel="noopener">RxJava实现原理探索</a></p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+            </div>
+        </div>
+        <div class="modal-footer">
+            <p class="results-count text-medium"
+                data-message-zero="no post found"
+                data-message-one="1 post found"
+                data-message-other="{n} posts found">
+                49 posts found
+            </p>
+        </div>
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-peofhqjkzcghmndknakluequy1y6owxdwpaqyju9ntl9zxnk7rdolb3rjjoj.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+        <script type="text/javascript">
+            (function() {
+                function render() {
+                    new Gitment({
+                        id: 'http://imlzq.com/2018/01/09/so_inject/',
+                        owner: 'CytQ',
+                        repo: 'BlogComments',
+                        oauth: {
+                            client_id: 'eddb24a604957d55b0fc',
+                            client_secret: '5c1a27d80b9c1978faa1d488b34d606b77529b77',
+                        }
+                    }).render('gitment');
+                }
+                var gc = document.createElement('script');
+                gc.type = 'text/javascript';
+                gc.src = '//imsun.github.io/gitment/dist/gitment.browser.js';
+                gc.charset = 'UTF-8';
+                gc.onload = render;
+                gc.async = true;
+                document.querySelector('body').appendChild(gc);
+                var gcs = document.createElement('link');
+                gcs.href = '//imsun.github.io/gitment/style/default.css';
+                gcs.type = 'text/css';
+                gcs.rel = 'stylesheet';
+                gcs.media = 'screen,print';
+                document.querySelector('head').appendChild(gcs);
+            })();
+	    </script>
+    
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment-with-locales.min.js"></script>
+    <script src="//cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
+    <script>
+        var algoliaClient = algoliasearch('S730SA64YT', '66519eebbcfbe3a23d50e47efa19798f');
+        var algoliaIndex = algoliaClient.initIndex('Blog');
+    </script>
+
+
+    </body>
+</html>
