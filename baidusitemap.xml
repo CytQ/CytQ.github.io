@@ -4,6 +4,25 @@
 
     
   <url>
+    <loc>http://imlzq.com/2017/10/26/Linux%20%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E5%92%8Cmmap/</loc>
+    <lastmod>2018-04-16T09:00:59.437Z</lastmod>
+    <data>
+        <display>
+        <title>Linux文件基础和mmap</title>
+        <pubTime>2017-10-25T16:00:00.000Z</pubTime>
+        
+        <tag>漏洞</tag>
+         
+        <tag>汇编</tag>
+         
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://imlzq.com/2018/01/09/so_inject/</loc>
     <lastmod>2018-04-14T08:17:48.242Z</lastmod>
     <data>
@@ -452,25 +471,6 @@
     
     
     
-    
-  <url>
-    <loc>http://imlzq.com/2017/10/26/Linux%20%E6%96%87%E4%BB%B6%E5%9F%BA%E7%A1%80%E5%92%8Cmmap/</loc>
-    <lastmod>2018-02-12T04:21:51.857Z</lastmod>
-    <data>
-        <display>
-        <title>Linux文件基础和mmap</title>
-        <pubTime>2017-10-25T16:00:00.000Z</pubTime>
-        
-        <tag>漏洞</tag>
-         
-        <tag>汇编</tag>
-         
-         
-           
-        </display>
-    </data>
-    </url>
-
     
   <url>
     <loc>http://imlzq.com/2017/10/11/Dalvik%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%8A%A0%E8%BD%BDDex%E7%9A%84%E6%B5%81%E7%A8%8B/</loc>
