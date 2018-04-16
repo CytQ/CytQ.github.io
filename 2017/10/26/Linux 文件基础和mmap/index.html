@@ -24,7 +24,7 @@
 <meta property="og:image" content="http://bos.nj.bpc.baidu.com/v1/agroup/103143f4b87f36e80404c317b2cd06cf1cccc845">
 <meta property="og:image" content="http://bos.nj.bpc.baidu.com/v1/agroup/cd2b711165c1b5ae167e31c248539377ae7bd623">
 <meta property="og:image" content="http://bos.nj.bpc.baidu.com/v1/agroup/e73e69609510615c14deecc36ea1455394f2d281">
-<meta property="og:updated_time" content="2018-04-16T09:00:59.437Z">
+<meta property="og:updated_time" content="2018-04-16T15:01:29.202Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux文件基础和mmap">
 <meta name="twitter:description" content="脱360的壳时需要给mmap函数下断点，总结IPC的共享内存时也需要用到mmap，所以本文就先总结一下mmap相关内容。">
@@ -227,8 +227,8 @@
 <a id="more"></a>    
 <h1 id="一、Linux文件基础"><a href="#一、Linux文件基础" class="headerlink" title="一、Linux文件基础"></a>一、Linux文件基础</h1><h2 id="1、fd"><a href="#1、fd" class="headerlink" title="1、fd"></a>1、fd</h2><p>fd（File Descriptor）是内核为了管理已打开的文件所创建的索引，是一个非负整数，在open时产生。所有执行I/O操作的系统调用都会通过文件描述符。<br>| 文件描述符 | 用途   | POSIX名称       | stdio流 |<br>| —– | —- | ————- | —— |<br>| 0     | 标准输入 | STDIN_FILENO  | stdin  |<br>| 1     | 标准输出 | STDOUT_FILENO | stdout |<br>| 2     | 标准错误 | STDERR_FILENO | stderr |<br>如果打开一个新的文件，它的fd会是3。</p>
 <p>POSIX（Portable Operating System Interface of UNIX，可移植操作系统接口）标准规定每次打开文件时必须使用当前进程中最小可用的文件描述符号码。</p>
-<h3 id="1-1、限制"><a href="#1-1、限制" class="headerlink" title="1.1、限制"></a>1.1、限制</h3><p>理论上系统内存有多大就可以打开多少的fd，但实际上内核允许最大的打开文件数是系统内存的10%（KB计算），如果超出这个数，就会提示“Too many open files”。可以使用sysctl -a | grep fs.file-max命令查看系统的最大打开文件数。这也就是系统级限制。<br>此外，为了防止一个进程消耗掉所有的文件资源，单个进程最大打开的文件数有限制，一般为1024，可通过ulimit -n查看。这就是用户级限制。</p>
-<h2 id="2、fd和文件之间的关系"><a href="#2、fd和文件之间的关系" class="headerlink" title="2、fd和文件之间的关系"></a>2、fd和文件之间的关系</h2><ul>
+<h3 id="1-1-限制"><a href="#1-1-限制" class="headerlink" title="1.1 限制"></a>1.1 限制</h3><p>理论上系统内存有多大就可以打开多少的fd，但实际上内核允许最大的打开文件数是系统内存的10%（KB计算），如果超出这个数，就会提示“Too many open files”。可以使用sysctl -a | grep fs.file-max命令查看系统的最大打开文件数。这也就是系统级限制。<br>此外，为了防止一个进程消耗掉所有的文件资源，单个进程最大打开的文件数有限制，一般为1024，可通过ulimit -n查看。这就是用户级限制。</p>
+<h2 id="2、-fd和文件之间的关系"><a href="#2、-fd和文件之间的关系" class="headerlink" title="2、 fd和文件之间的关系"></a>2、 fd和文件之间的关系</h2><ul>
 <li>每个fd会与一个打开的文件对应；</li>
 <li>不同的fd也可能会指向同一个文件</li>
 <li><p>相同的文件可以被不同的进程打开，也可以在同一个进程中被多次打开</p>
@@ -241,7 +241,7 @@
 <li>系统级的打开文件描述符表</li>
 <li>文件系统的i-node表</li>
 </ul>
-<h3 id="3-1、inode表"><a href="#3-1、inode表" class="headerlink" title="3.1、inode表"></a>3.1、inode表</h3><p><strong>inode是什么？</strong></p>
+<h3 id="3-1-inode表"><a href="#3-1-inode表" class="headerlink" title="3.1 inode表"></a>3.1 inode表</h3><p><strong>inode是什么？</strong></p>
 <ul>
 <li>文件存储在硬盘上，硬盘的最小存储单位叫扇区（Sector），每个山区存储512字节（0.5KB）</li>
 <li>操作系统在读取硬盘的时候，为了效率，会一次性连续读取多个扇区，也就是块（block）。块也就是文件存取的最小单位，它的大小最常见的为4kb，即8个连续的扇区组成一个块</li>
@@ -273,10 +273,10 @@
 <p>对文件内容进行修改，会影响到所有文件名。但删除一个文件名，并不影响另一个文件名的访问。</p>
 <p><strong>软链接（soft link）</strong><br>有一种特殊情况。<br>文件A和B的inode号码虽然不一样，但是文件A的内容是文件B的路径。即读取文件A时，系统会自动将访问者导向B。<br>因此，不论打开哪一个文件，最终读取的都是文件B。这时候文件A就称为文件B的软链接或符号链接（Symbolic link）。</p>
 <p>这是的文件A依赖于文件B存在，如果删除文件B，那么打开文件A就会报错：『No such file or directory』。<br>这也就是软链接与硬链接最大的不同：文件A指向文件B，而不是文件B的inode号码，文件B的inode链接数不会因此发生变化</p>
-<h3 id="3-2、进程级的文件描述符表"><a href="#3-2、进程级的文件描述符表" class="headerlink" title="3.2、进程级的文件描述符表"></a>3.2、进程级的文件描述符表</h3><p>该表的每一条目均记录了单个文件描述符的相关信</p>
+<h3 id="3-2-进程级的文件描述符表"><a href="#3-2-进程级的文件描述符表" class="headerlink" title="3.2 进程级的文件描述符表"></a>3.2 进程级的文件描述符表</h3><p>该表的每一条目均记录了单个文件描述符的相关信</p>
 <pre><code>1. 控制文件描述符操作的一组标志（如close-on-exec）
 2. 对打开文件句柄的引用
-</code></pre><h3 id="3-3、系统级的打开文件描述符表"><a href="#3-3、系统级的打开文件描述符表" class="headerlink" title="3.3、系统级的打开文件描述符表"></a>3.3、系统级的打开文件描述符表</h3><p>内核对所有打开的文件维护有一个系统级的<strong>描述符表格（open file description table）</strong>，也被称为<strong>打开文件表（open file table）</strong>，并将表格中各条目称为<strong>打开文件句柄（open file handle）</strong>。<br>一个打开文件句柄存储了与一个打开文件相关的全部信息</p>
+</code></pre><h3 id="3-3-系统级的打开文件描述符表"><a href="#3-3-系统级的打开文件描述符表" class="headerlink" title="3.3 系统级的打开文件描述符表"></a>3.3 系统级的打开文件描述符表</h3><p>内核对所有打开的文件维护有一个系统级的<strong>描述符表格（open file description table）</strong>，也被称为<strong>打开文件表（open file table）</strong>，并将表格中各条目称为<strong>打开文件句柄（open file handle）</strong>。<br>一个打开文件句柄存储了与一个打开文件相关的全部信息</p>
 <pre><code>1. 当前文件的偏移量（调用read()和write()时更新，或使用lseek()直接修改）
 2. 打开文件时所使用的状态标识（如open()的flags参数）
 3. 文件访问模式（调用open时的只读、只写或读写模式）
@@ -298,7 +298,7 @@
 <p>Linux2.6之后内核将这两个缓存整合，页和块可以相互映射，同时，页缓存page cache面向的是虚拟内存，块I/O缓存Buffer cache是面向块设备。需要强调的是，页缓存和块缓存对进程来说就是一个存储系统，进程不需要关注底层的设备的读写。</p>
 <p>buffer cache和page cache两者最大的区别是缓存的粒度。buffer cache面向的是文件系统的块。而内核的内存管理组件采用了比文件系统的块更高级别的抽象：页page，其处理的性能更高。因此和内存管理交互的缓存组件，都使用页缓存。</p>
 <h3 id="4、页缓存Page-Cache"><a href="#4、页缓存Page-Cache" class="headerlink" title="4、页缓存Page Cache"></a>4、页缓存Page Cache</h3><p>页缓存是面向文件，面向内存的。通俗来说，它位于内存和文件之间缓冲区，文件IO操作实际上只和page cache交互，不直接和内存交互。page cache可以用在所有以文件为单元的场景下，比如网络文件系统等等。</p>
-<h2 id="5、文件读写基本流程"><a href="#5、文件读写基本流程" class="headerlink" title="5、文件读写基本流程"></a>5、文件读写基本流程</h2><h3 id="5-1、读文件"><a href="#5-1、读文件" class="headerlink" title="5.1、读文件"></a>5.1、读文件</h3><pre><code>1. 进程调用库函数向内核发起读文件请求；
+<h2 id="5、文件读写基本流程"><a href="#5、文件读写基本流程" class="headerlink" title="5、文件读写基本流程"></a>5、文件读写基本流程</h2><h3 id="5-1-读文件"><a href="#5-1-读文件" class="headerlink" title="5.1 读文件"></a>5.1 读文件</h3><pre><code>1. 进程调用库函数向内核发起读文件请求；
 2. 内核通过检查进程的文件描述符定位到虚拟文件系统的已打开文件列表表项；
 3. 调用该文件可用的系统调用函数read()
 4. read()函数通过文件表项链接到目录项模块，根据传入的文件路径，在目录项模块中检索，找到该文件的inode；
@@ -308,7 +308,7 @@
   （1）如果页缓存命中，那么直接返回文件内容；
     （2）如果页缓存缺失，那么产生一个页缺失异常，创建一个页缓存页，同时通过inode找到文件该页的磁盘地址，读取相应的页填充该缓存页；重新进行第6步查找页缓存；
 8. 文件内容读取成功。
-</code></pre><h3 id="5-2、写文件"><a href="#5-2、写文件" class="headerlink" title="5.2、写文件"></a>5.2、写文件</h3><p>前5步和读文件一致，在address_space中查询对应页的页缓存是否存在：</p>
+</code></pre><h3 id="5-2-写文件"><a href="#5-2-写文件" class="headerlink" title="5.2 写文件"></a>5.2 写文件</h3><p>前5步和读文件一致，在address_space中查询对应页的页缓存是否存在：</p>
 <p>  6、如果页缓存命中，直接把文件内容修改更新在页缓存的页中。写文件就结束了。这时候<br>  文件修改位于页缓存，并没有写回到磁盘文件中去。</p>
 <p>  7、 如果页缓存缺失，那么产生一个页缺失异常，创建一个页缓存页，同时通过inode找到文件该页的磁盘地址，读取相应的页填充该缓存页。此时缓存页命中，进行第6步。</p>
 <p>  8、一个页缓存中的页如果被修改，那么会被标记成脏页。脏页需要写回到磁盘中的文件块。有两种方式可以把脏页写回磁盘：<br>（1）手动调用sync()或者fsync()系统调用把脏页写回<br>（2）pdflush进程会定时把脏页写回到磁盘</p>
@@ -326,7 +326,7 @@
 <p>Linux内核使用vm_area_struct结构表示一个独立的虚拟内存区域，每个vm_area_struct结构使用链表或者树形结构连接，方便进程快速访问。它包含区域其实和终止地址以及其他相关信息，同时也包括一个vm_ops指针，其内部可引出所有针对这个区域可以使用的系统调用函数。</p>
 <p>因此进程对某一虚拟内存区域的任何操作需要用到的信息都可以直接从vm_area_struct中获得。</p>
 <p>mmap也就是要创建一个新的vm_area_struct结构并将其与文件的物理磁盘相连。</p>
-<h2 id="4-1、mmap内存映射的流程"><a href="#4-1、mmap内存映射的流程" class="headerlink" title="4.1、mmap内存映射的流程"></a>4.1、mmap内存映射的流程</h2><p>###（一）进程在虚拟地址空间中创建虚拟映射区域</p>
+<h2 id="1、mmap内存映射的流程"><a href="#1、mmap内存映射的流程" class="headerlink" title="1、mmap内存映射的流程"></a>1、mmap内存映射的流程</h2><p>###（一）进程在虚拟地址空间中创建虚拟映射区域</p>
 <pre><code>1.  进程在用户空间调用库函数mmap
 2.  在当前进程句柄的虚拟地址空间中，寻找一段空闲且满足要求的连续虚拟地址
 3.  为此虚拟区分配一个vm_area_struct结构并初始化它
@@ -368,13 +368,13 @@
 3. 调页过程先在交换缓存空间（swap cache）中寻找需要访问的内存页，如果没有则调用nopage函数把所缺的页从磁盘装入到主存中。
 4. 之后进程即可对这片主存进行读或者写的操作，如果写操作改变了其内容，一定时间后系统会自动回写脏页面到对应磁盘地址，也即完成了写入到文件的过程。
 </code></pre><p>修改过的脏页面并不会立即更新回文件中，而是有一段时间的延迟，可以调用msync()来强制同步, 这样所写的内容就能立即保存到文件里了。</p>
-<h2 id="4-2、mmap和常规文件操作的区别"><a href="#4-2、mmap和常规文件操作的区别" class="headerlink" title="4.2、mmap和常规文件操作的区别"></a>4.2、mmap和常规文件操作的区别</h2><h3 id="4-2-1、常规文件："><a href="#4-2-1、常规文件：" class="headerlink" title="4.2.1、常规文件："></a>4.2.1、常规文件：</h3><pre><code>1. 进程发起读文件请求
+<h2 id="2-mmap和常规文件操作的区别"><a href="#2-mmap和常规文件操作的区别" class="headerlink" title="2 mmap和常规文件操作的区别"></a>2 mmap和常规文件操作的区别</h2><h3 id="2-1-常规文件："><a href="#2-1-常规文件：" class="headerlink" title="2.1 常规文件："></a>2.1 常规文件：</h3><pre><code>1. 进程发起读文件请求
 2. 内核通过查找进程文件符表，定位到内核已打开文件集上的文件信息，从而找到该文件的inode
 3. inode在address_space上查找要请求的文件页是否已经缓存在页缓存中。如果存在，直接返回
 4. 如果不存在，则通过inode定位到文件磁盘地址，将数据从磁盘复制到页缓存，然后再发起读页面的过程，从而将页缓存中的数据发给用户进程。
 </code></pre><p>实际上呢，页缓存存在于内核空间，用户空间是不能对它直接寻址的。所以还需要将页缓存中的数据再次拷贝到内存对应的用户空间去才行。</p>
 <p><strong>所以也就会有两次拷贝。</strong></p>
-<h3 id="4-2-2、mmap"><a href="#4-2-2、mmap" class="headerlink" title="4.2.2、mmap"></a>4.2.2、mmap</h3><p>它实现了用户空间和内核空间的直接交互，就省去了额外拷贝的过程，所以就只会有一次拷贝。</p>
+<h3 id="2-2-mmap"><a href="#2-2-mmap" class="headerlink" title="2.2 mmap"></a>2.2 mmap</h3><p>它实现了用户空间和内核空间的直接交互，就省去了额外拷贝的过程，所以就只会有一次拷贝。</p>
 <p><strong>优点：</strong></p>
 <pre><code>1. 对文件的读取操作跨过了页缓存，减少了数据的拷贝次数，用内存读写取代I/O读写，提高了文件读取效率。
 2. 实现了用户空间和内核空间的高效交互方式。两空间的各自修改操作可以直接反映在映射的区域内，从而被对方空间及时捕捉。
