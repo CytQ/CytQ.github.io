@@ -1,0 +1,956 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hello! CytQ">
+    <title>Linux文件基础和mmap - Hello! CytQ</title>
+    <meta name="author" content="CytQ">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="脱360的壳时需要给mmap函数下断点，总结IPC的共享内存时也需要用到mmap，所以本文就先总结一下mmap相关内容。">
+<meta name="keywords" content="漏洞,汇编">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Linux文件基础和mmap">
+<meta property="og:url" content="http://imlzq.com/2017/10/26/Linux 文件基础和mmap/index.html">
+<meta property="og:site_name" content="Hello! CytQ">
+<meta property="og:description" content="脱360的壳时需要给mmap函数下断点，总结IPC的共享内存时也需要用到mmap，所以本文就先总结一下mmap相关内容。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://bos.nj.bpc.baidu.com/v1/agroup/103143f4b87f36e80404c317b2cd06cf1cccc845">
+<meta property="og:image" content="http://bos.nj.bpc.baidu.com/v1/agroup/cd2b711165c1b5ae167e31c248539377ae7bd623">
+<meta property="og:image" content="http://bos.nj.bpc.baidu.com/v1/agroup/e73e69609510615c14deecc36ea1455394f2d281">
+<meta property="og:updated_time" content="2018-04-16T15:01:29.202Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux文件基础和mmap">
+<meta name="twitter:description" content="脱360的壳时需要给mmap函数下断点，总结IPC的共享内存时也需要用到mmap，所以本文就先总结一下mmap相关内容。">
+<meta name="twitter:image" content="http://bos.nj.bpc.baidu.com/v1/agroup/103143f4b87f36e80404c317b2cd06cf1cccc845">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="http://imlzq.com/assets/images/headicon.png"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-pz4cc6y13wt2trzqa8l3n9v0yykr0sstdaheem7qj628nhjmhp9pfawvqawz.min.css">
+    <!--STYLES END-->
+    
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+<header id="header" data-behavior="5">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/ ">Hello! CytQ</a>
+    </div>
+    
+        
+            <a  class="header-right-icon "
+                href="#about">
+        
+        
+            <i class="fa fa-lg fa-global.avatar"></i>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="5">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a href="/#about">
+                    <img class="sidebar-profile-picture" src="/assets/images/headicon.png" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">CytQ</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>Software Engineer<br>Android、移动安全、逆向、漏洞挖掘</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/ "
+                            
+                            title="Home"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Home</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-tags"
+                            
+                            title="Tags"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Tags</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-archives"
+                            
+                            title="Archives"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Archives</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link open-algolia-search"
+                             href="#search"
+                            
+                            title="Search"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Search</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="#about"
+                            
+                            title="About"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">About</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="mailto:cytlzq@gmail.com" target="_blank" rel="noopener" title="Mail">
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-envelope-o" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Mail</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/atom.xml"
+                            
+                            title="RSS"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="5"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            Linux文件基础和mmap
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time itemprop="datePublished" datetime="2017-10-26T00:00:00+08:00">
+	
+		    Oct 26, 2017
+    	
+    </time>
+    
+</div>
+
+    
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <p>脱360的壳时需要给mmap函数下断点，总结IPC的共享内存时也需要用到mmap，所以本文就先总结一下mmap相关内容。</p>
+<a id="more"></a>    
+<h1 id="一、Linux文件基础"><a href="#一、Linux文件基础" class="headerlink" title="一、Linux文件基础"></a>一、Linux文件基础</h1><h2 id="1、fd"><a href="#1、fd" class="headerlink" title="1、fd"></a>1、fd</h2><p>fd（File Descriptor）是内核为了管理已打开的文件所创建的索引，是一个非负整数，在open时产生。所有执行I/O操作的系统调用都会通过文件描述符。<br>| 文件描述符 | 用途   | POSIX名称       | stdio流 |<br>| —– | —- | ————- | —— |<br>| 0     | 标准输入 | STDIN_FILENO  | stdin  |<br>| 1     | 标准输出 | STDOUT_FILENO | stdout |<br>| 2     | 标准错误 | STDERR_FILENO | stderr |<br>如果打开一个新的文件，它的fd会是3。</p>
+<p>POSIX（Portable Operating System Interface of UNIX，可移植操作系统接口）标准规定每次打开文件时必须使用当前进程中最小可用的文件描述符号码。</p>
+<h3 id="1-1-限制"><a href="#1-1-限制" class="headerlink" title="1.1 限制"></a>1.1 限制</h3><p>理论上系统内存有多大就可以打开多少的fd，但实际上内核允许最大的打开文件数是系统内存的10%（KB计算），如果超出这个数，就会提示“Too many open files”。可以使用sysctl -a | grep fs.file-max命令查看系统的最大打开文件数。这也就是系统级限制。<br>此外，为了防止一个进程消耗掉所有的文件资源，单个进程最大打开的文件数有限制，一般为1024，可通过ulimit -n查看。这就是用户级限制。</p>
+<h2 id="2、-fd和文件之间的关系"><a href="#2、-fd和文件之间的关系" class="headerlink" title="2、 fd和文件之间的关系"></a>2、 fd和文件之间的关系</h2><ul>
+<li>每个fd会与一个打开的文件对应；</li>
+<li>不同的fd也可能会指向同一个文件</li>
+<li><p>相同的文件可以被不同的进程打开，也可以在同一个进程中被多次打开</p>
+<p>系统为每个进程都维护了一个文件描述符表，该表的值都是从0开始， 进程凭借fd的值能通过文件描述符表快速查询对应的文件。</p>
+</li>
+</ul>
+<p>所以在不同的进程中会看到相同的fd，但它们可能指向同一个文件，也可能指向不同的文件。</p>
+<h2 id="3、内核维护的3个数据结构"><a href="#3、内核维护的3个数据结构" class="headerlink" title="3、内核维护的3个数据结构"></a>3、内核维护的3个数据结构</h2><ul>
+<li>进程级的文件描述符表</li>
+<li>系统级的打开文件描述符表</li>
+<li>文件系统的i-node表</li>
+</ul>
+<h3 id="3-1-inode表"><a href="#3-1-inode表" class="headerlink" title="3.1 inode表"></a>3.1 inode表</h3><p><strong>inode是什么？</strong></p>
+<ul>
+<li>文件存储在硬盘上，硬盘的最小存储单位叫扇区（Sector），每个山区存储512字节（0.5KB）</li>
+<li>操作系统在读取硬盘的时候，为了效率，会一次性连续读取多个扇区，也就是块（block）。块也就是文件存取的最小单位，它的大小最常见的为4kb，即8个连续的扇区组成一个块</li>
+<li>因此文件的数据存储在块中，而存储文件的元信息（比如文件的创建者、创建时间、创建的大小等）的区域就叫做inode(index node， 索引节点)</li>
+</ul>
+<p><strong>inode的内容</strong></p>
+<ul>
+<li>文件的字节数</li>
+<li>文件拥有者的User ID</li>
+<li>文件的Group ID</li>
+<li>文件的读、写、执行权限</li>
+<li>文件的时间戳：ctime（inode上一次变动的时间）、mtime（文件内容上一次变动的时间）、atime（文件上一次打开的时间）</li>
+<li>链接数，即有多少个文件名指向这个inode</li>
+<li>文件数据block的位置</li>
+</ul>
+<p><strong>inode号码</strong><br>每个inode都有一个号码，操作系统用inode号码来识别不同的文件。</p>
+<p>其实在Unix/Linux系统中在识别文件时，不使用文件名而是使用inode号码。<br>对于系统来说，文件名只是inode号码便于识别的别称或绰号。</p>
+<p>当用户通过文件名打开文件时，系统内部分为3个流程</p>
+<pre><code>1. 系统找到这个文件名对应的inode号码
+2. 通过inode号码获取inode信息
+3. 根据inode信息找到文件数据block的位置，读出数据
+</code></pre><p><strong>目录文件</strong><br>因为Linux中万物皆文件，因此目录（directory）也是一种文件。<br>目录的结构其实就是一系列目录项（dirent）的列表。<br>每个目录项的内容为：</p>
+<ul>
+<li>所包含文件的文件名</li>
+<li>该文件名对应的inode号码 </li>
+</ul>
+<p><strong>硬链接（hard link）</strong><br>一般情况下，文件名和inode号码一一对应，每个inode号码对应一个文件名。</p>
+<p>但Unix/Linux系统也允许多个文件名指向同一个inode号码，即可以用不同的文件名访问同样的内容。</p>
+<p>对文件内容进行修改，会影响到所有文件名。但删除一个文件名，并不影响另一个文件名的访问。</p>
+<p><strong>软链接（soft link）</strong><br>有一种特殊情况。<br>文件A和B的inode号码虽然不一样，但是文件A的内容是文件B的路径。即读取文件A时，系统会自动将访问者导向B。<br>因此，不论打开哪一个文件，最终读取的都是文件B。这时候文件A就称为文件B的软链接或符号链接（Symbolic link）。</p>
+<p>这是的文件A依赖于文件B存在，如果删除文件B，那么打开文件A就会报错：『No such file or directory』。<br>这也就是软链接与硬链接最大的不同：文件A指向文件B，而不是文件B的inode号码，文件B的inode链接数不会因此发生变化</p>
+<h3 id="3-2-进程级的文件描述符表"><a href="#3-2-进程级的文件描述符表" class="headerlink" title="3.2 进程级的文件描述符表"></a>3.2 进程级的文件描述符表</h3><p>该表的每一条目均记录了单个文件描述符的相关信</p>
+<pre><code>1. 控制文件描述符操作的一组标志（如close-on-exec）
+2. 对打开文件句柄的引用
+</code></pre><h3 id="3-3-系统级的打开文件描述符表"><a href="#3-3-系统级的打开文件描述符表" class="headerlink" title="3.3 系统级的打开文件描述符表"></a>3.3 系统级的打开文件描述符表</h3><p>内核对所有打开的文件维护有一个系统级的<strong>描述符表格（open file description table）</strong>，也被称为<strong>打开文件表（open file table）</strong>，并将表格中各条目称为<strong>打开文件句柄（open file handle）</strong>。<br>一个打开文件句柄存储了与一个打开文件相关的全部信息</p>
+<pre><code>1. 当前文件的偏移量（调用read()和write()时更新，或使用lseek()直接修改）
+2. 打开文件时所使用的状态标识（如open()的flags参数）
+3. 文件访问模式（调用open时的只读、只写或读写模式）
+4. 与信号驱动相关的设置
+5. 对该文件inode对象的引用
+6. 文件类型（如常规文件、套接字、FIFO）和访问权限
+7. 指向该文件所持有的锁列表的指针
+8. 文件的各种属性，包括文件大小、不同类型操作相关的时间戳
+</code></pre><p><img src="http://bos.nj.bpc.baidu.com/v1/agroup/103143f4b87f36e80404c317b2cd06cf1cccc845" alt="文件描述符、打开的文件句柄以及i-node之间的关系"><br><strong>图为：文件描述符、打开的文件句柄以及i-node之间的关系</strong></p>
+<p>   在上图的进程A中，文件描述符1和30都指向了同一个打开的文件句柄（标号23）。这可能是通过调用dup()、dup2()、fcntl()或者对同一个文件多次调用了open()函数而形成的。</p>
+<p>   进程A的文件描述符2和进程B的文件描述符2都指向了同一个打开的文件句柄（标号73）。这种情形可能是在调用fork()后出现的（即，进程A、B是父子进程关系），或者当某进程通过UNIX域套接字将一个打开的文件描述符传递给另一个进程时，也会发生。再者是不同的进程独自去调用open函数打开了同一个文件，此时进程内部的描述符正好分配到与其他进程打开该文件的描述符一样。</p>
+<p>  此外，进程A的描述符0和进程B的描述符3分别指向不同的打开文件句柄，但这些句柄均指向i-node表的相同条目（1976），换言之，指向同一个文件。发生这种情况是因为每个进程各自对同一个文件发起了open()调用。同一个进程两次打开同一个文件，也会发生类似情况。</p>
+<h2 id="4、fd与filp"><a href="#4、fd与filp" class="headerlink" title="4、fd与filp"></a>4、fd与filp</h2><p>fd只是一个整数，起索引的作用，进程通过PCB（Process Control Block）中的文件描述符表找到该fd所指向的文件指针filp（file pointer），filp返回strcut file*结构指针。</p>
+<h1 id="二、I-O缓冲区"><a href="#二、I-O缓冲区" class="headerlink" title="二、I/O缓冲区"></a>二、I/O缓冲区</h1><h2 id="1、-概念"><a href="#1、-概念" class="headerlink" title="1、 概念"></a>1、 概念</h2><p>与高速缓存（cache）产生的原理类似，在I/O过程中，读取磁盘的速度相对内存读取速度要慢的多。因此为了能够加快处理数据的速度，需要将读取过的数据缓存在内存里。而这些缓存在内存里的数据就是高速缓冲区（buffer cache），下面简称为“buffer”。</p>
+<p>具体来说，buffer（缓冲区）是一个用于存储速度不同步的设备或优先级不同的设备之间传输数据的区域。一方面，通过缓冲区，可以使进程之间的相互等待变少，从而使从速度慢的设备读入数据时，速度快的设备的操作进程不发生间断。另一方面，可以保护硬盘或减少网络传输的次数。</p>
+<h2 id="2、Buffer和Cache"><a href="#2、Buffer和Cache" class="headerlink" title="2、Buffer和Cache"></a>2、Buffer和Cache</h2><p>buffer和cache是两个不同的概念：cache是高速缓存，用于CPU和内存之间的缓冲；buffer是I/O缓存，用于内存和硬盘的缓冲；<br>简单的说，cache是加速“读”，而buffer是缓冲“写”，前者解决读的问题，保存从磁盘上读出的数据，后者是解决写的问题，保存即将要写入到磁盘上的数据。</p>
+<h2 id="3、Buffer-Cache和-Page-Cache"><a href="#3、Buffer-Cache和-Page-Cache" class="headerlink" title="3、Buffer Cache和 Page Cache"></a>3、Buffer Cache和 Page Cache</h2><p>buffer cache和page cache都是为了处理设备和内存交互时高速访问的问题。buffer cache可称为块缓冲器，page cache可称为页缓冲器。</p>
+<p>在linux不支持虚拟内存机制之前，还没有页的概念，因此缓冲区以块为单位对设备进行。在linux采用虚拟内存的机制来管理内存后，页是虚拟内存管理的最小单位，开始采用页缓冲的机制来缓冲内存。</p>
+<p>Linux2.6之后内核将这两个缓存整合，页和块可以相互映射，同时，页缓存page cache面向的是虚拟内存，块I/O缓存Buffer cache是面向块设备。需要强调的是，页缓存和块缓存对进程来说就是一个存储系统，进程不需要关注底层的设备的读写。</p>
+<p>buffer cache和page cache两者最大的区别是缓存的粒度。buffer cache面向的是文件系统的块。而内核的内存管理组件采用了比文件系统的块更高级别的抽象：页page，其处理的性能更高。因此和内存管理交互的缓存组件，都使用页缓存。</p>
+<h3 id="4、页缓存Page-Cache"><a href="#4、页缓存Page-Cache" class="headerlink" title="4、页缓存Page Cache"></a>4、页缓存Page Cache</h3><p>页缓存是面向文件，面向内存的。通俗来说，它位于内存和文件之间缓冲区，文件IO操作实际上只和page cache交互，不直接和内存交互。page cache可以用在所有以文件为单元的场景下，比如网络文件系统等等。</p>
+<h2 id="5、文件读写基本流程"><a href="#5、文件读写基本流程" class="headerlink" title="5、文件读写基本流程"></a>5、文件读写基本流程</h2><h3 id="5-1-读文件"><a href="#5-1-读文件" class="headerlink" title="5.1 读文件"></a>5.1 读文件</h3><pre><code>1. 进程调用库函数向内核发起读文件请求；
+2. 内核通过检查进程的文件描述符定位到虚拟文件系统的已打开文件列表表项；
+3. 调用该文件可用的系统调用函数read()
+4. read()函数通过文件表项链接到目录项模块，根据传入的文件路径，在目录项模块中检索，找到该文件的inode；
+5. 在inode中，通过文件内容偏移量计算出要读取的页；
+6. 通过inode找到文件对应的address_space；
+7. 在address_space中访问该文件的页缓存树，查找对应的页缓存结点：
+  （1）如果页缓存命中，那么直接返回文件内容；
+    （2）如果页缓存缺失，那么产生一个页缺失异常，创建一个页缓存页，同时通过inode找到文件该页的磁盘地址，读取相应的页填充该缓存页；重新进行第6步查找页缓存；
+8. 文件内容读取成功。
+</code></pre><h3 id="5-2-写文件"><a href="#5-2-写文件" class="headerlink" title="5.2 写文件"></a>5.2 写文件</h3><p>前5步和读文件一致，在address_space中查询对应页的页缓存是否存在：</p>
+<p>  6、如果页缓存命中，直接把文件内容修改更新在页缓存的页中。写文件就结束了。这时候<br>  文件修改位于页缓存，并没有写回到磁盘文件中去。</p>
+<p>  7、 如果页缓存缺失，那么产生一个页缺失异常，创建一个页缓存页，同时通过inode找到文件该页的磁盘地址，读取相应的页填充该缓存页。此时缓存页命中，进行第6步。</p>
+<p>  8、一个页缓存中的页如果被修改，那么会被标记成脏页。脏页需要写回到磁盘中的文件块。有两种方式可以把脏页写回磁盘：<br>（1）手动调用sync()或者fsync()系统调用把脏页写回<br>（2）pdflush进程会定时把脏页写回到磁盘</p>
+<p>同时注意，脏页不能被置换出内存，如果脏页正在被写回，那么会被设置写回标记，这时候该页就被上锁，其他写请求被阻塞直到锁释放。</p>
+<h1 id="三、内核空间和用户空间"><a href="#三、内核空间和用户空间" class="headerlink" title="三、内核空间和用户空间"></a>三、内核空间和用户空间</h1><p>Linux的虚拟地址与线性地址总是一致，Linux的虚拟地址空间跟线性地址一样，为0～4G。Linux内核将这4G字节的空间分为两部分。将最高的1G字节（从虚拟地址0xC0000000到0xFFFFFFFF），供内核使用，称为“内核空间”。而将较低的3G字节（从虚拟地址 0x00000000到0xBFFFFFFF），供各个进程使用，称为“用户空间）。</p>
+<p>每个进程可以通过系统调用进入内核，因此，Linux内核由系统内的所有进程共享。</p>
+<p>故，从具体进程的角度来看，每个进程可以拥有4G字节的虚拟空间。</p>
+<p>内核空间中存放的是内核代码和数据，而进程的用户空间中存放的是用户程序的代码和数据。不管是内核空间还是用户空间，它们都处于虚拟空间中。 </p>
+<p><strong>其实说白了也就是：两个的权限不一样，处理的事务不一样。内核空间能调系统调用，用户空间只能调用户调用</strong></p>
+<h1 id="四、mmap"><a href="#四、mmap" class="headerlink" title="四、mmap"></a>四、mmap</h1><p>mmap是内存映射文件的方法，即将一个文件或者其他对象映射到进程的地址空间，实现文件磁盘地址和进程虚拟地址空间中一段虚拟地址的一一对映关系。</p>
+<p><img src="http://bos.nj.bpc.baidu.com/v1/agroup/cd2b711165c1b5ae167e31c248539377ae7bd623" alt="进程虚拟地址空间"></p>
+<p>从上图可以了解，进程的虚拟地址空间由多个虚拟内存区域构成。虚拟内存区域是虚拟内存空间中具有同样特性的连续地址范围。</p>
+<p>上方的text数据段、初始数据段、bss数据段、堆、内存映射、栈，每个都是一个独立的虚拟内存区域。</p>
+<p>为内存映射服务的地址空间处在堆在之间的空余部分。<br><img src="http://bos.nj.bpc.baidu.com/v1/agroup/e73e69609510615c14deecc36ea1455394f2d281" alt="vm_area_struct"></p>
+<p>Linux内核使用vm_area_struct结构表示一个独立的虚拟内存区域，每个vm_area_struct结构使用链表或者树形结构连接，方便进程快速访问。它包含区域其实和终止地址以及其他相关信息，同时也包括一个vm_ops指针，其内部可引出所有针对这个区域可以使用的系统调用函数。</p>
+<p>因此进程对某一虚拟内存区域的任何操作需要用到的信息都可以直接从vm_area_struct中获得。</p>
+<p>mmap也就是要创建一个新的vm_area_struct结构并将其与文件的物理磁盘相连。</p>
+<h2 id="1、mmap内存映射的流程"><a href="#1、mmap内存映射的流程" class="headerlink" title="1、mmap内存映射的流程"></a>1、mmap内存映射的流程</h2><p>###（一）进程在虚拟地址空间中创建虚拟映射区域</p>
+<pre><code>1.  进程在用户空间调用库函数mmap
+2.  在当前进程句柄的虚拟地址空间中，寻找一段空闲且满足要求的连续虚拟地址
+3.  为此虚拟区分配一个vm_area_struct结构并初始化它
+4.  将新建的vm_area_struct结构插入到进程的虚拟地址区域链表或树中
+</code></pre><p>void <em>mmap(void </em>start, size_t length, int prot, int flags, int fd, off_t offset); </p>
+<blockquote>
+<p>start：映射区的开始位置<br>length：映射区的长度<br>port：期望的内存保护标志，不能与文件的打开模式冲突。可以通过or运算组合。<br>flags:指定映射对象的类型、映射选项和映射页是否可以共享。它的值可以是一个或者多个参数的组合<br>fd: 文件描述符<br>offset：被映射对象内容的起点</p>
+</blockquote>
+<p>port的值可以为：</p>
+<pre><code>1. PROT_EXEC ：页内容可以被执行
+2. PROT_READ ：页内容可以被读取
+3. PROT_WRITE ：页可以被写入
+4. PROT_NONE ：页不可访问
+</code></pre><p>flag的参数类型：</p>
+<pre><code>1. MAP_FIXED          // 使用指定的映射起始地址，如果由start和len参数指定的内存区重叠于现存的映射空间，重叠部分将会被丢弃。如果指定的起始地址不可用，操作将会失败。并且起始地址必须落在页的边界上。
+2.  MAP_SHARED    // 与其它所有映射这个对象的进程共享映射空间。对共享区的写入，相当于输出到文件。直到msync()或者munmap()被调用，文件实际上不会被更新。
+3.  MAP_PRIVATE    // 建立一个写入时拷贝的私有映射。内存区域的写入不会影响到原文件。这个标志和以上标志是互斥的，只能使用其中一个。
+4.  MAP_DENYWRITE // 这个标志被忽略。
+5. MAP_EXECUTABLE // 同上
+6.  MAP_NORESERVE // 不要为这个映射保留交换空间。当交换空间被保留，对映射区修改的可能会得到保证。当交换空间不被保留，同时内存不足，对映射区的修改会引起段违例信号。
+7. MAP_LOCKED // 锁定映射区的页面，从而防止页面被交换出内存。
+8. MAP_GROWSDOWN // 用于堆栈，告诉内核VM系统，映射区可以向下扩展。
+9. MAP_ANONYMOUS // 匿名映射，映射区不与任何文件关联。
+10. MAP_ANON // MAP_ANONYMOUS的别称，不再被使用。
+11.  MAP_FILE // 兼容标志，被忽略。
+12. MAP_32BIT // 将映射区放在进程地址空间的低2GB，MAP_FIXED指定时会被忽略。当前这个标志只在x86-64平台上得到支持。
+13.  MAP_POPULATE // 为文件映射通过预读的方式准备好页表。随后对映射区的访问不会被页违例阻塞。
+14. MAP_NONBLOCK // 仅和MAP_POPULATE一起使用时才有意义。不执行预读，只为已存在于内存中的页面建立页表入口。
+</code></pre><p>###（二）调用内核空间的系统调用函数mmap，实现文件物理地址和进程虚拟地址的映射关系</p>
+<pre><code>1. 通过待映射的文件指针filp，在文件描述符表中查询对应的fd，通过fd，链接到内核已打开文件表（Open file table）中该文件的文件结构体 （struct file）。每个文件结构体维护这和这个已打开文件相关的各项信息。
+2. 通过该文件结构体，连接到file_operations模块，调用内核函数mmap
+3. 内核mmap函数通过虚拟文件系统inode模块定位到文件磁盘物理地址
+4. 通过remap_pfn_range函数建立页表，即实现文件地址和虚拟地址的映射关系。
+</code></pre><p>另外，此时的系统调用函数mmap与库函数mmap不同。它的定义如下：<br>int mmap(struct file <em>filp, struct vm_area_struct </em>vma)<br>里面两个参数的定义就是文件指针filp和虚拟空间结构体</p>
+<p><strong>总结：其实也就是通过一系列的手段获取文件磁盘的物理地址，从而与虚拟地址映射</strong></p>
+<p>###（三）进程发起对这片映射空间的访问，引发缺页异常，实现文件内容到物理内存（主存）的拷贝<br>在前两步完成之后，只完成了地址映射，但没有将任何文件数据拷贝到主存。<br>当进程发起读或写操作时才会执行文件读取</p>
+<pre><code>1. 进程的读或写操作访问虚拟地址空间这一段映射地址，通过查询页表，发现这一段地址并不在物理页面上。因为目前只建立了地址映射，真正的硬盘数据还没有拷贝到内存中，因此引发缺页异常。
+2. 缺页异常进行一系列判断，确定无非法操作后，内核发起请求调页过程。
+3. 调页过程先在交换缓存空间（swap cache）中寻找需要访问的内存页，如果没有则调用nopage函数把所缺的页从磁盘装入到主存中。
+4. 之后进程即可对这片主存进行读或者写的操作，如果写操作改变了其内容，一定时间后系统会自动回写脏页面到对应磁盘地址，也即完成了写入到文件的过程。
+</code></pre><p>修改过的脏页面并不会立即更新回文件中，而是有一段时间的延迟，可以调用msync()来强制同步, 这样所写的内容就能立即保存到文件里了。</p>
+<h2 id="2-mmap和常规文件操作的区别"><a href="#2-mmap和常规文件操作的区别" class="headerlink" title="2 mmap和常规文件操作的区别"></a>2 mmap和常规文件操作的区别</h2><h3 id="2-1-常规文件："><a href="#2-1-常规文件：" class="headerlink" title="2.1 常规文件："></a>2.1 常规文件：</h3><pre><code>1. 进程发起读文件请求
+2. 内核通过查找进程文件符表，定位到内核已打开文件集上的文件信息，从而找到该文件的inode
+3. inode在address_space上查找要请求的文件页是否已经缓存在页缓存中。如果存在，直接返回
+4. 如果不存在，则通过inode定位到文件磁盘地址，将数据从磁盘复制到页缓存，然后再发起读页面的过程，从而将页缓存中的数据发给用户进程。
+</code></pre><p>实际上呢，页缓存存在于内核空间，用户空间是不能对它直接寻址的。所以还需要将页缓存中的数据再次拷贝到内存对应的用户空间去才行。</p>
+<p><strong>所以也就会有两次拷贝。</strong></p>
+<h3 id="2-2-mmap"><a href="#2-2-mmap" class="headerlink" title="2.2 mmap"></a>2.2 mmap</h3><p>它实现了用户空间和内核空间的直接交互，就省去了额外拷贝的过程，所以就只会有一次拷贝。</p>
+<p><strong>优点：</strong></p>
+<pre><code>1. 对文件的读取操作跨过了页缓存，减少了数据的拷贝次数，用内存读写取代I/O读写，提高了文件读取效率。
+2. 实现了用户空间和内核空间的高效交互方式。两空间的各自修改操作可以直接反映在映射的区域内，从而被对方空间及时捕捉。
+3. 提供进程间共享内存及相互通信的方式。不管是父子进程还是无亲缘关系的进程，都可以将自身用户空间映射到同一个文件或匿名映射到同一片区域。从而通过各自对映射区域的改动，达到进程间通信和进程间共享的目的。
+ 同时，如果进程A和进程B都映射了区域C，当A第一次读取C时通过缺页从磁盘复制文件页到内存中；但当B再读C的相同页面时，虽然也会产生缺页异常，但是不再需要从磁盘中复制文件过来，而可直接使用已经保存在内存中的文件数据。
+4. 可用于实现高效的大规模数据传输。内存空间不足，是制约大数据操作的一个方面，解决方案往往是借助硬盘空间协助操作，补充内存的不足。但是进一步会造成大量的文件I/O操作，极大影响效率。这个问题可以通过mmap映射很好的解决。换句话说，但凡是需要用磁盘空间代替内存的时候，mmap都可以发挥其功效。
+</code></pre>
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/汇编/">汇编</a> <a class="tag tag--primary tag--small t-link" href="/tags/漏洞/">漏洞</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/11/07/汇编基础及个人理解/" data-tooltip="汇编基础及个人理解" aria-label="PREVIOUS: 汇编基础及个人理解">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/10/11/Dalvik虚拟机加载Dex的流程/" data-tooltip="Dalvik虚拟机加载Dex的流程" aria-label="NEXT: Dalvik虚拟机加载Dex的流程">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2017/10/26/Linux 文件基础和mmap/" title="Share on Weibo">
+                    <i class="fa fa-weibo" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2017/10/26/Linux 文件基础和mmap/&amp;title=Linux文件基础和mmap" title="Share on QQ">
+                    <i class="fa fa-qq" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2017/10/26/Linux 文件基础和mmap/" title="Share on Qzone">
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2017/10/26/Linux 文件基础和mmap/" title="Share on Renren">
+                    <i class="fa fa-renren" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#gitment">
+                         <i class="fa fa-comment-o"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="gitment"></div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2018 CytQ. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/11/07/汇编基础及个人理解/" data-tooltip="汇编基础及个人理解" aria-label="PREVIOUS: 汇编基础及个人理解">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/10/11/Dalvik虚拟机加载Dex的流程/" data-tooltip="Dalvik虚拟机加载Dex的流程" aria-label="NEXT: Dalvik虚拟机加载Dex的流程">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2017/10/26/Linux 文件基础和mmap/" title="Share on Weibo">
+                    <i class="fa fa-weibo" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2017/10/26/Linux 文件基础和mmap/&amp;title=Linux文件基础和mmap" title="Share on QQ">
+                    <i class="fa fa-qq" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2017/10/26/Linux 文件基础和mmap/" title="Share on Qzone">
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2017/10/26/Linux 文件基础和mmap/" title="Share on Renren">
+                    <i class="fa fa-renren" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#gitment">
+                         <i class="fa fa-comment-o"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="5">
+    <i id="btn-close-shareoptions" class="fa fa-close"></i>
+    <ul class="share-options">
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2017/10/26/Linux 文件基础和mmap/">
+                    <i class="fa fa-weibo" aria-hidden="true"></i><span>Share on Weibo</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2017/10/26/Linux 文件基础和mmap/&amp;title=Linux文件基础和mmap">
+                    <i class="fa fa-qq" aria-hidden="true"></i><span>Share on QQ</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2017/10/26/Linux 文件基础和mmap/">
+                    <i class="fa fa-star" aria-hidden="true"></i><span>Share on Qzone</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2017/10/26/Linux 文件基础和mmap/">
+                    <i class="fa fa-renren" aria-hidden="true"></i><span>Share on Renren</span>
+                </a>
+            </li>
+        
+    </ul>
+</div>
+
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/headicon.png" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">CytQ</h4>
+        
+            <div id="about-card-bio"><p>Software Engineer<br>Android、移动安全、逆向、漏洞挖掘</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>17本科，现任职百度</p>
+
+            </div>
+        
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                Beijing
+            </div>
+        
+    </div>
+</div>
+
+        
+            <div id="algolia-search-modal" class="modal-container">
+    <div class="modal">
+        <div class="modal-header">
+            <span class="close-button"><i class="fa fa-close"></i></span>
+            <a href="https://algolia.com" target="_blank" rel="noopener" class="searchby-algolia text-color-light link-unstyled">
+                <span class="searchby-algolia-text text-color-light text-small">by</span>
+                <img class="searchby-algolia-logo" src="https://www.algolia.com/static_assets/images/press/downloads/algolia-light.svg">
+            </a>
+            <i class="search-icon fa fa-search"></i>
+            <form id="algolia-search-form">
+                <input type="text" id="algolia-search-input" name="search"
+                    class="form-control input--large search-input" placeholder="Search "
+                    />
+            </form>
+        </div>
+        <div class="modal-body">
+            <div class="no-result text-color-light text-center">no post found</div>
+            <div class="results">
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/11/22/序言/">
+                            <h3 class="media-heading">序言</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Nov 22, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/11/23/Volley-Lrucache-DiskLrucache/">
+                            <h3 class="media-heading">三级缓存 + AndroidStudio导出jar包 + upload to github</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Nov 23, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>　　想了半天都没想出来写什么作为第一篇博客比较好，突然发现这次项目的版本控制是github，三级缓存和屏幕适配又是一个跑不掉的话题，就以这些话题开始我的博客之旅吧，同时总结一下在AndroidStudio中如何导出jar包。    </p>
+<pre><code>([参考郭霖的blog](http://blog.csdn.net/guolin_blog/article/details/28863651))
+([参考李晨玮的blog](http://www.cnblogs.com/lichenwei)/)
+
+不管是提升用户体验还是提升APP的流畅度，三级缓存都是必不可少的，在这里就先总结一下三级缓存的使用。
+</code></pre><p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/11/23/screensuit/">
+                            <h3 class="media-heading">三种屏幕适配的方式</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Nov 23, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>​    第一篇博客总结了三级缓存／AndroidStudio打包jar包／上传基本文件到github,　第二篇就接着总结一下三种屏幕适配的方式。</p>
+<p>在这里也推荐一下<a href="http://blog.csdn.net/lmj623565791?viewmode=contents" target="_blank" rel="noopener">张鸿洋</a>的博客，关注挺久了，和<a href="http://blog.csdn.net/guolin_blog" target="_blank" rel="noopener">郭霖</a>的都很好。</p>
+<p>第一种方式，dimens中设置不同dp值，来达到适配的目的<br>第二种方式，利用第三方百分比库<br>第三种方式，利用第三方库：AutoLayout </p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/11/24/全局变量的处理/">
+                            <h3 class="media-heading">全局变量的处理</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Nov 24, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>　　很多时候APP会莫名其妙的崩溃，尤其是一些配置很低的收集，重现场景就是在APP切换到后台后，闲置了一段时间后再继续使用时，就会崩溃。<br>　　导致上述崩溃发生的一个可能罪魁祸首就是全局变量，在内存不足的时候，系统会回收一部分闲置的资源，由于APP被切换到了后台，所以之前存放的全局变量很容易被回收，这是再切换到前台继续使用，在使用某个全局变量的时候，就会因为全局变量的值为空而崩溃。<br>　　要解决这个问题，就一定要使用序列化技术。</p>
+<p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/11/25/Android自动填写验证码/">
+                            <h3 class="media-heading">Android自动填写验证码</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Nov 25, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>　　第四篇博客就来总结下项目中使用到的一个提升用户体验的功能：　Android自动填写验证码<br>　　从字面上来看，很明显的可以看出它的实现流程：监听-&gt;有改变-&gt;获取信息-&gt;改变ui</p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/12/01/引导页_视差显示/">
+                            <h3 class="media-heading">引导页_视差显示</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Dec 1, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>当用户下载完APP后，第一次启动时通常会有一个引导页，而这个引导页对于引导用户或介绍本产品有着很好的作用。一般三种方式实现：</p>
+<ol>
+<li>Viewpager<br>这种方式很简单，易实现，但是在观赏性上来说很差，没有任何动画</li>
+<li>视差显示<br>这种方式是基于ViewPager的，通过自定义其中的类，或者调整其中的方法来达到显示的效果。<br>　在ViewPager中，有一个接口叫做PageTransformer，其中有一个方法transformPage,我们通过在这个方法中编写逻辑就可以实现视差显示。而之所以叫做视差显示，是因为实现这种方式是对不同的控件设置不同的速度来达到的。例如，ViewPager移动了10dp,　图片A移动了15dp, 图片B移动了7.5dp，这就产生了一个视差。</li>
+<li>Html5<br>这种方式也是最近使用得越来越多的方式，通过加载h5来实现引导页的炫目效果。</li>
+</ol></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/12/01/手势/">
+                            <h3 class="media-heading">手势</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Dec 1, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>这里介绍的只是一个简单的DEMO，根据官方的API还可以进行自定义手势的编写，具体的内容就以后遇到了再说，在本项目中也只起一个开后门的验证作用,毕竟一个没有后门的APP不是一个好APP。</p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/12/07/Json数据的解析_Gson/">
+                            <h3 class="media-heading">Json数据的解析_Gson</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Dec 7, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>一些简单的JSON格式解析可以直接使用JSONObject和JSONArray来解析，但是面对比较复杂或者是数据量较大的JSON数据时就需要使用fastJSON和Gson来解析了，这样的效率和效果都更好。</p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/12/08/ViewPager取消预加载/">
+                            <h3 class="media-heading">ViewPager取消预加载</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Dec 8, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>ViewPager在设计的时候有一个预加载的机制，也就是如果你处于当前这个page界面时,会预先加载下一个page。但是有的时候设计到网络请求，就需要取消掉这个预加载。</p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/12/20/Note-&gt;Rxjava/">
+                            <h3 class="media-heading">RxJava学习笔记</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Dec 20, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>学习自扔物线的文章<a href="http://gank.io/post/560e15be2dca930e00da1083。" target="_blank" rel="noopener">http://gank.io/post/560e15be2dca930e00da1083。</a></p>
+<p>粗略学习了最近越来越火的RxJava，进行一个简单的学习总结，这篇博客只涉及使用，不涉及原理</p>
+<blockquote>
+<p>Github：<br><a href="https://github.com/ReactiveX/RxJava" target="_blank" rel="noopener">https://github.com/ReactiveX/RxJava</a><br><a href="https://github.com/ReactiveX/RxAndroid" target="_blank" rel="noopener">https://github.com/ReactiveX/RxAndroid</a> </p>
+</blockquote>
+<p>使用方式:</p>
+<blockquote>
+<p>compile ‘io.reactivex:rxjava:1.0.14’<br>compile ‘io.reactivex:rxandroid:1.0.1’ </p>
+</blockquote>
+<p>我的相关博文：<br><a href="http://blog.csdn.net/jonstank2013/article/details/50574871" target="_blank" rel="noopener">RxJava使用示例（一）： 实现Rxbus代替eventbus</a><br><a href="http://blog.csdn.net/jonstank2013/article/details/50981404" target="_blank" rel="noopener">RxJava实现原理探索</a></p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+            </div>
+        </div>
+        <div class="modal-footer">
+            <p class="results-count text-medium"
+                data-message-zero="no post found"
+                data-message-one="1 post found"
+                data-message-other="{n} posts found">
+                47 posts found
+            </p>
+        </div>
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-peofhqjkzcghmndknakluequy1y6owxdwpaqyju9ntl9zxnk7rdolb3rjjoj.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+        <script type="text/javascript">
+            (function() {
+                function render() {
+                    new Gitment({
+                        id: 'http://imlzq.com/2017/10/26/Linux 文件基础和mmap/',
+                        owner: 'CytQ',
+                        repo: 'BlogComments',
+                        oauth: {
+                            client_id: 'eddb24a604957d55b0fc',
+                            client_secret: '5c1a27d80b9c1978faa1d488b34d606b77529b77',
+                        }
+                    }).render('gitment');
+                }
+                var gc = document.createElement('script');
+                gc.type = 'text/javascript';
+                gc.src = '//imsun.github.io/gitment/dist/gitment.browser.js';
+                gc.charset = 'UTF-8';
+                gc.onload = render;
+                gc.async = true;
+                document.querySelector('body').appendChild(gc);
+                var gcs = document.createElement('link');
+                gcs.href = '//imsun.github.io/gitment/style/default.css';
+                gcs.type = 'text/css';
+                gcs.rel = 'stylesheet';
+                gcs.media = 'screen,print';
+                document.querySelector('head').appendChild(gcs);
+            })();
+	    </script>
+    
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment-with-locales.min.js"></script>
+    <script src="//cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
+    <script>
+        var algoliaClient = algoliasearch('S730SA64YT', '66519eebbcfbe3a23d50e47efa19798f');
+        var algoliaIndex = algoliaClient.initIndex('Blog');
+    </script>
+
+
+    </body>
+</html>

@@ -1,0 +1,908 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hello! CytQ">
+    <title>802.11协议簇及KRACK攻击 - Hello! CytQ</title>
+    <meta name="author" content="CytQ">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="最近暴露的KRACK攻击可以理解为钻了协议的空子，故本文就对其内部原理及实现做大致的剖析。因802.11协议簇所涉极广，暂做部分解析。详情可参考：知乎：无线技术大讲堂， 维基百科 顺便学习一下wifi相关协议">
+<meta name="keywords" content="漏洞,蓝牙">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="802.11协议簇及KRACK攻击">
+<meta property="og:url" content="http://imlzq.com/2017/11/07/802.11协议簇及KRACK攻击/index.html">
+<meta property="og:site_name" content="Hello! CytQ">
+<meta property="og:description" content="最近暴露的KRACK攻击可以理解为钻了协议的空子，故本文就对其内部原理及实现做大致的剖析。因802.11协议簇所涉极广，暂做部分解析。详情可参考：知乎：无线技术大讲堂， 维基百科 顺便学习一下wifi相关协议">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://bos.nj.bpc.baidu.com/v1/agroup/b7487b5c93477b6632d9fb0f452e70a65e7c7d70">
+<meta property="og:updated_time" content="2018-04-06T16:01:19.316Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="802.11协议簇及KRACK攻击">
+<meta name="twitter:description" content="最近暴露的KRACK攻击可以理解为钻了协议的空子，故本文就对其内部原理及实现做大致的剖析。因802.11协议簇所涉极广，暂做部分解析。详情可参考：知乎：无线技术大讲堂， 维基百科 顺便学习一下wifi相关协议">
+<meta name="twitter:image" content="http://bos.nj.bpc.baidu.com/v1/agroup/b7487b5c93477b6632d9fb0f452e70a65e7c7d70">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="http://imlzq.com/assets/images/headicon.png"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-pz4cc6y13wt2trzqa8l3n9v0yykr0sstdaheem7qj628nhjmhp9pfawvqawz.min.css">
+    <!--STYLES END-->
+    
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+<header id="header" data-behavior="5">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/ ">Hello! CytQ</a>
+    </div>
+    
+        
+            <a  class="header-right-icon "
+                href="#about">
+        
+        
+            <i class="fa fa-lg fa-global.avatar"></i>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="5">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a href="/#about">
+                    <img class="sidebar-profile-picture" src="/assets/images/headicon.png" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">CytQ</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>Software Engineer<br>Android、移动安全、逆向、漏洞挖掘</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/ "
+                            
+                            title="Home"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Home</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-tags"
+                            
+                            title="Tags"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Tags</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-archives"
+                            
+                            title="Archives"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Archives</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link open-algolia-search"
+                             href="#search"
+                            
+                            title="Search"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Search</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="#about"
+                            
+                            title="About"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">About</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="mailto:cytlzq@gmail.com" target="_blank" rel="noopener" title="Mail">
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-envelope-o" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Mail</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/atom.xml"
+                            
+                            title="RSS"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="5"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            802.11协议簇及KRACK攻击
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time itemprop="datePublished" datetime="2017-11-07T22:00:00+08:00">
+	
+		    Nov 07, 2017
+    	
+    </time>
+    
+</div>
+
+    
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <p>最近暴露的KRACK攻击可以理解为钻了协议的空子，故本文就对其内部原理及实现做大致的剖析。因802.11协议簇所涉极广，暂做部分解析。详情可参考：<a href="https://zhuanlan.zhihu.com/dot11" target="_blank" rel="noopener">知乎：无线技术大讲堂</a>， <a href="https://en.wikipedia.org/wiki/IEEE_802.11" target="_blank" rel="noopener">维基百科</a></p>
+<p>顺便学习一下wifi相关协议</p>
+<a id="more"></a>    
+<h1 id="802-11协议簇"><a href="#802-11协议簇" class="headerlink" title="802.11协议簇"></a>802.11协议簇</h1><blockquote>
+<p>无线局域网络(Wireless local network)是一种数据传输的系统，采用分布式无线电广播ISM (Industrial, Scientific, Medical) 频段将一个区域里面(如学校，家庭)的两个或者多个支持无线协议的设备连接起来的系统。进行无线射频传输的协议有多种，但是目前无线局域网络最为广泛使用的标准是IEEE 802.11协议标准</p>
+</blockquote>
+<p>802.11协议在1997年提出，之后的版本均在其上做修改及完善。<br>修改内容包括：</p>
+<ul>
+<li>IEEE 802.11，1997年，原始标准（2Mbit/s，工作在2.4GHz）。</li>
+<li>IEEE802.11a，1999年，物理层补充（54Mbit/s，工作在5GHz）。</li>
+<li>IEEE 802.11b，1999年，物理层补充（11Mbit/s工作在2.4GHz）。</li>
+<li>IEEE 802.11c，符合802.1D的媒体接入控制层桥接（MAC Layer Bridging）。</li>
+<li>IEEE 802.11d，根据各国无线电规定做的调整。</li>
+<li>IEEE802.11e，对服务质量（Quality of Service,QoS）的支持。</li>
+<li>IEEE 802.11f，基站的互连性（IAPP,Inter-Access Point Protocol），2006年2月被IEEE批准撤销。</li>
+<li>IEEE802.11g，2003年，物理层补充（54Mbit/s，工作在2.4GHz）。</li>
+<li>IEEE802.11h，2004年，无线覆盖半径的调整，室内（indoor）和室外（outdoor）信道（5GHz频段）。</li>
+<li>IEEE802.11i，2004年，无线网络的安全方面的补充。</li>
+<li>IEEE802.11j，2004年，根据日本规定做的升级。</li>
+<li>IEEE 802.11l，预留及准备不使用。</li>
+<li>IEEE 802.11m，维护标准；互斥及极限。</li>
+<li>IEEE 802.11n，2009年9月通过正式标准，WLAN的传输速率由802.11a及802.11g提供的54Mbps、108Mbps，提高到350Mbps甚至到475Mbps。</li>
+<li>IEEE 802.11p,2010年，这个通讯协定主要用在车用电子的无线通讯上。它设定上是从IEEE 802.11来扩充延伸，来符合智慧型运输系统（Intelligent Transportation Systems，ITS）的相关应用。应用的层面包括高速率的车辆之间以及车辆与5.9千兆赫（5.85-5.925千兆赫）波段的标准ITS路边基础设施之间的资料数据交换。</li>
+<li>IEEE 802.11k，2008年，该协议规范规定了无线局域网络频谱测量规范。该规范的制订体现了无线局域网络对频谱资源智能化使用的需求。</li>
+<li>IEEE 802.11r，2008年，快速基础服务转移，主要是用来解决客户端在不同无线网络AP间切换时的延迟问题。</li>
+<li>IEEE802.11s,2007年9月.拓扑发现、路径选择与转发、信道定位、安全、流量管理和网络管理。网状网络带来一些新的术语。</li>
+<li>IEEE 802.11w，2009年，针对802.11管理帧的保护。</li>
+<li>IEEE 802.11x，包括802.11a/b/g等三个标准。[1] </li>
+<li>IEEE 802.11y，2008年，针对美国3650–3700 MHz 的规定。</li>
+<li>IEEE 802.11ac，802.11n之后的版本。工作在5G频段，理论上可以提供高达每秒1Gbit的数据传输能力。</li>
+</ul>
+<h2 id="WIFI、WLAN、802-11"><a href="#WIFI、WLAN、802-11" class="headerlink" title="WIFI、WLAN、802.11"></a>WIFI、WLAN、802.11</h2><ul>
+<li>WLAN（Wireless Local area network）是个概念，网络技术术语。使用ISM(Industrial、Scientific、Medical)无线电广播频段通信</li>
+<li>802.11是官方制定的标准</li>
+<li>WIFI(WirelessFidelity，无线保真)是任何一个基于802.11标准的WLAN产品(“wireless local area network (WLAN) products that are based on the IEEE 802.11 standard.”)，目的是改善基于IEEE802.11标准的无线网路产品之间的互通性。说白了也就是wifi=采用802.11技术的WLAN</li>
+</ul>
+<h2 id="IEEE-802-11i"><a href="#IEEE-802-11i" class="headerlink" title="IEEE 802.11i"></a>IEEE 802.11i</h2><p>无线安全标准，WPA是其子集。<br>定义了RSN（Robust Security Network）概念从而增强WLAN的数据加密和认证性能，并且针对WEP加密机制的各种缺陷做了多方面的改进。<br>IEEE 802.11主要的标准范畴分为媒介层(MAC)与物理层(PHY)，套用过来，前者就是OSI的数据链路层中的媒体访问控制子层，后者直接就对应OSI的物理层。<br>IEEE 802.11a/b/g，主要是以PHY层的不同作为区分，所以它们的区别直接表现在工作频段及数据传输率、最大传输距离这些指标上。而工作在媒介层的标准——IEEE 802.11e/f/i则被整个IEEE 802.11族所共用。</p>
+<blockquote>
+<p>IEEE 802.11i采用802.1x接入控制，实现无线局域网的认证与密钥管理，并通过EAP-Key的四向握手过程与组密钥握手过程，创建、更新加密密钥，实现802.11i中定义的鲁棒安全网络（Robust Security Network，RSN）的要求。</p>
+</blockquote>
+<h3 id="加密机制（待详细拓展）"><a href="#加密机制（待详细拓展）" class="headerlink" title="加密机制（待详细拓展）"></a>加密机制（待详细拓展）</h3><p><strong>TKIP（Temporal Key Integrity Protocol，时间密钥完整性协议）：</strong><br>采用WEP机制里的RC4作为核心加密算法，可以通过在现有的设备上升级固件和驱动程序的方法达到提高WLAN安全的目的。</p>
+<p><strong>CCMP（Counter-Mode/CBC-MAC Protocol）：</strong><br>基于AES（Advanced Encryption Standard）加密算法和CCM（Counter-Mode/CBC-MAC）认证方式，使得WLAN的安全程度大大提高，是实现RSN的强制性要求。<br>CCMP主要由两个算法组成，分别是CTR mode以及CBC-MAC mode。</p>
+<p>CTR mode为加密算法，CBC-MAC用于讯息完整性的运算。<br>CTR：Advanced Encryption Standard (AES) in Counter Mode。<br>CBC-MAC：Cipher Block Chaining Message Authentication Code。</p>
+<p><strong>WRAP（Wireless Robust Authenticated Protocol）：</strong><br>基于AES加密算法和OCB（Offset Codebook），是一种可选的加密机制。</p>
+<h3 id="The-4-Way-Handshake：四向握手"><a href="#The-4-Way-Handshake：四向握手" class="headerlink" title="The 4-Way Handshake：四向握手"></a>The 4-Way Handshake：四向握手</h3><p>在四向握手之前会有一些无线发现的过程。4次握手之后是组密钥协商过程。而握手的目的则是为了身份认证（其实也就是使用伪随机函数来创建和分发动态加密密钥的过程）。<br>以下的AP为Wireless access point（无线接入点），STA即连接无线网络的终端设备。</p>
+<p><strong>有几个关键名词，先对他们进行基本介绍</strong></p>
+<h4 id="PSK-Pre-Shared-Key-预共享密钥"><a href="#PSK-Pre-Shared-Key-预共享密钥" class="headerlink" title="PSK(Pre-Shared Key, 预共享密钥)"></a>PSK(Pre-Shared Key, 预共享密钥)</h4><p>口令(passphrase)经PSK映射转换算法处理后得到的结果</p>
+<h4 id="PMK-Pairwise-Master-Key-成对主密钥"><a href="#PMK-Pairwise-Master-Key-成对主密钥" class="headerlink" title="PMK(Pairwise Master Key, 成对主密钥)"></a>PMK(Pairwise Master Key, 成对主密钥)</h4><p>成对主密钥。最高等级的密钥，由PSK生成。在WPA2中可以看做是ssid和口令的哈希值（也就是wifi的名称和密码，口令不同于密码，但可这样快速理解）</p>
+<h4 id="PTK（The-Pairwise-Transient-Key）"><a href="#PTK（The-Pairwise-Transient-Key）" class="headerlink" title="PTK（The Pairwise Transient Key）"></a>PTK（The Pairwise Transient Key）</h4><p>成对临时密钥。最终用于加密单播数据流的加密密钥<br>采用伪随机函数PRF（pseudo-random function）来生成PTK。<br>PTK的计算方法可以看作是计算PMK、ANonce、SNonce、AP的MAC地址（AA），STA的MAC地址（SPA）这一个5元数组的哈希值。<br>PTK = PRF（PMK + ANonce + SNonce + AA + SPA）</p>
+<h4 id="GTK（The-Group-Temporal-Key）"><a href="#GTK（The-Group-Temporal-Key）" class="headerlink" title="GTK（The Group Temporal Key）"></a>GTK（The Group Temporal Key）</h4><p>组临时密钥。用于加密广播和组播数据流的加密密钥</p>
+<h4 id="MIC"><a href="#MIC" class="headerlink" title="MIC"></a>MIC</h4><p>消息完整性编码。它是PTK的前16个字节，如果双方的MIC一致，就说明PMK生成的一致，也就说明双方拥有的口令一致（也就是密码对了），那么AP就能确认STA的身份。</p>
+<blockquote>
+<p>The actual messages exchanged during the handshake are depicted in the figure and explained below (all messages are sent as EAPOL-Key frames):</p>
+<ol>
+<li>The AP sends a nonce-value to the STA (ANonce). The client now has all the attributes to construct the PTK.</li>
+<li>The STA sends its own nonce-value (SNonce) to the AP together with a Message Integrity Code (MIC), including authentication, which is really a Message Authentication and Integrity Code (MAIC).</li>
+<li>The AP constructs and sends the GTK and a sequence number together with another MIC. This sequence number will be used in the next multicast or broadcast frame, so that the receiving STA can perform basic replay detection.</li>
+<li>The STA sends a confirmation to the AP.</li>
+</ol>
+</blockquote>
+<p>在握手过程中，所有信息都以EAPOL帧发送(Extensible Authentication Protocol Over LAN，基于局域网的扩展认证协议)。</p>
+<pre><code>1. AP（认证方）发起，发送一个ANonce到STA（终端）。ANonce作为重放保护，必须时这个PMK之前没用过的值
+2. STA在收到信息后结合ANonce和自行构造的SNonce构造PTK，然后发送SNonce和MIC（消息验证码）到AP。
+3. AP也利用（ANonce和SNonce）构造PTK，并且验证STA发过来的MIC等信息。验证成功后生成GTK并发送消息。消息包括GTK、告诉STA安装PTK和GTK、接收顺序计数器RSC（receive sequence counter， 即当前GTK的顺序号），并让STA允许检测重播的广播信息
+4. STA接收到AP返还的消息，验证MIC，安装密钥，返还确认信息给AP。AP在收到确认后，验证MIC，安装相同的密钥。此时，双方都安装了相同的PTK和GTK。
+</code></pre><p>之后通信双方就可以使用进行安全的通信了。<br><img src="http://bos.nj.bpc.baidu.com/v1/agroup/b7487b5c93477b6632d9fb0f452e70a65e7c7d70" alt="4-way handshake"><br>图片摘自<a href="https://en.wikipedia.org/wiki/IEEE_802.11i-2004" target="_blank" rel="noopener">维基百科</a></p>
+<p><strong>所以总结一下流程也就是：AP和STA在交换随机数的同时进行数据校验，并用这个随机数以及自身已知的一些数据构建PTK、GTK。</strong></p>
+<h2 id="常见的WIFI类型"><a href="#常见的WIFI类型" class="headerlink" title="常见的WIFI类型"></a>常见的WIFI类型</h2><h3 id="WEP"><a href="#WEP" class="headerlink" title="WEP"></a>WEP</h3><p>WEP（Wired Equivalent Privacy，有线等效保密协议）是对在两台设备间无线传输的数据进行加密的方式，用以防止非法用户窃听或侵入无线网络。它使用RC4（Rivest Cipher）对分组信息进行加密，并使用 CRC-32 验证达到资料的正确性。</p>
+<p><strong>攻击、破解</strong><br>它使用加密密钥包括收发双发预先确定的40位或者104位通用密钥、发送方为每个分组信息所确定的24位加密密钥IV(initialization vector)。但是为了当IV密钥告诉给通信对象，IV不经加密就直接嵌入到分组信息中发送出去。如果通过无限窃听，手机到包含特定IV密钥的分组信息并对其进行解析，那么连隐秘的通用密钥都可能呗计算出来</p>
+<h3 id="WPA-WPA2"><a href="#WPA-WPA2" class="headerlink" title="WPA/WPA2"></a>WPA/WPA2</h3><p>WPA（WIFI-Protected Access），有WPA和WPA2两个标准，它是根据WEP中找到的几个严重漏洞产生的.WPA实现了IEEE 802.11i标准的大部分，是在802.11i完备之前替代WEP的过渡方案。WPA2具备完整的标准体系，但其不能被应用在某些老旧型号的网卡上。</p>
+<h1 id="KRACK（Key-Reinstallation-Attack）"><a href="#KRACK（Key-Reinstallation-Attack）" class="headerlink" title="KRACK（Key Reinstallation Attack）"></a>KRACK（Key Reinstallation Attack）</h1><blockquote>
+<p>KRACK (Key Reinstallation Attack) is a severe replay attack (a type of exploitable flaw) on the Wi-Fi Protected Access protocol that secures Wi-Fi connections. It was discovered in 2016 by the Belgian researchers Mathy Vanhoef and Frank Piessens of the University of Leuven.Vanhoef’s research group published details of the attack in October 2017.By repeatedly resetting the nonce transmitted in the third step of the WPA2 handshake, an attacker can gradually match encrypted packets seen before and learn the full keychain used to encrypt the traffic.<br>The weakness is in the Wi-Fi standard itself, and not in individual products or implementations. Therefore, any correct implementation of WPA2 is likely to be vulnerable. The vulnerability affects all major software platforms, including Microsoft Windows, macOS, iOS, Android, Windows Phone and Linux.<br>The widely used open-source implementation wpa_supplicant, utilized by Linux, Android, and OpenBSD, is especially susceptible as it can be manipulated to install an all-zeros encryption key, effectively nullifying WPA2 protection in a man-in-the-middle attack.<br>The attack targets the four-way handshake used to establish a nonce (a kind of “shared secret”) in the WPA2 protocol. The standard for WPA2 anticipates occasional WiFi disconnections, and allows reconnection using the same value for the third handshake (for quick reconnection and continuity). Because the standard does not require a different key to be used in this type of reconnection, which could be needed at any time, a replay attack is possible.<br>An attacker can repeatedly re-send the third handshake of another device’s communication to manipulate or reset the WPA2 encryption key. Each reset causes data to be encrypted using the same values, so blocks with the same content can be seen and matched, working backwards to identify parts of the keychain which were used to encrypt that block of data. Repeated resets gradually expose more of the keychain until eventually the whole key is known, and the attacker can read the target’s entire traffic on that connection.</p>
+</blockquote>
+<p><a href="https://en.wikipedia.org/wiki/KRACK" target="_blank" rel="noopener">摘自维基百科</a></p>
+<p>KRACK在2016年被研究者发现并于2017年10月公布攻击细节。<br>小道消息：据说斯诺登2010年泄露NSA机密文档介绍的BADDECISION项目貌似就是KRACK攻击 : )</p>
+<h2 id="影响"><a href="#影响" class="headerlink" title="影响"></a>影响</h2><blockquote>
+<p>In this demonstration, the attacker is able to decrypt all data that the victim transmits. For an attacker this is easy to accomplish, because our key reinstallation attack is exceptionally devastating against Linux and Android 6.0 or higher. This is because Android and Linux can be tricked into (re)installing an all-zero encryption key. </p>
+</blockquote>
+<p>摘自<a href="https://www.krackattacks.com/" target="_blank" rel="noopener">krackattacks.com</a></p>
+<p>攻击者可以多次重放四向握手的第三次握手，强制重装受害者已经在用的WPA密钥，即可以把原来正确真实的WPA密码用一个全零的加密密钥替换掉，之后再建立一个同名但密码全零的AP，就能使STA连接到这个钓鱼AP上，从而完全获得用户的网络数据。</p>
+<h2 id="Tip1"><a href="#Tip1" class="headerlink" title="Tip1"></a>Tip1</h2><p>WPA2的标准中若WiFi偶尔断开连接，则允许重新使用相同的值进行第三次握手（用于建立快速的重新连接和保持连续性）进行连接。</p>
+<h2 id="Tip2"><a href="#Tip2" class="headerlink" title="Tip2"></a>Tip2</h2><p>在四向握手的第三次完成后，STA就会认为生成的PTK是正确的，安装PTK并开始使用其派生的密钥作为CCMP的会话密钥，然后通过802.1x进行通信。</p>
+<h2 id="Tip3"><a href="#Tip3" class="headerlink" title="Tip3"></a>Tip3</h2><p>协议规定：</p>
+<pre><code>1. 每次生成PTK后，都要重设CCMP的计数器的值
+2. 处在已经安装PTK状态下的STA要处理重传的第一和第三个握手包
+</code></pre><h2 id="Tip4"><a href="#Tip4" class="headerlink" title="Tip4"></a>Tip4</h2><p>STA方给AP发送确认包之后并不能确认认证方是否收到了Ack，而如果AP在第三次握手完成后一直没有收到Ack确认包，则会重传第三次的握手包，同时递增其中的replay-counter值来使其有效。</p>
+<h2 id="Tip5"><a href="#Tip5" class="headerlink" title="Tip5"></a>Tip5</h2><p>Android和Linux中的wpa_supplicant基本都存在例外，允许未完整加密的EAPOL包和未验证PTK密钥来源</p>
+<h2 id="Tip6"><a href="#Tip6" class="headerlink" title="Tip6"></a>Tip6</h2><p>WPA加密协议采用的是stream cipher加密（即用一个伪随机密钥流逐字节去异或明文）。</p>
+<blockquote>
+<p>可简单理解为：ciphertext = plaintext xor AES(key, IV||counter)</p>
+</blockquote>
+<p>在正常的过程中，key和IV是不变的，counter值每次都递增，这也就导致每次生成的密钥都不同。<br>但在重安装过程中，counter值会被反复置为0，这也就导致每次生成的密钥都是一样的。<br>所以数据的结果也就变为了：使用同一密钥加密多组不同的明文。对于两组密文来说，相互异或就能抵消掉密钥，只剩加密后的明文。而如果其中一组明文对于攻击者而言已知，那么就可推出另一组明文的具体内容。</p>
+<h2 id="我的理解"><a href="#我的理解" class="headerlink" title="我的理解"></a>我的理解</h2><p>攻击者事先在STA和AP中充当中间人，通过拦截第四次握手包让AP重传第三次握手包，这样就会导致STA重装本地密钥。重装密钥之后，就能诱使STA连接到一个钓鱼AP上了（AP连接的验证机制可以简单理解为AP名+密码，密码全零即可）</p>
+<pre><code>1. 对于Android 6.0以上的手机来说（Linux上的wpa_supplicant版本为2.4~2.6的wifi客户端），在初始化密钥后，它们会直接将包含密钥材料的缓冲区内存清零。但程序并不知道缓冲区已经被清零，因此又会再去读取一次那块内存区域，那这个时候的密钥就一定是由全零的数据衍生来的。如Nonce为0，那么攻击者就可以直接计算出加密数据包所使用的密钥，也就能直接解析用户发送的数据了。
+2. 对于非Android6.0和Linux对应wpa_supplicant的wifi客户端来说，STA加密所用的密钥不可知，但如果攻击者知晓其中一组数据包的明文是什么，那么就可以推出其他数据包的明文（此过程不需要知晓加密密钥，直接异或）。但从[其他文章](https://zhuanlan.zhihu.com/p/30281357?group_id=904476874034634752)上发现，每次可推导出的明文内容有限且可能具有很大的不确定性。
+</code></pre><p>这个过程只能说是绕过而不能说是破解WPA2（发现者也说是bypass），因为wifi的密钥在整个流程中并没有被破解，也没有破解四向握手过程中新生成的加密密钥。</p>
+<ul>
+<li>Android 6.0以上和部分Linux之所以成为目标是因为它的wpa_supplicant代码实现上有问题。windows和ios因为实现不同因此不会受zero-encrypt key的攻击。</li>
+<li>如果敏感信息进行了加密或者其他安全保护比如https，那就是安全的</li>
+</ul>
+<h2 id="关于本文"><a href="#关于本文" class="headerlink" title="关于本文"></a>关于本文</h2><ul>
+<li>有些细节及攻击实现上因为是自己的理解，并且Paper太拖沓，跳着看的，所以一些地方可能有偏差。如果以后发现有不足或者错误的地方就再修改吧。</li>
+<li>POC据说已经有了，研究后再完善一下</li>
+<li>一些协议的基础细节上不是很完善，之后再补充，比如CCMP、WEP、WPA/WPA2、EAP、EAPOL</li>
+</ul>
+<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><ul>
+<li><a href="https://en.wikipedia.org/wiki/KRACK" target="_blank" rel="noopener">维基百科：https://en.wikipedia.org/wiki/KRACK</a></li>
+<li><a href="https://www.youtube.com/watch?v=Oh4WURZoR98" target="_blank" rel="noopener">KRACK演示视频: https://www.youtube.com/watch?v=Oh4WURZoR98</a></li>
+<li><a href="https://papers.mathyvanhoef.com/ccs2017.pdf" target="_blank" rel="noopener">KRACK Paper: https://papers.mathyvanhoef.com/ccs2017.pdf</a></li>
+<li><a href="https://www.krackattacks.com/" target="_blank" rel="noopener">https://www.krackattacks.com/</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/30281357?group_id=904476874034634752" target="_blank" rel="noopener">Don’t Panic! KRACK 没你想象的那么糟</a></li>
+</ul>
+
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/漏洞/">漏洞</a> <a class="tag tag--primary tag--small t-link" href="/tags/蓝牙/">蓝牙</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/08/Xposed/" data-tooltip="Xposed" aria-label="PREVIOUS: Xposed">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/11/07/汇编基础及个人理解/" data-tooltip="汇编基础及个人理解" aria-label="NEXT: 汇编基础及个人理解">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2017/11/07/802.11协议簇及KRACK攻击/" title="Share on Weibo">
+                    <i class="fa fa-weibo" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2017/11/07/802.11协议簇及KRACK攻击/&amp;title=802.11协议簇及KRACK攻击" title="Share on QQ">
+                    <i class="fa fa-qq" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2017/11/07/802.11协议簇及KRACK攻击/" title="Share on Qzone">
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2017/11/07/802.11协议簇及KRACK攻击/" title="Share on Renren">
+                    <i class="fa fa-renren" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#gitment">
+                         <i class="fa fa-comment-o"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="gitment"></div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2018 CytQ. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/08/Xposed/" data-tooltip="Xposed" aria-label="PREVIOUS: Xposed">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2017/11/07/汇编基础及个人理解/" data-tooltip="汇编基础及个人理解" aria-label="NEXT: 汇编基础及个人理解">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2017/11/07/802.11协议簇及KRACK攻击/" title="Share on Weibo">
+                    <i class="fa fa-weibo" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2017/11/07/802.11协议簇及KRACK攻击/&amp;title=802.11协议簇及KRACK攻击" title="Share on QQ">
+                    <i class="fa fa-qq" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2017/11/07/802.11协议簇及KRACK攻击/" title="Share on Qzone">
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2017/11/07/802.11协议簇及KRACK攻击/" title="Share on Renren">
+                    <i class="fa fa-renren" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#gitment">
+                         <i class="fa fa-comment-o"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="5">
+    <i id="btn-close-shareoptions" class="fa fa-close"></i>
+    <ul class="share-options">
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2017/11/07/802.11协议簇及KRACK攻击/">
+                    <i class="fa fa-weibo" aria-hidden="true"></i><span>Share on Weibo</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2017/11/07/802.11协议簇及KRACK攻击/&amp;title=802.11协议簇及KRACK攻击">
+                    <i class="fa fa-qq" aria-hidden="true"></i><span>Share on QQ</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2017/11/07/802.11协议簇及KRACK攻击/">
+                    <i class="fa fa-star" aria-hidden="true"></i><span>Share on Qzone</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2017/11/07/802.11协议簇及KRACK攻击/">
+                    <i class="fa fa-renren" aria-hidden="true"></i><span>Share on Renren</span>
+                </a>
+            </li>
+        
+    </ul>
+</div>
+
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/headicon.png" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">CytQ</h4>
+        
+            <div id="about-card-bio"><p>Software Engineer<br>Android、移动安全、逆向、漏洞挖掘</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>17本科，现任职百度</p>
+
+            </div>
+        
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                Beijing
+            </div>
+        
+    </div>
+</div>
+
+        
+            <div id="algolia-search-modal" class="modal-container">
+    <div class="modal">
+        <div class="modal-header">
+            <span class="close-button"><i class="fa fa-close"></i></span>
+            <a href="https://algolia.com" target="_blank" rel="noopener" class="searchby-algolia text-color-light link-unstyled">
+                <span class="searchby-algolia-text text-color-light text-small">by</span>
+                <img class="searchby-algolia-logo" src="https://www.algolia.com/static_assets/images/press/downloads/algolia-light.svg">
+            </a>
+            <i class="search-icon fa fa-search"></i>
+            <form id="algolia-search-form">
+                <input type="text" id="algolia-search-input" name="search"
+                    class="form-control input--large search-input" placeholder="Search "
+                    />
+            </form>
+        </div>
+        <div class="modal-body">
+            <div class="no-result text-color-light text-center">no post found</div>
+            <div class="results">
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/11/22/序言/">
+                            <h3 class="media-heading">序言</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Nov 22, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/11/23/Volley-Lrucache-DiskLrucache/">
+                            <h3 class="media-heading">三级缓存 + AndroidStudio导出jar包 + upload to github</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Nov 23, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>　　想了半天都没想出来写什么作为第一篇博客比较好，突然发现这次项目的版本控制是github，三级缓存和屏幕适配又是一个跑不掉的话题，就以这些话题开始我的博客之旅吧，同时总结一下在AndroidStudio中如何导出jar包。    </p>
+<pre><code>([参考郭霖的blog](http://blog.csdn.net/guolin_blog/article/details/28863651))
+([参考李晨玮的blog](http://www.cnblogs.com/lichenwei)/)
+
+不管是提升用户体验还是提升APP的流畅度，三级缓存都是必不可少的，在这里就先总结一下三级缓存的使用。
+</code></pre><p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/11/23/screensuit/">
+                            <h3 class="media-heading">三种屏幕适配的方式</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Nov 23, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>​    第一篇博客总结了三级缓存／AndroidStudio打包jar包／上传基本文件到github,　第二篇就接着总结一下三种屏幕适配的方式。</p>
+<p>在这里也推荐一下<a href="http://blog.csdn.net/lmj623565791?viewmode=contents" target="_blank" rel="noopener">张鸿洋</a>的博客，关注挺久了，和<a href="http://blog.csdn.net/guolin_blog" target="_blank" rel="noopener">郭霖</a>的都很好。</p>
+<p>第一种方式，dimens中设置不同dp值，来达到适配的目的<br>第二种方式，利用第三方百分比库<br>第三种方式，利用第三方库：AutoLayout </p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/11/24/全局变量的处理/">
+                            <h3 class="media-heading">全局变量的处理</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Nov 24, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>　　很多时候APP会莫名其妙的崩溃，尤其是一些配置很低的收集，重现场景就是在APP切换到后台后，闲置了一段时间后再继续使用时，就会崩溃。<br>　　导致上述崩溃发生的一个可能罪魁祸首就是全局变量，在内存不足的时候，系统会回收一部分闲置的资源，由于APP被切换到了后台，所以之前存放的全局变量很容易被回收，这是再切换到前台继续使用，在使用某个全局变量的时候，就会因为全局变量的值为空而崩溃。<br>　　要解决这个问题，就一定要使用序列化技术。</p>
+<p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/11/25/Android自动填写验证码/">
+                            <h3 class="media-heading">Android自动填写验证码</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Nov 25, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>　　第四篇博客就来总结下项目中使用到的一个提升用户体验的功能：　Android自动填写验证码<br>　　从字面上来看，很明显的可以看出它的实现流程：监听-&gt;有改变-&gt;获取信息-&gt;改变ui</p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/12/01/引导页_视差显示/">
+                            <h3 class="media-heading">引导页_视差显示</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Dec 1, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>当用户下载完APP后，第一次启动时通常会有一个引导页，而这个引导页对于引导用户或介绍本产品有着很好的作用。一般三种方式实现：</p>
+<ol>
+<li>Viewpager<br>这种方式很简单，易实现，但是在观赏性上来说很差，没有任何动画</li>
+<li>视差显示<br>这种方式是基于ViewPager的，通过自定义其中的类，或者调整其中的方法来达到显示的效果。<br>　在ViewPager中，有一个接口叫做PageTransformer，其中有一个方法transformPage,我们通过在这个方法中编写逻辑就可以实现视差显示。而之所以叫做视差显示，是因为实现这种方式是对不同的控件设置不同的速度来达到的。例如，ViewPager移动了10dp,　图片A移动了15dp, 图片B移动了7.5dp，这就产生了一个视差。</li>
+<li>Html5<br>这种方式也是最近使用得越来越多的方式，通过加载h5来实现引导页的炫目效果。</li>
+</ol></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/12/01/手势/">
+                            <h3 class="media-heading">手势</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Dec 1, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>这里介绍的只是一个简单的DEMO，根据官方的API还可以进行自定义手势的编写，具体的内容就以后遇到了再说，在本项目中也只起一个开后门的验证作用,毕竟一个没有后门的APP不是一个好APP。</p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/12/07/Json数据的解析_Gson/">
+                            <h3 class="media-heading">Json数据的解析_Gson</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Dec 7, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>一些简单的JSON格式解析可以直接使用JSONObject和JSONArray来解析，但是面对比较复杂或者是数据量较大的JSON数据时就需要使用fastJSON和Gson来解析了，这样的效率和效果都更好。</p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/12/08/ViewPager取消预加载/">
+                            <h3 class="media-heading">ViewPager取消预加载</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Dec 8, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>ViewPager在设计的时候有一个预加载的机制，也就是如果你处于当前这个page界面时,会预先加载下一个page。但是有的时候设计到网络请求，就需要取消掉这个预加载。</p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/12/20/Note-&gt;Rxjava/">
+                            <h3 class="media-heading">RxJava学习笔记</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Dec 20, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>学习自扔物线的文章<a href="http://gank.io/post/560e15be2dca930e00da1083。" target="_blank" rel="noopener">http://gank.io/post/560e15be2dca930e00da1083。</a></p>
+<p>粗略学习了最近越来越火的RxJava，进行一个简单的学习总结，这篇博客只涉及使用，不涉及原理</p>
+<blockquote>
+<p>Github：<br><a href="https://github.com/ReactiveX/RxJava" target="_blank" rel="noopener">https://github.com/ReactiveX/RxJava</a><br><a href="https://github.com/ReactiveX/RxAndroid" target="_blank" rel="noopener">https://github.com/ReactiveX/RxAndroid</a> </p>
+</blockquote>
+<p>使用方式:</p>
+<blockquote>
+<p>compile ‘io.reactivex:rxjava:1.0.14’<br>compile ‘io.reactivex:rxandroid:1.0.1’ </p>
+</blockquote>
+<p>我的相关博文：<br><a href="http://blog.csdn.net/jonstank2013/article/details/50574871" target="_blank" rel="noopener">RxJava使用示例（一）： 实现Rxbus代替eventbus</a><br><a href="http://blog.csdn.net/jonstank2013/article/details/50981404" target="_blank" rel="noopener">RxJava实现原理探索</a></p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+            </div>
+        </div>
+        <div class="modal-footer">
+            <p class="results-count text-medium"
+                data-message-zero="no post found"
+                data-message-one="1 post found"
+                data-message-other="{n} posts found">
+                47 posts found
+            </p>
+        </div>
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-peofhqjkzcghmndknakluequy1y6owxdwpaqyju9ntl9zxnk7rdolb3rjjoj.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+        <script type="text/javascript">
+            (function() {
+                function render() {
+                    new Gitment({
+                        id: 'http://imlzq.com/2017/11/07/802.11协议簇及KRACK攻击/',
+                        owner: 'CytQ',
+                        repo: 'BlogComments',
+                        oauth: {
+                            client_id: 'eddb24a604957d55b0fc',
+                            client_secret: '5c1a27d80b9c1978faa1d488b34d606b77529b77',
+                        }
+                    }).render('gitment');
+                }
+                var gc = document.createElement('script');
+                gc.type = 'text/javascript';
+                gc.src = '//imsun.github.io/gitment/dist/gitment.browser.js';
+                gc.charset = 'UTF-8';
+                gc.onload = render;
+                gc.async = true;
+                document.querySelector('body').appendChild(gc);
+                var gcs = document.createElement('link');
+                gcs.href = '//imsun.github.io/gitment/style/default.css';
+                gcs.type = 'text/css';
+                gcs.rel = 'stylesheet';
+                gcs.media = 'screen,print';
+                document.querySelector('head').appendChild(gcs);
+            })();
+	    </script>
+    
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment-with-locales.min.js"></script>
+    <script src="//cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
+    <script>
+        var algoliaClient = algoliasearch('S730SA64YT', '66519eebbcfbe3a23d50e47efa19798f');
+        var algoliaIndex = algoliaClient.initIndex('Blog');
+    </script>
+
+
+    </body>
+</html>
