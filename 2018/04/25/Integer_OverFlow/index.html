@@ -1,0 +1,844 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hello! CytQ">
+    <title>整数溢出 - Hello! CytQ</title>
+    <meta name="author" content="CytQ">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="无符号整数 有符号整数 截断 配合不安全函数进行栈溢出">
+<meta name="keywords" content="漏洞">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="整数溢出">
+<meta property="og:url" content="http://imlzq.com/2018/04/25/Integer_OverFlow/index.html">
+<meta property="og:site_name" content="Hello! CytQ">
+<meta property="og:description" content="无符号整数 有符号整数 截断 配合不安全函数进行栈溢出">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://github.com/CytQ/BlogImgs/blob/master/Integer_Overflow/application.png?raw=true">
+<meta property="og:image" content="https://github.com/CytQ/BlogImgs/blob/master/Integer_Overflow/65535.png?raw=true">
+<meta property="og:image" content="https://github.com/CytQ/BlogImgs/blob/master/Integer_Overflow/65536.png?raw=true">
+<meta property="og:updated_time" content="2018-04-27T08:03:00.698Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="整数溢出">
+<meta name="twitter:description" content="无符号整数 有符号整数 截断 配合不安全函数进行栈溢出">
+<meta name="twitter:image" content="https://github.com/CytQ/BlogImgs/blob/master/Integer_Overflow/application.png?raw=true">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="http://imlzq.com/assets/images/headicon.png"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-pz4cc6y13wt2trzqa8l3n9v0yykr0sstdaheem7qj628nhjmhp9pfawvqawz.min.css">
+    <!--STYLES END-->
+    
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+<header id="header" data-behavior="5">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/ ">Hello! CytQ</a>
+    </div>
+    
+        
+            <a  class="header-right-icon "
+                href="#about">
+        
+        
+            <i class="fa fa-lg fa-global.avatar"></i>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="5">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a href="/#about">
+                    <img class="sidebar-profile-picture" src="/assets/images/headicon.png" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">CytQ</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>Software Engineer<br>Android、移动安全、逆向、漏洞挖掘</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/ "
+                            
+                            title="Home"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Home</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-tags"
+                            
+                            title="Tags"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Tags</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-archives"
+                            
+                            title="Archives"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Archives</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link open-algolia-search"
+                             href="#search"
+                            
+                            title="Search"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Search</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="#about"
+                            
+                            title="About"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">About</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="mailto:cytlzq@gmail.com" target="_blank" rel="noopener" title="Mail">
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-envelope-o" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Mail</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/atom.xml"
+                            
+                            title="RSS"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="5"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            整数溢出
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time itemprop="datePublished" datetime="2018-04-25T00:00:00+08:00">
+	
+		    Apr 25, 2018
+    	
+    </time>
+    
+</div>
+
+    
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <ul>
+<li>无符号整数</li>
+<li>有符号整数</li>
+<li>截断</li>
+<li>配合不安全函数进行栈溢出</li>
+</ul>
+<a id="more"></a>    
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;    </span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span>    </span></span><br><span class="line"><span class="function"></span>&#123;    </span><br><span class="line">    <span class="keyword">int</span> InputTest;                    </span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">short</span> OutputTest;        </span><br><span class="line">    </span><br><span class="line">	<span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"InputTest:"</span>);    </span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d"</span>, &amp;InputTest);    </span><br><span class="line">		OutputTest = InputTest;    </span><br><span class="line">    </span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"OutputTest:%d\n"</span>, OutputTest);    </span><br><span class="line">        </span><br><span class="line">		getchar();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上表中，会把输入的InputTest传给无符号短整型OutputTest。无符号的16位整数（2个字节）可以表示0~2^16 -1，也就是0xFFFF</p>
+<p><strong>运行结果：</strong></p>
+<p><img src="https://github.com/CytQ/BlogImgs/blob/master/Integer_Overflow/application.png?raw=true" alt="https://github.com/CytQ/BlogImgs/blob/master/Integer_Overflow/application.png?raw=true"></p>
+<p>从上面可以发现，如果输入的值为0~65535，显示是没有问题的。如果超过了65535（比如65536），那么返回的结果是0，65537结果是1。</p>
+<p><strong>老规矩，拖入ida pro动态分析</strong></p>
+<p>给scanf下断点，可以看到，值最终存放在ecx寄存器中。</p>
+<p><img src="https://github.com/CytQ/BlogImgs/blob/master/Integer_Overflow/65535.png?raw=true" alt="https://github.com/CytQ/BlogImgs/blob/master/Integer_Overflow/65535.png?raw=true"></p>
+<p>如果我们输入65535，也就是0xFFFF.</p>
+<p>如果输入65536，结果是0x10000</p>
+<p><img src="https://github.com/CytQ/BlogImgs/blob/master/Integer_Overflow/65536.png?raw=true" alt="https://github.com/CytQ/BlogImgs/blob/master/Integer_Overflow/65536.png?raw=true"></p>
+<p>接下来的步骤是：OutputTest = InputTest，对应的汇编为：</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">mov</span> <span class="built_in">dx</span>, [<span class="built_in">ebp</span>-<span class="number">4</span>]</span><br><span class="line"><span class="keyword">mov</span> <span class="built_in">word</span> <span class="built_in">ptr</span> [<span class="built_in">ebp</span>-<span class="number">8</span>], <span class="built_in">dx</span></span><br><span class="line"><span class="keyword">mov</span> <span class="built_in">eax</span>, [<span class="built_in">ebp</span>+var_8]</span><br><span class="line"><span class="keyword">and</span> <span class="built_in">eax</span>, <span class="number">0FFFFh</span></span><br></pre></td></tr></table></figure>
+<p>也就是将0018FF44这个地址的数值赋给eax，并做与操作.这样就完全剔除了高16位，只保留低16位的数值。</p>
+<p>这也是为什么输入65536后数值会从0重新开始增加。</p>
+<h2 id="无符号整数的上溢和下溢"><a href="#无符号整数的上溢和下溢" class="headerlink" title="无符号整数的上溢和下溢"></a>无符号整数的上溢和下溢</h2><p>负数 = 负数的补码 = 负数的反码 + 1</p>
+<p>E.G: -1 可以表示为 100000001，取反 111111110，再加1，也就是111111111</p>
+<p>对于无符号的整数，-1 = 0xFFFFFFFF</p>
+<p><strong>常见的问题：</strong></p>
+<blockquote>
+<p>void <em>memcpy(void </em>dest, const void *src, size_t n)：从源src所指的内存地址的起始位置开始拷贝n个字节到目标dest所指的内存地址的起始位置中</p>
+<p>void <em>memset(void </em>s, int ch, <a href="https://baike.baidu.com/item/size_t" target="_blank" rel="noopener">size_t</a> n)：将s中当前位置后面的n个字节 （typedef unsigned int size_t ）用 ch 替换并返回 s 。</p>
+</blockquote>
+<p><strong>下溢：</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">fun</span><span class="params">(<span class="keyword">size_t</span> cbSize)</span>    </span></span><br><span class="line"><span class="function"></span>&#123;    </span><br><span class="line">    <span class="keyword">if</span>( cbSize &gt; <span class="number">1024</span> )    </span><br><span class="line">    &#123;    </span><br><span class="line">        <span class="keyword">return</span> FALSE;    </span><br><span class="line">    &#125;    </span><br><span class="line">    <span class="keyword">char</span> *pBuf = <span class="keyword">new</span> <span class="keyword">char</span>[cbSize<span class="number">-1</span>];    </span><br><span class="line">    <span class="comment">// 存在溢出隐患    </span></span><br><span class="line">    <span class="built_in">memset</span>(pBuf, <span class="number">0x90</span>, cbSize<span class="number">-1</span>);    </span><br><span class="line">    ...    </span><br><span class="line">    <span class="keyword">return</span> TRUE;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>cbsize = 0，那么memset的第三个参数就为-1，而第三个参数为无符号整数，因此数据为0xFFFFFFFF，空间超过可执行的范围，因此崩溃。</p>
+<p><strong>上溢：</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">fun</span><span class="params">(<span class="keyword">char</span> *s1, <span class="keyword">size_t</span> len1, <span class="keyword">char</span> *s2, <span class="keyword">size_t</span> len2)</span>    </span></span><br><span class="line"><span class="function"></span>&#123;    </span><br><span class="line">    <span class="keyword">if</span>(len1 + len2 + <span class="number">1</span> &gt; <span class="number">1024</span>)    </span><br><span class="line">    &#123;    </span><br><span class="line">        <span class="keyword">return</span> FALSE;    </span><br><span class="line">    &#125;    </span><br><span class="line">    <span class="keyword">char</span> pBuf = <span class="keyword">new</span> <span class="keyword">char</span>[len1 + len2 + <span class="number">1</span>];    </span><br><span class="line">    <span class="keyword">if</span>(pBuf == <span class="literal">NULL</span>)    </span><br><span class="line">    &#123;    </span><br><span class="line">        <span class="keyword">return</span> FALSE;    </span><br><span class="line">    &#125;    </span><br><span class="line">    <span class="built_in">memcpy</span>(pBuf, s1, len1);    </span><br><span class="line">    <span class="comment">// 存在溢出隐患    </span></span><br><span class="line">    <span class="built_in">memcpy</span>(pBuf + len1, s2, len2);    </span><br><span class="line">    ...    </span><br><span class="line">    <span class="keyword">return</span> TRUE;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>len1和len2都是无符号整数，如果len1=8，len2=0xFFFFFFFF，那么对于len1+len2+1这个运算来说，len2+1会变成0，然后再加上8，那么它的结果就是8。也就是说，new可能只分配了8个字节的空间，但是却要将长为0xFFFFFFFF的字符串复制到这个空间，那么结果就会造成程序的崩溃。</p>
+<h2 id="有符号整数"><a href="#有符号整数" class="headerlink" title="有符号整数"></a>有符号整数</h2><ul>
+<li>有符号整数之间的比较。</li>
+<li>有符号整数的运算。</li>
+<li>无符号整数和有符号整数的对比。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">copy_something</span><span class="params">(<span class="keyword">char</span> *buf, <span class="keyword">int</span> len)</span>    </span></span><br><span class="line"><span class="function"></span>&#123;    </span><br><span class="line">    <span class="keyword">char</span> szBuf[<span class="number">800</span>];    </span><br><span class="line">    <span class="keyword">if</span>(len &gt; <span class="keyword">sizeof</span>(szBuf))    </span><br><span class="line">    &#123;    </span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;    </span><br><span class="line">    &#125;    </span><br><span class="line">    <span class="comment">// 存在溢出隐患    </span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">memcpy</span>(szBuf, buf, len);    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述代码的问题同样出在memcpy函数的第三个参数。由于memcpy使用的是无符号整数作为第三个参数的，但是最初的len是有符号整数。假设我们赋予len一个负值，那么就一定能够通过if语句的检测，但是当这个负值被运用在memcpy函数中时，len就可能变成一个非常大的正数，导致缓冲区及其后面的内容被改写，使得程序崩溃。</p>
+<h2 id="截断问题"><a href="#截断问题" class="headerlink" title="截断问题"></a>截断问题</h2><p>截断问题主要发生在高位数的整数（如32位）复制到低位数的整数（如16位）的时候，发生的溢出现象</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">fun</span><span class="params">(byte *name, DWORD cbBuf)</span>    </span></span><br><span class="line"><span class="function"></span>&#123;    </span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">short</span> cbCalculatedBufSize = cbBuf;    </span><br><span class="line">    byte *buf = <span class="keyword">new</span> byte(cbCalculatedBufSize);    </span><br><span class="line">    <span class="keyword">if</span>(buf == <span class="literal">NULL</span>)    </span><br><span class="line">    &#123;    </span><br><span class="line">        <span class="keyword">return</span> FALSE;    </span><br><span class="line">    &#125;    </span><br><span class="line">    <span class="comment">// 存在溢出隐患    </span></span><br><span class="line">    <span class="built_in">memcpy</span>(buf, name, cbBuf);    </span><br><span class="line">    ...    </span><br><span class="line">    <span class="keyword">return</span> TRUE;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 对于fun函数来说，如果它的第二个参数cbBuf的值为0x00010020，由于cbCalculatedBufSize只能接收16位的内容，那么在赋值后，该变量的值为0x0020，因此new仅仅分配了0x20这么多的字节，但是name的大小实际为0x00010020，这就造成了缓冲区溢出情况的出现。</p>
+<h2 id="使用整数溢出实现栈溢出"><a href="#使用整数溢出实现栈溢出" class="headerlink" title="使用整数溢出实现栈溢出"></a>使用整数溢出实现栈溢出</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"string.h"</span>    </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stdlib.h"</span> </span></span><br><span class="line">   </span><br><span class="line"><span class="keyword">char</span> overflow[] =    </span><br><span class="line">    <span class="string">"\x41\x42\x43\x44\x45\x46\x47\x48\x49\x4a\x4b\x4c\x4d\x4e\x4f\x50"</span>    </span><br><span class="line">    <span class="string">"\x51\x52\x53\x54\x55\x56\x57\x58\x59\x5a\x5b\x5c\x5d\x5e\x5f\x60"</span>    </span><br><span class="line">    <span class="string">"\x61\x62\x63\x64\x65\x66\x67\x68"</span>;    </span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fun</span><span class="params">(<span class="keyword">int</span> i)</span>    </span></span><br><span class="line"><span class="function"></span>&#123;    </span><br><span class="line">    <span class="comment">// i是一个32位整数，s为16位。</span></span><br><span class="line">  	<span class="comment">// 如果i = 65536,那么s = 0  	</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">short</span> s;    </span><br><span class="line">    <span class="keyword">char</span> szBuf[<span class="number">8</span>];    </span><br><span class="line">    s = i;    </span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 判断s是否大于8，我们原本输入的是65536，不合法，但截取低16位后为0，成功绕过</span></span><br><span class="line">    <span class="keyword">if</span>(s &gt; <span class="number">8</span>)    </span><br><span class="line">    &#123;    </span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;    </span><br><span class="line">    &#125;    </span><br><span class="line">  </span><br><span class="line">    <span class="keyword">if</span>(i &gt; <span class="keyword">sizeof</span>(overflow))    </span><br><span class="line">    &#123;    </span><br><span class="line">        <span class="built_in">memcpy</span>(szBuf, overflow, <span class="keyword">sizeof</span>(overflow));    </span><br><span class="line">    &#125;    </span><br><span class="line">    <span class="keyword">else</span>    </span><br><span class="line">    &#123;    </span><br><span class="line">      	<span class="comment">// memcpy是个不安全函数</span></span><br><span class="line">        <span class="comment">// 只有8字节的空间塞进去了65536个字节，栈溢出</span></span><br><span class="line">      	<span class="comment">// overflow设置为我们编写好的shellcode即可</span></span><br><span class="line">        <span class="built_in">memcpy</span>(szBuf, overflow, i);    </span><br><span class="line">    &#125;    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;    </span><br><span class="line">&#125;    </span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span>    </span></span><br><span class="line"><span class="function"></span>&#123;    </span><br><span class="line">    <span class="keyword">int</span> i, ret;       </span><br><span class="line">    i = <span class="number">65536</span>;    </span><br><span class="line">    ret = fun(i);    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://blog.csdn.net/ioio_jy/article/details/50576353" target="_blank" rel="noopener">https://blog.csdn.net/ioio_jy/article/details/50576353</a></p>
+
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/漏洞/">漏洞</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/03/18/Jni_load/" data-tooltip="System.loadLibrary() 做的事情" aria-label="NEXT: System.loadLibrary() 做的事情">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2018/04/25/Integer_OverFlow/" title="Share on Weibo">
+                    <i class="fa fa-weibo" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2018/04/25/Integer_OverFlow/&amp;title=整数溢出" title="Share on QQ">
+                    <i class="fa fa-qq" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2018/04/25/Integer_OverFlow/" title="Share on Qzone">
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2018/04/25/Integer_OverFlow/" title="Share on Renren">
+                    <i class="fa fa-renren" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#gitment">
+                         <i class="fa fa-comment-o"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="gitment"></div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2018 CytQ. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/03/18/Jni_load/" data-tooltip="System.loadLibrary() 做的事情" aria-label="NEXT: System.loadLibrary() 做的事情">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2018/04/25/Integer_OverFlow/" title="Share on Weibo">
+                    <i class="fa fa-weibo" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2018/04/25/Integer_OverFlow/&amp;title=整数溢出" title="Share on QQ">
+                    <i class="fa fa-qq" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2018/04/25/Integer_OverFlow/" title="Share on Qzone">
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2018/04/25/Integer_OverFlow/" title="Share on Renren">
+                    <i class="fa fa-renren" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#gitment">
+                         <i class="fa fa-comment-o"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="5">
+    <i id="btn-close-shareoptions" class="fa fa-close"></i>
+    <ul class="share-options">
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2018/04/25/Integer_OverFlow/">
+                    <i class="fa fa-weibo" aria-hidden="true"></i><span>Share on Weibo</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2018/04/25/Integer_OverFlow/&amp;title=整数溢出">
+                    <i class="fa fa-qq" aria-hidden="true"></i><span>Share on QQ</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2018/04/25/Integer_OverFlow/">
+                    <i class="fa fa-star" aria-hidden="true"></i><span>Share on Qzone</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2018/04/25/Integer_OverFlow/">
+                    <i class="fa fa-renren" aria-hidden="true"></i><span>Share on Renren</span>
+                </a>
+            </li>
+        
+    </ul>
+</div>
+
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/headicon.png" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">CytQ</h4>
+        
+            <div id="about-card-bio"><p>Software Engineer<br>Android、移动安全、逆向、漏洞挖掘</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>17本科，现任职百度</p>
+
+            </div>
+        
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                Beijing
+            </div>
+        
+    </div>
+</div>
+
+        
+            <div id="algolia-search-modal" class="modal-container">
+    <div class="modal">
+        <div class="modal-header">
+            <span class="close-button"><i class="fa fa-close"></i></span>
+            <a href="https://algolia.com" target="_blank" rel="noopener" class="searchby-algolia text-color-light link-unstyled">
+                <span class="searchby-algolia-text text-color-light text-small">by</span>
+                <img class="searchby-algolia-logo" src="https://www.algolia.com/static_assets/images/press/downloads/algolia-light.svg">
+            </a>
+            <i class="search-icon fa fa-search"></i>
+            <form id="algolia-search-form">
+                <input type="text" id="algolia-search-input" name="search"
+                    class="form-control input--large search-input" placeholder="Search "
+                    />
+            </form>
+        </div>
+        <div class="modal-body">
+            <div class="no-result text-color-light text-center">no post found</div>
+            <div class="results">
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/11/22/序言/">
+                            <h3 class="media-heading">序言</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Nov 22, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/11/23/Volley-Lrucache-DiskLrucache/">
+                            <h3 class="media-heading">三级缓存 + AndroidStudio导出jar包 + upload to github</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Nov 23, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>　　想了半天都没想出来写什么作为第一篇博客比较好，突然发现这次项目的版本控制是github，三级缓存和屏幕适配又是一个跑不掉的话题，就以这些话题开始我的博客之旅吧，同时总结一下在AndroidStudio中如何导出jar包。    </p>
+<pre><code>([参考郭霖的blog](http://blog.csdn.net/guolin_blog/article/details/28863651))
+([参考李晨玮的blog](http://www.cnblogs.com/lichenwei)/)
+
+不管是提升用户体验还是提升APP的流畅度，三级缓存都是必不可少的，在这里就先总结一下三级缓存的使用。
+</code></pre><p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/11/23/screensuit/">
+                            <h3 class="media-heading">三种屏幕适配的方式</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Nov 23, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>​    第一篇博客总结了三级缓存／AndroidStudio打包jar包／上传基本文件到github,　第二篇就接着总结一下三种屏幕适配的方式。</p>
+<p>在这里也推荐一下<a href="http://blog.csdn.net/lmj623565791?viewmode=contents" target="_blank" rel="noopener">张鸿洋</a>的博客，关注挺久了，和<a href="http://blog.csdn.net/guolin_blog" target="_blank" rel="noopener">郭霖</a>的都很好。</p>
+<p>第一种方式，dimens中设置不同dp值，来达到适配的目的<br>第二种方式，利用第三方百分比库<br>第三种方式，利用第三方库：AutoLayout </p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/11/24/全局变量的处理/">
+                            <h3 class="media-heading">全局变量的处理</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Nov 24, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>　　很多时候APP会莫名其妙的崩溃，尤其是一些配置很低的收集，重现场景就是在APP切换到后台后，闲置了一段时间后再继续使用时，就会崩溃。<br>　　导致上述崩溃发生的一个可能罪魁祸首就是全局变量，在内存不足的时候，系统会回收一部分闲置的资源，由于APP被切换到了后台，所以之前存放的全局变量很容易被回收，这是再切换到前台继续使用，在使用某个全局变量的时候，就会因为全局变量的值为空而崩溃。<br>　　要解决这个问题，就一定要使用序列化技术。</p>
+<p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/11/25/Android自动填写验证码/">
+                            <h3 class="media-heading">Android自动填写验证码</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Nov 25, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>　　第四篇博客就来总结下项目中使用到的一个提升用户体验的功能：　Android自动填写验证码<br>　　从字面上来看，很明显的可以看出它的实现流程：监听-&gt;有改变-&gt;获取信息-&gt;改变ui</p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/12/01/引导页_视差显示/">
+                            <h3 class="media-heading">引导页_视差显示</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Dec 1, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>当用户下载完APP后，第一次启动时通常会有一个引导页，而这个引导页对于引导用户或介绍本产品有着很好的作用。一般三种方式实现：</p>
+<ol>
+<li>Viewpager<br>这种方式很简单，易实现，但是在观赏性上来说很差，没有任何动画</li>
+<li>视差显示<br>这种方式是基于ViewPager的，通过自定义其中的类，或者调整其中的方法来达到显示的效果。<br>　在ViewPager中，有一个接口叫做PageTransformer，其中有一个方法transformPage,我们通过在这个方法中编写逻辑就可以实现视差显示。而之所以叫做视差显示，是因为实现这种方式是对不同的控件设置不同的速度来达到的。例如，ViewPager移动了10dp,　图片A移动了15dp, 图片B移动了7.5dp，这就产生了一个视差。</li>
+<li>Html5<br>这种方式也是最近使用得越来越多的方式，通过加载h5来实现引导页的炫目效果。</li>
+</ol></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/12/01/手势/">
+                            <h3 class="media-heading">手势</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Dec 1, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>这里介绍的只是一个简单的DEMO，根据官方的API还可以进行自定义手势的编写，具体的内容就以后遇到了再说，在本项目中也只起一个开后门的验证作用,毕竟一个没有后门的APP不是一个好APP。</p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/12/07/Json数据的解析_Gson/">
+                            <h3 class="media-heading">Json数据的解析_Gson</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Dec 7, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>一些简单的JSON格式解析可以直接使用JSONObject和JSONArray来解析，但是面对比较复杂或者是数据量较大的JSON数据时就需要使用fastJSON和Gson来解析了，这样的效率和效果都更好。</p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/12/08/ViewPager取消预加载/">
+                            <h3 class="media-heading">ViewPager取消预加载</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Dec 8, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>ViewPager在设计的时候有一个预加载的机制，也就是如果你处于当前这个page界面时,会预先加载下一个page。但是有的时候设计到网络请求，就需要取消掉这个预加载。</p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/12/20/Note-&gt;Rxjava/">
+                            <h3 class="media-heading">RxJava学习笔记</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Dec 20, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>学习自扔物线的文章<a href="http://gank.io/post/560e15be2dca930e00da1083。" target="_blank" rel="noopener">http://gank.io/post/560e15be2dca930e00da1083。</a></p>
+<p>粗略学习了最近越来越火的RxJava，进行一个简单的学习总结，这篇博客只涉及使用，不涉及原理</p>
+<blockquote>
+<p>Github：<br><a href="https://github.com/ReactiveX/RxJava" target="_blank" rel="noopener">https://github.com/ReactiveX/RxJava</a><br><a href="https://github.com/ReactiveX/RxAndroid" target="_blank" rel="noopener">https://github.com/ReactiveX/RxAndroid</a> </p>
+</blockquote>
+<p>使用方式:</p>
+<blockquote>
+<p>compile ‘io.reactivex:rxjava:1.0.14’<br>compile ‘io.reactivex:rxandroid:1.0.1’ </p>
+</blockquote>
+<p>我的相关博文：<br><a href="http://blog.csdn.net/jonstank2013/article/details/50574871" target="_blank" rel="noopener">RxJava使用示例（一）： 实现Rxbus代替eventbus</a><br><a href="http://blog.csdn.net/jonstank2013/article/details/50981404" target="_blank" rel="noopener">RxJava实现原理探索</a></p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+            </div>
+        </div>
+        <div class="modal-footer">
+            <p class="results-count text-medium"
+                data-message-zero="no post found"
+                data-message-one="1 post found"
+                data-message-other="{n} posts found">
+                51 posts found
+            </p>
+        </div>
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-peofhqjkzcghmndknakluequy1y6owxdwpaqyju9ntl9zxnk7rdolb3rjjoj.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+        <script type="text/javascript">
+            (function() {
+                function render() {
+                    new Gitment({
+                        id: 'http://imlzq.com/2018/04/25/Integer_OverFlow/',
+                        owner: 'CytQ',
+                        repo: 'BlogComments',
+                        oauth: {
+                            client_id: 'eddb24a604957d55b0fc',
+                            client_secret: '5c1a27d80b9c1978faa1d488b34d606b77529b77',
+                        }
+                    }).render('gitment');
+                }
+                var gc = document.createElement('script');
+                gc.type = 'text/javascript';
+                gc.src = '//imsun.github.io/gitment/dist/gitment.browser.js';
+                gc.charset = 'UTF-8';
+                gc.onload = render;
+                gc.async = true;
+                document.querySelector('body').appendChild(gc);
+                var gcs = document.createElement('link');
+                gcs.href = '//imsun.github.io/gitment/style/default.css';
+                gcs.type = 'text/css';
+                gcs.rel = 'stylesheet';
+                gcs.media = 'screen,print';
+                document.querySelector('head').appendChild(gcs);
+            })();
+	    </script>
+    
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment-with-locales.min.js"></script>
+    <script src="//cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
+    <script>
+        var algoliaClient = algoliasearch('S730SA64YT', '66519eebbcfbe3a23d50e47efa19798f');
+        var algoliaIndex = algoliaClient.initIndex('Blog');
+    </script>
+
+
+    </body>
+</html>
