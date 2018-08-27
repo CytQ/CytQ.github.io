@@ -6,23 +6,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Hello! CytQ">
-    <title>Archives - Hello! CytQ</title>
+    <title>通关栈溢出（四）：缓冲区溢出的防御技术及绕过 - Hello! CytQ</title>
     <meta name="author" content="CytQ">
     
     
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="Catch your time">
+    <meta name="description" content="前面几篇介绍了如何利用栈溢出，本文就介绍一下windows现有的缓冲区溢出缓解技术以及他们的绕过方案。 包括ASLR、SafeSEH、SEHOP、DEP、GS 其实看完本文就能发现，攻与防都是相对的，这上面的5种防御全是基于现有的栈溢出攻击手段来做的，而攻击者又针对这5种防御手段做出新的攻击策略。这个就是我认为安全攻防有意思的点 OS： Windows XP SP2, Window 7，Windo">
+<meta name="keywords" content="漏洞,通关,专栏">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="Hello! CytQ">
-<meta property="og:url" content="http://imlzq.com/archives/index.html">
+<meta property="og:title" content="通关栈溢出（四）：缓冲区溢出的防御技术及绕过">
+<meta property="og:url" content="http://imlzq.com/2018/08/11/stackoverflow_protection/index.html">
 <meta property="og:site_name" content="Hello! CytQ">
-<meta property="og:description" content="Catch your time">
+<meta property="og:description" content="前面几篇介绍了如何利用栈溢出，本文就介绍一下windows现有的缓冲区溢出缓解技术以及他们的绕过方案。 包括ASLR、SafeSEH、SEHOP、DEP、GS 其实看完本文就能发现，攻与防都是相对的，这上面的5种防御全是基于现有的栈溢出攻击手段来做的，而攻击者又针对这5种防御手段做出新的攻击策略。这个就是我认为安全攻防有意思的点 OS： Windows XP SP2, Window 7，Windo">
 <meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-08-27T12:44:01.600Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hello! CytQ">
-<meta name="twitter:description" content="Catch your time">
+<meta name="twitter:title" content="通关栈溢出（四）：缓冲区溢出的防御技术及绕过">
+<meta name="twitter:description" content="前面几篇介绍了如何利用栈溢出，本文就介绍一下windows现有的缓冲区溢出缓解技术以及他们的绕过方案。 包括ASLR、SafeSEH、SEHOP、DEP、GS 其实看完本文就能发现，攻与防都是相对的，这上面的5种防御全是基于现有的栈溢出攻击手段来做的，而攻击者又针对这5种防御手段做出新的攻击策略。这个就是我认为安全攻防有意思的点 OS： Windows XP SP2, Window 7，Windo">
     
     
         
@@ -46,7 +48,7 @@
             <!-- Define author's picture -->
 
 
-<header id="header" data-behavior="2">
+<header id="header" data-behavior="5">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <div class="header-title">
         <a class="header-title-link" href="/ ">Hello! CytQ</a>
@@ -70,7 +72,7 @@
         
     
 
-<nav id="sidebar" data-behavior="2">
+<nav id="sidebar" data-behavior="5">
     <div class="sidebar-container">
         
             <div class="sidebar-profile">
@@ -188,26 +190,22 @@
 </nav>
 
             
-            <div id="main" data-behavior="2"
+            <div id="main" data-behavior="5"
                  class="
                         hasCoverMetaIn
                         ">
                 
-    <section class="postShorten-group main-content-wrap">
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
     
     
-    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2018/08/11/stackoverflow_protection/">
-                            通关栈溢出（四）：缓冲区溢出的防御技术及绕过
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            通关栈溢出（四）：缓冲区溢出的防御技术及绕过
+        </h1>
+    
+    
+        <div class="post-meta">
     <time itemprop="datePublished" datetime="2018-08-11T00:00:00+08:00">
 	
 		    Aug 11, 2018
@@ -216,410 +214,179 @@
     
 </div>
 
-            </div>
-            
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    <p>前面几篇介绍了如何利用栈溢出，本文就介绍一下windows现有的缓冲区溢出缓解技术以及他们的绕过方案。</p>
+    
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <p>前面几篇介绍了如何利用栈溢出，本文就介绍一下windows现有的缓冲区溢出缓解技术以及他们的绕过方案。</p>
 <p>包括ASLR、SafeSEH、SEHOP、DEP、GS</p>
 <p>其实看完本文就能发现，攻与防都是相对的，这上面的5种防御全是基于现有的栈溢出攻击手段来做的，而攻击者又针对这5种防御手段做出新的攻击策略。这个就是我认为安全攻防有意思的点</p>
 <p>OS： Windows XP SP2, Window 7，Windows 2000</p>
 <p>Tools：Ollydbg、IDA pro、AsmToE(汇编转机器码)、010Editor、VC6.0、Xcode、Windbg、VS7.0</p>
-                    
-                        <a href="/2018/08/11/stackoverflow_protection/" class="postShorten-excerpt_link link">
-                            Continue reading
-                        </a>
-                        
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2018/08/10/stackoverflow_seh/">
-                            通关栈溢出（三）：攻击SEH
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-08-10T00:00:00+08:00">
-	
-		    Aug 10, 2018
-    	
-    </time>
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    <p>本文主要介绍利用SEH来实现栈溢出</p>
-<p>OS： Windows XP SP2, Window 7，Windows 2000</p>
-<p>Tools：Ollydbg、IDA pro、AsmToE(汇编转机器码)、010Editor、VC6.0、Xcode、Windbg、VS7.0</p>
-                    
-                        <a href="/2018/08/10/stackoverflow_seh/" class="postShorten-excerpt_link link">
-                            Continue reading
-                        </a>
-                        
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2018/08/09/stackoverflow_virtualmethod/">
-                            通关栈溢出（二）：攻击C++的虚函数
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-08-09T21:42:00+08:00">
-	
-		    Aug 09, 2018
-    	
-    </time>
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    <p>本文主要介绍利用C++的虚函数来实现栈溢出漏洞利用</p>
-<p>OS： Windows XP SP2, Window 7</p>
-<p>Tools：Ollydbg、IDA pro、AsmToE(汇编转机器码)、010Editor、VC6.0、Xcode、Windbg、VS7.0</p>
-                    
-                        <a href="/2018/08/09/stackoverflow_virtualmethod/" class="postShorten-excerpt_link link">
-                            Continue reading
-                        </a>
-                        
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2018/08/07/stackOverFlow_1/">
-                            通关栈溢出（一）：原理及初级攻击
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-08-07T22:13:00+08:00">
-	
-		    Aug 07, 2018
-    	
-    </time>
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    <p><strong>前段时间停博了，因为工作的问题不太方便将一些工作内容以博客的方式展现出来，现在开始打算用提取知识点的方式记录下这些经验。太久不写博客还是不太行</strong></p>
-<p>之前写过几篇栈溢出的文章，内容不太全面，零零散散，因此从本文开始打算做个栈溢出的专栏，主要介绍栈溢出相关的问题，包括初级的攻击、jmp esp，SEH、DEP、ALSR、ROP等，算是一篇通关文吧。</p>
-<p>OS： Windows XP SP2, Window 7</p>
-<p>Tools：Ollydbg、IDA pro、AsmToE(汇编转机器码)、010Editor、VC6.0、Xcode、Windbg、VS7.0</p>
-<p>Book: 《0day安全：软件漏洞分析技术》</p>
-<p>知识点的主要来源是”0day安全：软件漏洞分析技术”和网络，但发现它内部80%漏洞利用代码均无法直接在自己的机器上运行。因此本通关专栏不会完全按书的内容规划，在必要的时候会自行实现</p>
-                    
-                        <a href="/2018/08/07/stackOverFlow_1/" class="postShorten-excerpt_link link">
-                            Continue reading
-                        </a>
-                        
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2018/04/25/Integer_OverFlow/">
-                            整数溢出
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-04-25T00:00:00+08:00">
-	
-		    Apr 25, 2018
-    	
-    </time>
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    <ul>
-<li>无符号整数</li>
-<li>有符号整数</li>
-<li>截断</li>
-<li>配合不安全函数进行栈溢出</li>
-</ul>
-                    
-                        <a href="/2018/04/25/Integer_OverFlow/" class="postShorten-excerpt_link link">
-                            Continue reading
-                        </a>
-                        
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2018/03/18/Jni_load/">
-                            System.loadLibrary() 做的事情
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-03-18T13:05:36+08:00">
-	
-		    Mar 18, 2018
-    	
-    </time>
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    <p>本文源码摘自 android-6.0.0_r24分支</p>
-<p>主要内容为梳理Android调用 System.loadLibrary()加载so库时的调用链</p>
-                    
-                        <a href="/2018/03/18/Jni_load/" class="postShorten-excerpt_link link">
-                            Continue reading
-                        </a>
-                        
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2018/02/01/栈溢出/">
-                            栈溢出
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-02-01T00:00:00+08:00">
-	
-		    Feb 01, 2018
-    	
-    </time>
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    <p>windows 栈溢出</p>
-                    
-                        <a href="/2018/02/01/栈溢出/" class="postShorten-excerpt_link link">
-                            Continue reading
-                        </a>
-                        
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2018/01/30/x86汇编示例、代码梳理和演示/">
-                            x86汇编示例、代码梳理和演示
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-01-30T23:00:00+08:00">
-	
-		    Jan 30, 2018
-    	
-    </time>
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    <p>x86跟ARM在一些指令集上有区别，但是大致逻辑一直。下面是以一个有栈溢出漏洞的vc6.0编写的C程序做示例。</p>
-                    
-                        <a href="/2018/01/30/x86汇编示例、代码梳理和演示/" class="postShorten-excerpt_link link">
-                            Continue reading
-                        </a>
-                        
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2018/01/30/Java函数签名/">
-                            Java函数签名
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-01-30T21:00:00+08:00">
-	
-		    Jan 30, 2018
-    	
-    </time>
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    <p><strong>表现形式：</strong></p>
-<p>(参数类型参数类型参数类型参数类型)函数类型</p>
-<p><strong>例如：</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">encrypt</span><span class="params">(<span class="keyword">int</span> res, String test, <span class="keyword">long</span> key)</span></span></span><br></pre></td></tr></table></figure>
-<p><strong>函数方法体为：</strong></p>
-<p>(ILjava/lang/String;J)I</p>
-<ul>
-<li>I   代表int</li>
-<li>Ljava/lang/String;  代表String。因为它不属于基本数据类型，是一个类，所以需要指定完整的路径</li>
-<li>J代表long</li>
-</ul>
-<p>参数与参数之间无间隔，用括号包裹，紧接着跟函数的数据类型。</p>
-                    
-                        <a href="/2018/01/30/Java函数签名/" class="postShorten-excerpt_link link">
-                            Continue reading
-                        </a>
-                        
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2018/01/09/so_inject/">
-                            So注入
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-01-09T22:26:24+08:00">
-	
-		    Jan 09, 2018
-    	
-    </time>
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    <p><strong>so注入的主要思路是：</strong></p>
+<a id="more"></a>   
+<h2 id="一、GS"><a href="#一、GS" class="headerlink" title="一、GS"></a>一、GS</h2><table>
+<thead>
+<tr>
+<th>栈布局</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>局部变量</td>
+</tr>
+<tr>
+<td>security_cookie</td>
+</tr>
+<tr>
+<td>入栈寄存器</td>
+</tr>
+<tr>
+<td>SEH节点</td>
+</tr>
+<tr>
+<td>返回地址</td>
+</tr>
+<tr>
+<td>函数参数</td>
+</tr>
+<tr>
+<td>虚函数表</td>
+</tr>
+</tbody>
+</table>
+<p>先把这个展示了很久的栈布局再贴出来一次。</p>
+<p>我们在<a href="http://imlzq.com/2018/08/07/stackOverFlow_1/">通关栈溢出（一）：原理及初级攻击</a>这篇文章中，介绍了用覆盖函数返回地址的方法执行我们的Shellcode，但如果操作系统在函数调用前就在返回值前方插入一个security_cookie，每次return时校验这个security_cookie是否有改动不就可以完美的判断当前的栈是否发生了缓冲区溢出了吗？</p>
+<p>这就是GS所做的任务。GS插入的这个security_cookie也被称为Canary（小趣闻：以前矿工工作时，会先放只鸟下去看看氧气含量是否达标，以此检测是否安全）。</p>
+<p><strong>它的执行逻辑为：</strong></p>
 <ol>
-<li>找到目标进程</li>
-<li>使用ptrace跟踪目标进程，保存目标进程的状态</li>
-<li>获得mmap、dlopen、dlsym等库函数在目标进程中的偏移地址</li>
-<li>调用mmap在目标进程内部申请一段内存空间</li>
-<li>将我们的ShellCode写入到刚才申请的内存空间中</li>
-<li>dlopen打开Shellcode，dlsym调用Shellcode库的函数</li>
-<li>恢复原so状态，detach</li>
+<li>系统在.data的内存区域种存放一个SecurityCookie的副本。程序每次运行时会以.data的第一个双字作为Cookie的种子，或者原始Cookie。因此程序每次运行所产生的Cookie种子就有区别。</li>
+<li>在所有的函数调用发生时，向栈帧中压入一个额外的随机DWORD。排列顺序如上表，它位于EBP和返回地址之前。当栈帧初始化以后系统用ESP异或Cookie种子，作为这里的DWORD，也就是当前函数的Cookie，以此作为不同函数之间的区别。</li>
+<li>在函数返回前，系统将执行一个额外的安全验证操作SecurityCheck，先用ESP还原出（异或）Cookie的种子，匹配该种子和.data区域的数值是否一样。</li>
+<li>如果不一样，<strong>进行异常处理流程</strong>，函数不会正常返回，ret指令也不会被执行。</li>
 </ol>
-                    
-                        <a href="/2018/01/09/so_inject/" class="postShorten-excerpt_link link">
-                            Continue reading
-                        </a>
-                        
-                    
-                </div>
+<p><strong>例外：</strong></p>
+<p>从上面的执行逻辑我们能发现一点，就是GS一定对程序的效率有影响，因为它给所有函数都加上这个校验，那就意味着每次都会多一个check.</p>
+<p>如果现在有个函数，它的唯一功能是index += 1。在外部我们用for循环反复调用10000次，那这里的性能损耗是能直接看出来的：执行Security校验的总时间加起来比函数本身的消耗还长。对于一个操作系统来讲，这是很差劲的一件事情。因此GS是允许存在例外的，在这些例外中，函数不会被插入canary。</p>
+<blockquote>
+<ol>
+<li>函数不包含缓冲区</li>
+<li>函数被定义为具有变量参数列表</li>
+<li>函数使用无保护的关键字标记</li>
+<li>函数在第一个语句中包含内嵌汇编代码</li>
+<li>缓冲区不是8字节类型且大小不大于4个字节</li>
+</ol>
+</blockquote>
+<h3 id="小结："><a href="#小结：" class="headerlink" title="小结："></a>小结：</h3><p>单从上面这几点，我们不难看出，GS有几项很明显的攻击面：</p>
+<ul>
+<li>SecurityCheck失败后，程序会进入异常处理流程，也就是SEH。  这里是不是很熟悉？</li>
+<li>GS为了性能，允许存在例外，那这些例外我们可以利用吗？</li>
+<li>SecurityCheck是和.data中存放的canary副本做匹配，那如果攻击者把.data内存放的canary副本都改了呢？</li>
+</ul>
+<h3 id="攻击1：利用未保护的内存突破GS"><a href="#攻击1：利用未保护的内存突破GS" class="headerlink" title="攻击1：利用未保护的内存突破GS"></a>攻击1：利用未保护的内存突破GS</h3><h3 id="攻击2：攻击虚函数"><a href="#攻击2：攻击虚函数" class="headerlink" title="攻击2：攻击虚函数"></a>攻击2：攻击虚函数</h3><h3 id="攻击3：-攻击SEH"><a href="#攻击3：-攻击SEH" class="headerlink" title="攻击3： 攻击SEH"></a>攻击3： 攻击SEH</h3><h3 id="攻击4：同时替换栈中和-data中的Cookie"><a href="#攻击4：同时替换栈中和-data中的Cookie" class="headerlink" title="攻击4：同时替换栈中和.data中的Cookie"></a>攻击4：同时替换栈中和.data中的Cookie</h3><h2 id="二、SafeSEH"><a href="#二、SafeSEH" class="headerlink" title="二、SafeSEH"></a>二、SafeSEH</h2><h2 id="三、DEP"><a href="#三、DEP" class="headerlink" title="三、DEP"></a>三、DEP</h2><h2 id="四、ASLR"><a href="#四、ASLR" class="headerlink" title="四、ASLR"></a>四、ASLR</h2><h2 id="五、SEHOP"><a href="#五、SEHOP" class="headerlink" title="五、SEHOP"></a>五、SEHOP</h2>
             
+
         </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
         
-    </article>
-    
-    <div class="pagination-bar">
-    <ul class="pagination">
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/专栏/">专栏</a> <a class="tag tag--primary tag--small t-link" href="/tags/漏洞/">漏洞</a> <a class="tag tag--primary tag--small t-link" href="/tags/通关/">通关</a>
+
+            </div>
         
         
-          <li class="pagination-next">
-            <a class="btn btn--default btn--small" href="/archives/page/2/">
-              <span>OLDER POSTS</span>
-              <i class="fa fa-angle-right text-base icon-ml"></i>
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/08/10/stackoverflow_seh/" data-tooltip="通关栈溢出（三）：攻击SEH" aria-label="NEXT: 通关栈溢出（三）：攻击SEH">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
             </a>
-          </li>
+        </li>
         
-        <li class="pagination-number">page 1 of 6</li>
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2018/08/11/stackoverflow_protection/" title="Share on Weibo">
+                    <i class="fa fa-weibo" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2018/08/11/stackoverflow_protection/&amp;title=通关栈溢出（四）：缓冲区溢出的防御技术及绕过" title="Share on QQ">
+                    <i class="fa fa-qq" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2018/08/11/stackoverflow_protection/" title="Share on Qzone">
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2018/08/11/stackoverflow_protection/" title="Share on Renren">
+                    <i class="fa fa-renren" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#gitment">
+                         <i class="fa fa-comment-o"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
     </ul>
 </div>
 
-</section>
+
+        
+        
+            
+                <div id="gitment"></div>
+            
+        
+    </div>
+</article>
 
 
 
@@ -630,6 +397,129 @@
 </footer>
 
             </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/08/10/stackoverflow_seh/" data-tooltip="通关栈溢出（三）：攻击SEH" aria-label="NEXT: 通关栈溢出（三）：攻击SEH">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2018/08/11/stackoverflow_protection/" title="Share on Weibo">
+                    <i class="fa fa-weibo" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2018/08/11/stackoverflow_protection/&amp;title=通关栈溢出（四）：缓冲区溢出的防御技术及绕过" title="Share on QQ">
+                    <i class="fa fa-qq" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2018/08/11/stackoverflow_protection/" title="Share on Qzone">
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2018/08/11/stackoverflow_protection/" title="Share on Renren">
+                    <i class="fa fa-renren" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#gitment">
+                         <i class="fa fa-comment-o"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="5">
+    <i id="btn-close-shareoptions" class="fa fa-close"></i>
+    <ul class="share-options">
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2018/08/11/stackoverflow_protection/">
+                    <i class="fa fa-weibo" aria-hidden="true"></i><span>Share on Weibo</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2018/08/11/stackoverflow_protection/&amp;title=通关栈溢出（四）：缓冲区溢出的防御技术及绕过">
+                    <i class="fa fa-qq" aria-hidden="true"></i><span>Share on QQ</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2018/08/11/stackoverflow_protection/">
+                    <i class="fa fa-star" aria-hidden="true"></i><span>Share on Qzone</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2018/08/11/stackoverflow_protection/">
+                    <i class="fa fa-renren" aria-hidden="true"></i><span>Share on Renren</span>
+                </a>
+            </li>
+        
+    </ul>
+</div>
+
             
         </div>
         
@@ -921,6 +811,37 @@
         <!--SCRIPTS-->
 <script src="/assets/js/script-peofhqjkzcghmndknakluequy1y6owxdwpaqyju9ntl9zxnk7rdolb3rjjoj.min.js"></script>
 <!--SCRIPTS END-->
+
+    
+        <script type="text/javascript">
+            (function() {
+                function render() {
+                    new Gitment({
+                        id: 'http://imlzq.com/2018/08/11/stackoverflow_protection/',
+                        owner: 'CytQ',
+                        repo: 'BlogComments',
+                        oauth: {
+                            client_id: 'eddb24a604957d55b0fc',
+                            client_secret: '5c1a27d80b9c1978faa1d488b34d606b77529b77',
+                        }
+                    }).render('gitment');
+                }
+                var gc = document.createElement('script');
+                gc.type = 'text/javascript';
+                gc.src = '//imsun.github.io/gitment/dist/gitment.browser.js';
+                gc.charset = 'UTF-8';
+                gc.onload = render;
+                gc.async = true;
+                document.querySelector('body').appendChild(gc);
+                var gcs = document.createElement('link');
+                gcs.href = '//imsun.github.io/gitment/style/default.css';
+                gcs.type = 'text/css';
+                gcs.rel = 'stylesheet';
+                gcs.media = 'screen,print';
+                document.querySelector('head').appendChild(gcs);
+            })();
+	    </script>
+    
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment-with-locales.min.js"></script>

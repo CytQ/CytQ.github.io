@@ -201,6 +201,47 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2018/08/11/stackoverflow_protection/">
+                            通关栈溢出（四）：缓冲区溢出的防御技术及绕过
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-08-11T00:00:00+08:00">
+	
+		    Aug 11, 2018
+    	
+    </time>
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    <p>前面几篇介绍了如何利用栈溢出，本文就介绍一下windows现有的缓冲区溢出缓解技术以及他们的绕过方案。</p>
+<p>包括ASLR、SafeSEH、SEHOP、DEP、GS</p>
+<p>其实看完本文就能发现，攻与防都是相对的，这上面的5种防御全是基于现有的栈溢出攻击手段来做的，而攻击者又针对这5种防御手段做出新的攻击策略。这个就是我认为安全攻防有意思的点</p>
+<p>OS： Windows XP SP2, Window 7，Windows 2000</p>
+<p>Tools：Ollydbg、IDA pro、AsmToE(汇编转机器码)、010Editor、VC6.0、Xcode、Windbg、VS7.0</p>
+                    
+                        <a href="/2018/08/11/stackoverflow_protection/" class="postShorten-excerpt_link link">
+                            Continue reading
+                        </a>
+                        
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2018/08/10/stackoverflow_seh/">
                             通关栈溢出（三）：攻击SEH
                         </a>
@@ -562,49 +603,6 @@
         
     </article>
     
-    
-    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2018/01/08/Xposed/">
-                            Xposed
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-01-08T00:00:00+08:00">
-	
-		    Jan 08, 2018
-    	
-    </time>
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    <p><strong>Xposed的表现形式：</strong></p>
-<p>可以拦截任意应用的任意方法实现，将它替换为自设的功能代码。</p>
-<p><strong>主要逻辑：</strong></p>
-<ul>
-<li>通过包名匹配查看是否有需要hook的模块。如果有，修改它的java方法为本地方法（通过修改accessFlag实现）</li>
-<li>当目标方法被调用时，由xposed方法的本地方法调度逻辑分发，回调java层的方法，一般就是各个hook模块，从而实现使用自行实现的方法替换原方法。</li>
-</ul>
-                    
-                        <a href="/2018/01/08/Xposed/" class="postShorten-excerpt_link link">
-                            Continue reading
-                        </a>
-                        
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
     <div class="pagination-bar">
     <ul class="pagination">
         
@@ -909,7 +907,7 @@
                 data-message-zero="no post found"
                 data-message-one="1 post found"
                 data-message-other="{n} posts found">
-                54 posts found
+                55 posts found
             </p>
         </div>
     </div>

@@ -202,6 +202,47 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2018/08/11/stackoverflow_protection/">
+                            通关栈溢出（四）：缓冲区溢出的防御技术及绕过
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-08-11T00:00:00+08:00">
+	
+		    Aug 11, 2018
+    	
+    </time>
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    <p>前面几篇介绍了如何利用栈溢出，本文就介绍一下windows现有的缓冲区溢出缓解技术以及他们的绕过方案。</p>
+<p>包括ASLR、SafeSEH、SEHOP、DEP、GS</p>
+<p>其实看完本文就能发现，攻与防都是相对的，这上面的5种防御全是基于现有的栈溢出攻击手段来做的，而攻击者又针对这5种防御手段做出新的攻击策略。这个就是我认为安全攻防有意思的点</p>
+<p>OS： Windows XP SP2, Window 7，Windows 2000</p>
+<p>Tools：Ollydbg、IDA pro、AsmToE(汇编转机器码)、010Editor、VC6.0、Xcode、Windbg、VS7.0</p>
+                    
+                        <a href="/2018/08/11/stackoverflow_protection/" class="postShorten-excerpt_link link">
+                            Continue reading
+                        </a>
+                        
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2018/08/10/stackoverflow_seh/">
                             通关栈溢出（三）：攻击SEH
                         </a>
@@ -544,43 +585,6 @@
         
     </article>
     
-    
-    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/10/26/Linux 文件基础和mmap/">
-                            Linux文件基础和mmap
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2017-10-26T00:00:00+08:00">
-	
-		    Oct 26, 2017
-    	
-    </time>
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    <p>脱360的壳时需要给mmap函数下断点，总结IPC的共享内存时也需要用到mmap，所以本文就先总结一下mmap相关内容。</p>
-                    
-                        <a href="/2017/10/26/Linux 文件基础和mmap/" class="postShorten-excerpt_link link">
-                            Continue reading
-                        </a>
-                        
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
     <div class="pagination-bar">
     <ul class="pagination">
         
@@ -885,7 +889,7 @@
                 data-message-zero="no post found"
                 data-message-one="1 post found"
                 data-message-other="{n} posts found">
-                54 posts found
+                55 posts found
             </p>
         </div>
     </div>
