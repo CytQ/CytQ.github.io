@@ -4,8 +4,29 @@
 
     
   <url>
+    <loc>http://imlzq.com/2018/08/14/stackoverflow_winamp5572/</loc>
+    <lastmod>2018-08-31T09:07:35.591Z</lastmod>
+    <data>
+        <display>
+        <title>通关栈溢出（五）：Winamp 5.572栈溢出漏洞利用</title>
+        <pubTime>2018-08-14T14:34:00.000Z</pubTime>
+        
+        <tag>漏洞</tag>
+         
+        <tag>通关</tag>
+         
+        <tag>专栏</tag>
+         
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://imlzq.com/2018/08/11/stackoverflow_protection/</loc>
-    <lastmod>2018-08-28T12:41:51.096Z</lastmod>
+    <lastmod>2018-08-29T04:05:27.098Z</lastmod>
     <data>
         <display>
         <title>通关栈溢出（四）：缓冲区溢出的防御技术及绕过</title>

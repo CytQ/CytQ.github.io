@@ -201,6 +201,47 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2018/08/14/stackoverflow_winamp5572/">
+                            通关栈溢出（五）：Winamp 5.572栈溢出漏洞利用
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-08-14T22:34:00+08:00">
+	
+		    Aug 14, 2018
+    	
+    </time>
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    <p>光说不练假把式，从现在开始会写一些漏洞的利用</p>
+<p>第一篇文章会从POC的角度分析漏洞并利用。</p>
+<p>Target：Winamp </p>
+<p>Version：5.572</p>
+<p>Detail: Stack overflow</p>
+                    
+                        <a href="/2018/08/14/stackoverflow_winamp5572/" class="postShorten-excerpt_link link">
+                            Continue reading
+                        </a>
+                        
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2018/08/11/stackoverflow_protection/">
                             通关栈溢出（四）：缓冲区溢出的防御技术及绕过
                         </a>
@@ -557,52 +598,6 @@
         
     </article>
     
-    
-    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2018/01/09/so_inject/">
-                            So注入
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-01-09T22:26:24+08:00">
-	
-		    Jan 09, 2018
-    	
-    </time>
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    <p><strong>so注入的主要思路是：</strong></p>
-<ol>
-<li>找到目标进程</li>
-<li>使用ptrace跟踪目标进程，保存目标进程的状态</li>
-<li>获得mmap、dlopen、dlsym等库函数在目标进程中的偏移地址</li>
-<li>调用mmap在目标进程内部申请一段内存空间</li>
-<li>将我们的ShellCode写入到刚才申请的内存空间中</li>
-<li>dlopen打开Shellcode，dlsym调用Shellcode库的函数</li>
-<li>恢复原so状态，detach</li>
-</ol>
-                    
-                        <a href="/2018/01/09/so_inject/" class="postShorten-excerpt_link link">
-                            Continue reading
-                        </a>
-                        
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
     <div class="pagination-bar">
     <ul class="pagination">
         
@@ -907,7 +902,7 @@
                 data-message-zero="no post found"
                 data-message-one="1 post found"
                 data-message-other="{n} posts found">
-                55 posts found
+                56 posts found
             </p>
         </div>
     </div>
