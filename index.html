@@ -195,6 +195,62 @@
                 <section class="postShorten-group main-content-wrap">
     
     
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2018/10/22/Linux_passwd_decrypt/">
+                            (no title)
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-10-22T11:57:47+08:00">
+	
+		    Oct 22, 2018
+    	
+    </time>
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h2 id="etc-passwd-对应的密码规则"><a href="#etc-passwd-对应的密码规则" class="headerlink" title="/etc/passwd 对应的密码规则"></a>/etc/passwd 对应的密码规则</h2><p>$id\$salt\$encrypted</p>
+<ul>
+<li>id为1时，采用md5进行加密；</li>
+<li>id为5时，采用SHA256进行加密；</li>
+<li>id为6时，采用SHA512进行加密。</li>
+</ul>
+<p>从网上拿到的一组密钥：</p>
+<blockquote>
+<p>root:\$1\$\$Tq0vqGpgZ5IEA8LdEOI9F.:0:0::/root:/bin/sh</p>
+<p>名字:密码:用户id:组id:用户信息:主目录:shell</p>
+</blockquote>
+<p>$1代表md5加密</p>
+<p>$代表salt为空，也就是说在整体的加密过程中并未添加额外的加密参数</p>
+<p>\$Tq0vqGpgZ5IEA8LdEOI9F代表密码为Tq0vqGpgZ5IEA8LdEOI9F</p>
+
+                    
+                        
+
+                    
+                    
+                        <p>
+                            <a href="/2018/10/22/Linux_passwd_decrypt/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
     <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
         <div class="postShorten-wrap">
             
@@ -565,43 +621,6 @@
         
     </article>
     
-    
-    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2018/01/30/x86汇编示例、代码梳理和演示/">
-                            x86汇编示例、代码梳理和演示
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-01-30T23:00:00+08:00">
-	
-		    Jan 30, 2018
-    	
-    </time>
-    
-</div>
-
-            </div>
-            
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    <p>x86跟ARM在一些指令集上有区别，但是大致逻辑一直。下面是以一个有栈溢出漏洞的vc6.0编写的C程序做示例。</p>
-                    
-                        <a href="/2018/01/30/x86汇编示例、代码梳理和演示/" class="postShorten-excerpt_link link">
-                            Continue reading
-                        </a>
-                        
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
     <div class="pagination-bar">
     <ul class="pagination">
         
@@ -622,7 +641,7 @@
 
                 <footer id="footer" class="main-content-wrap">
     <span class="copyrights">
-        Copyrights &copy; 2018 CytQ. All Rights Reserved.
+        Copyrights &copy; 2019 CytQ. All Rights Reserved.
     </span>
 </footer>
 
@@ -906,7 +925,7 @@
                 data-message-zero="no post found"
                 data-message-one="1 post found"
                 data-message-other="{n} posts found">
-                57 posts found
+                58 posts found
             </p>
         </div>
     </div>

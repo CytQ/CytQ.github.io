@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Hello! CytQ">
-    <title>Tag: Go - Hello! CytQ</title>
+    <title>Archives: 2018/10 - Hello! CytQ</title>
     <meta name="author" content="CytQ">
     
     
@@ -16,7 +16,7 @@
     <meta name="description" content="Catch your time">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="Hello! CytQ">
-<meta property="og:url" content="http://imlzq.com/tags/Go/index.html">
+<meta property="og:url" content="http://imlzq.com/archives/2018/10/index.html">
 <meta property="og:site_name" content="Hello! CytQ">
 <meta property="og:description" content="Catch your time">
 <meta property="og:locale" content="en">
@@ -196,21 +196,21 @@
     <section class="postShorten-group main-content-wrap">
     
     
-    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
         <div class="postShorten-wrap">
             
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2016/02/26/Note->Go/">
-                            Go语言学习笔记（一）：Linux下的安装与配置
+                        <a class="link-unstyled" href="/2018/10/22/Linux_passwd_decrypt/">
+                            (no title)
                         </a>
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2016-02-26T15:37:47+08:00">
+    <time itemprop="datePublished" datetime="2018-10-22T11:57:47+08:00">
 	
-		    Feb 26, 2016
+		    Oct 22, 2018
     	
     </time>
     
@@ -218,13 +218,32 @@
 
             </div>
             
-                <div class="postShorten-excerpt" itemprop="articleBody">
-                    <h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><p><a href="https://golang.org/dl/" target="_blank" rel="noopener">https://golang.org/dl/</a> 进入这个网址，选择对应的版本进行下载，需要翻墙。</p>
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h2 id="etc-passwd-对应的密码规则"><a href="#etc-passwd-对应的密码规则" class="headerlink" title="/etc/passwd 对应的密码规则"></a>/etc/passwd 对应的密码规则</h2><p>$id\$salt\$encrypted</p>
+<ul>
+<li>id为1时，采用md5进行加密；</li>
+<li>id为5时，采用SHA256进行加密；</li>
+<li>id为6时，采用SHA512进行加密。</li>
+</ul>
+<p>从网上拿到的一组密钥：</p>
+<blockquote>
+<p>root:\$1\$\$Tq0vqGpgZ5IEA8LdEOI9F.:0:0::/root:/bin/sh</p>
+<p>名字:密码:用户id:组id:用户信息:主目录:shell</p>
+</blockquote>
+<p>$1代表md5加密</p>
+<p>$代表salt为空，也就是说在整体的加密过程中并未添加额外的加密参数</p>
+<p>\$Tq0vqGpgZ5IEA8LdEOI9F代表密码为Tq0vqGpgZ5IEA8LdEOI9F</p>
+
                     
-                        <a href="/2016/02/26/Note->Go/" class="postShorten-excerpt_link link">
-                            Continue reading
-                        </a>
                         
+
+                    
+                    
+                        <p>
+                            <a href="/2018/10/22/Linux_passwd_decrypt/#post-footer" class="postShorten-excerpt_link link">
+                                Comment and share
+                            </a>
+                        </p>
                     
                 </div>
             
@@ -241,6 +260,7 @@
 </div>
 
 </section>
+
 
 
                 <footer id="footer" class="main-content-wrap">
