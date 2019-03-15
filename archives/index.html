@@ -196,21 +196,21 @@
     <section class="postShorten-group main-content-wrap">
     
     
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+    <article class="postShorten postShorten--thumbnailimg-right" itemscope itemType="http://schema.org/BlogPosting">
         <div class="postShorten-wrap">
             
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2018/10/22/Linux_passwd_decrypt/">
-                            (no title)
+                        <a class="link-unstyled" href="/2019/01/30/CTF_PWN1/">
+                            CTF_PWN（一）
                         </a>
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time itemprop="datePublished" datetime="2018-10-22T11:57:47+08:00">
+    <time itemprop="datePublished" datetime="2019-01-30T00:00:00+08:00">
 	
-		    Oct 22, 2018
+		    Jan 30, 2019
     	
     </time>
     
@@ -218,32 +218,28 @@
 
             </div>
             
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h2 id="etc-passwd-对应的密码规则"><a href="#etc-passwd-对应的密码规则" class="headerlink" title="/etc/passwd 对应的密码规则"></a>/etc/passwd 对应的密码规则</h2><p>$id\$salt\$encrypted</p>
+                <div class="postShorten-excerpt" itemprop="articleBody">
+                    <p>因为工作性质，导致有些内容无法更新到博客上，但是久了不写感觉又不好，所以从今天起恢复博客的记录，顺便把之前本地记录的一些博客整理后补上来。</p>
+<p>接下来几篇都会和CTF相关.</p>
+<p>链接：</p>
 <ul>
-<li>id为1时，采用md5进行加密；</li>
-<li>id为5时，采用SHA256进行加密；</li>
-<li>id为6时，采用SHA512进行加密。</li>
+<li><p><a href="https://github.com/Gallopsled/pwntools" target="_blank" rel="noopener">pwntool:      https://github.com/Gallopsled/pwntools</a></p>
+</li>
+<li><p><a href="https://github.com/pwndbg/pwndbg" target="_blank" rel="noopener">pwndbg:       https://github.com/pwndbg/pwndbg</a></p>
+</li>
+<li><p><a href="https://github.com/bash-c/pwn_repo" target="_blank" rel="noopener">pwn_repo:     https://github.com/bash-c/pwn_repo</a></p>
+</li>
+<li>checksec</li>
+<li>gdb</li>
+<li>ida pro</li>
+<li>metasploit</li>
 </ul>
-<p>从网上拿到的一组密钥：</p>
-<blockquote>
-<p>root:\$1\$\$Tq0vqGpgZ5IEA8LdEOI9F.:0:0::/root:/bin/sh</p>
-<p>名字:密码:用户id:组id:用户信息:主目录:shell</p>
-</blockquote>
-<p>$1代表md5加密</p>
-<p>$代表salt为空，也就是说在整体的加密过程中并未添加额外的加密参数</p>
-<p>\$Tq0vqGpgZ5IEA8LdEOI9F代表密码为Tq0vqGpgZ5IEA8LdEOI9F</p>
-
+<p>本文需要开启了DEP和ASLR，需要先泄露libc的地址以求出system()和/bin/sh的实际地址</p>
                     
+                        <a href="/2019/01/30/CTF_PWN1/" class="postShorten-excerpt_link link">
+                            Continue reading
+                        </a>
                         
-
-                    
-                    
-                        <p>
-                            <a href="/2018/10/22/Linux_passwd_decrypt/#post-footer" class="postShorten-excerpt_link link">
-                                Comment and share
-                            </a>
-                        </p>
                     
                 </div>
             
@@ -927,7 +923,7 @@
                 data-message-zero="no post found"
                 data-message-one="1 post found"
                 data-message-other="{n} posts found">
-                58 posts found
+                59 posts found
             </p>
         </div>
     </div>

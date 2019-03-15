@@ -2,9 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://imlzq.com/2018/10/22/Linux_passwd_decrypt/</loc>
+    <loc>http://imlzq.com/2019/01/30/CTF_PWN1/</loc>
     
-    <lastmod>2018-10-22T04:04:28.187Z</lastmod>
+    <lastmod>2019-03-15T05:33:25.392Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://imlzq.com/2017/10/27/Linux_passwd_decrypt/</loc>
+    
+    <lastmod>2019-03-15T05:28:56.811Z</lastmod>
     
   </url>
   
