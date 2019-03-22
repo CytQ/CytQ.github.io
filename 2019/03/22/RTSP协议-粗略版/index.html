@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/CytQ/BlogImgs/master/rtsp/play_server.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/CytQ/BlogImgs/master/rtsp/teardown_client.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/CytQ/BlogImgs/master/rtsp/teardown_server.png">
-<meta property="og:updated_time" content="2019-03-22T09:56:46.485Z">
+<meta property="og:updated_time" content="2019-03-22T10:01:04.037Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RTSP协议-粗略版">
 <meta name="twitter:description" content="之前毕业时用RTSP配合H264写了个简单的直播App，主要实现逻辑是用ffmpeg相关组件去播放和传递，核心是音视频同步。这些是全应用层的东西，最近研究大华和海康威视的摄像头时，发现有写fuzzer的必要，那就必须把这协议的细节摸清楚，所以本文对此做个记录 : )">
@@ -253,21 +253,21 @@
 <p><strong>E.G:</strong></p>
 <p><strong>Request:</strong></p>
 <p><img src="https://raw.githubusercontent.com/CytQ/BlogImgs/master/rtsp/options_client.png" alt="https://raw.githubusercontent.com/CytQ/BlogImgs/master/rtsp/options_client.png"></p>
-<p>As we see, there is a header element which is called Authorization.It contains username\password and other necessary information. 4G0324APAJCB429 in realm is the camera serial number and it’s the unique identification for every IOT hardware.</p>
+<p>As we see, Authorization in HEADER  contains username\password and other necessary information. 4G0324APAJCB429 in realm is the camera serial number and it’s the unique identification for every IOT hardware.</p>
 <p><strong>Response:</strong></p>
 <p><img src="https://raw.githubusercontent.com/CytQ/BlogImgs/master/rtsp/options_server.png" alt="https://raw.githubusercontent.com/CytQ/BlogImgs/master/rtsp/options_server.png"></p>
-<p>In the response, we can see a element which is called Public. It contains all methods which supported by Server.</p>
+<p>In the response, we can Public in HEADER . It contains all methods which supported by Server.</p>
 <h2 id="DESCRIBE"><a href="#DESCRIBE" class="headerlink" title="DESCRIBE"></a>DESCRIBE</h2><ul>
-<li>Client sends to get specific media information.</li>
+<li>Client sends it to get specific media information.</li>
 </ul>
 <p><img src="https://raw.githubusercontent.com/CytQ/BlogImgs/master/rtsp/describe_client.png" alt="https://raw.githubusercontent.com/CytQ/BlogImgs/master/rtsp/describe_client.png"></p>
-<p>Accept in header will show what client want. In this request, it’s sdp</p>
+<p>Accept in HEADER will show what client want. In this request, it’s sdp (sdp is a protocol, I will introduce it in next blog)</p>
 <p><img src="https://raw.githubusercontent.com/CytQ/BlogImgs/master/rtsp/describe_server.png" alt="https://raw.githubusercontent.com/CytQ/BlogImgs/master/rtsp/describe_server.png"></p>
 <h2 id="SETUP"><a href="#SETUP" class="headerlink" title="SETUP"></a>SETUP</h2><p>This method has two steps.</p>
 <p><strong>The first step:</strong></p>
 <ul>
-<li>Client will confirm how to transport and send it to server. Look at the “Transport” element  in HEADER.  </li>
-<li>If server agrees with that, it will generate a sessionID and returns it to client.</li>
+<li>Client will confirm how to transport and send this contract to server. Look at the “Transport”  in HEADER.  </li>
+<li>If server agrees with that, it will generate a sessionID and returns it to the client.</li>
 </ul>
 <p><img src="https://raw.githubusercontent.com/CytQ/BlogImgs/master/rtsp/setup_client_1.png" alt="https://raw.githubusercontent.com/CytQ/BlogImgs/master/rtsp/setup_client_1.png"></p>
 <p><img src="https://raw.githubusercontent.com/CytQ/BlogImgs/master/rtsp/setup_server_1.png" alt="https://raw.githubusercontent.com/CytQ/BlogImgs/master/rtsp/setup_server_1.png"></p>
@@ -279,7 +279,7 @@
 <p><img src="https://raw.githubusercontent.com/CytQ/BlogImgs/master/rtsp/setup_client_2.png" alt="https://raw.githubusercontent.com/CytQ/BlogImgs/master/rtsp/setup_client_2.png"></p>
 <p><img src="https://raw.githubusercontent.com/CytQ/BlogImgs/master/rtsp/setup_server_2.png" alt="https://raw.githubusercontent.com/CytQ/BlogImgs/master/rtsp/setup_server_2.png"></p>
 <h2 id="PLAY"><a href="#PLAY" class="headerlink" title="PLAY"></a>PLAY</h2><p><img src="https://raw.githubusercontent.com/CytQ/BlogImgs/master/rtsp/play_client.png" alt="https://raw.githubusercontent.com/CytQ/BlogImgs/master/rtsp/play_client.png"></p>
-<p>npt in range is short for Normal Play Time. If we set it to 0, it will play now. If it’s 5, it will play until 5 second later.</p>
+<p>npt in range is short for Normal Play Time. If we set it to 0, it will play now. If it’s 5, it will play until 5 seconds later.</p>
 <p><img src="https://raw.githubusercontent.com/CytQ/BlogImgs/master/rtsp/play_server.png" alt="https://raw.githubusercontent.com/CytQ/BlogImgs/master/rtsp/play_server.png"></p>
 <p>When server get the play request, server will put it into a queue and play them <strong>one by one</strong>.</p>
 <h2 id="TEARDOWN"><a href="#TEARDOWN" class="headerlink" title="TEARDOWN"></a>TEARDOWN</h2><p>Terminate this session.</p>
