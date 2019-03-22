@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/CytQ/BlogImgs/master/rtsp/play_server.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/CytQ/BlogImgs/master/rtsp/teardown_client.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/CytQ/BlogImgs/master/rtsp/teardown_server.png">
-<meta property="og:updated_time" content="2019-03-22T09:49:45.364Z">
+<meta property="og:updated_time" content="2019-03-22T09:56:46.485Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RTSP协议-粗略版">
 <meta name="twitter:description" content="之前毕业时用RTSP配合H264写了个简单的直播App，主要实现逻辑是用ffmpeg相关组件去播放和传递，核心是音视频同步。这些是全应用层的东西，最近研究大华和海康威视的摄像头时，发现有写fuzzer的必要，那就必须把这协议的细节摸清楚，所以本文对此做个记录 : )">
@@ -240,8 +240,7 @@
 <blockquote>
 <p> So it will be :  rtsp://admin:password@192.168.1.13:554/cam/realmonitor?channel=1&amp;subtype=0</p>
 </blockquote>
-<p>#Methods</p>
-<p>OPTIONS，DESCRIBE，SETUP，PLAY，GET_PARAMETER，TEARDOWN</p>
+<h1 id="Methods"><a href="#Methods" class="headerlink" title="Methods"></a>Methods</h1><p>OPTIONS，DESCRIBE，SETUP，PLAY，GET_PARAMETER，TEARDOWN</p>
 <blockquote>
 <p>Note: </p>
 <p>“Clients” in this blog means stream players</p>
