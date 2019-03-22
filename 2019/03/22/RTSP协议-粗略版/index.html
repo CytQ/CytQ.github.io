@@ -13,13 +13,13 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="之前毕业时用RTSP配合H264写了个简单的直播App，主要实现逻辑是用ffmpeg相关组件去播放和传递，核心是音视频同步。这些是全应用层的东西，最近研究大华和海康威视的摄像头时，发现有写fuzzer的必要，那就必须把这协议的细节摸清楚，所以本文对此做个记录 : )">
+    <meta name="description" content="毕业时用RTSP配合H264写了个简单的直播App，主要实现逻辑是用ffmpeg相关组件去播放和控制，核心是编解码和音视频的同步。这些是全应用层的东西，最近研究大华和海康威视的摄像头时，发现有写fuzzer的必要，那就必须把这协议的细节摸清楚，所以本文对此做个记录 : )">
 <meta name="keywords" content="协议,RTSP">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="RTSP协议-粗略版">
 <meta property="og:url" content="http://imlzq.com/2019/03/22/RTSP协议-粗略版/index.html">
 <meta property="og:site_name" content="Hello! CytQ">
-<meta property="og:description" content="之前毕业时用RTSP配合H264写了个简单的直播App，主要实现逻辑是用ffmpeg相关组件去播放和传递，核心是音视频同步。这些是全应用层的东西，最近研究大华和海康威视的摄像头时，发现有写fuzzer的必要，那就必须把这协议的细节摸清楚，所以本文对此做个记录 : )">
+<meta property="og:description" content="毕业时用RTSP配合H264写了个简单的直播App，主要实现逻辑是用ffmpeg相关组件去播放和控制，核心是编解码和音视频的同步。这些是全应用层的东西，最近研究大华和海康威视的摄像头时，发现有写fuzzer的必要，那就必须把这协议的细节摸清楚，所以本文对此做个记录 : )">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https://raw.githubusercontent.com/CytQ/BlogImgs/master/rtsp/options_client.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/CytQ/BlogImgs/master/rtsp/options_server.png">
@@ -33,10 +33,10 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/CytQ/BlogImgs/master/rtsp/play_server.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/CytQ/BlogImgs/master/rtsp/teardown_client.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/CytQ/BlogImgs/master/rtsp/teardown_server.png">
-<meta property="og:updated_time" content="2019-03-22T10:01:04.037Z">
+<meta property="og:updated_time" content="2019-03-22T10:03:47.596Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RTSP协议-粗略版">
-<meta name="twitter:description" content="之前毕业时用RTSP配合H264写了个简单的直播App，主要实现逻辑是用ffmpeg相关组件去播放和传递，核心是音视频同步。这些是全应用层的东西，最近研究大华和海康威视的摄像头时，发现有写fuzzer的必要，那就必须把这协议的细节摸清楚，所以本文对此做个记录 : )">
+<meta name="twitter:description" content="毕业时用RTSP配合H264写了个简单的直播App，主要实现逻辑是用ffmpeg相关组件去播放和控制，核心是编解码和音视频的同步。这些是全应用层的东西，最近研究大华和海康威视的摄像头时，发现有写fuzzer的必要，那就必须把这协议的细节摸清楚，所以本文对此做个记录 : )">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/CytQ/BlogImgs/master/rtsp/options_client.png">
     
     
@@ -232,7 +232,7 @@
     
     <div class="post-content markdown" itemprop="articleBody">
         <div class="main-content-wrap">
-            <p>之前毕业时用RTSP配合H264写了个简单的直播App，主要实现逻辑是用ffmpeg相关组件去播放和传递，核心是音视频同步。这些是全应用层的东西，最近研究大华和海康威视的摄像头时，发现有写fuzzer的必要，那就必须把这协议的细节摸清楚，所以本文对此做个记录 : )</p>
+            <p>毕业时用RTSP配合H264写了个简单的直播App，主要实现逻辑是用ffmpeg相关组件去播放和控制，核心是编解码和音视频的同步。这些是全应用层的东西，最近研究大华和海康威视的摄像头时，发现有写fuzzer的必要，那就必须把这协议的细节摸清楚，所以本文对此做个记录 : )</p>
 <a id="more"></a>
 <h1 id="Url"><a href="#Url" class="headerlink" title="Url"></a>Url</h1><p>rtsp_url = (“rtsp:”| “rtspu:”) “//” host [“:”port”] /[abs_path]/content_name</p>
 <p>Such as : rtsp://192.168.1.13:554/cam/realmonitor?channel=1&amp;subtype=0</p>
