@@ -21,7 +21,7 @@
 <meta property="og:site_name" content="Hello! CytQ">
 <meta property="og:description" content="本文记录一些Android Root相关的内容">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-05-01T12:26:39.264Z">
+<meta property="og:updated_time" content="2019-05-01T12:45:09.335Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android Root">
 <meta name="twitter:description" content="本文记录一些Android Root相关的内容">
@@ -227,13 +227,14 @@
 <h2 id="核心策略"><a href="#核心策略" class="headerlink" title="核心策略"></a>核心策略</h2><p>Android的root其实说白了就是把su这个二进制文件复制到/system/bin或者/system/xbin当中，从而让用户能执行它。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cp /data/tmp/su /system/bin/ #copy su 到/system/分区</span><br><span class="line">chown root:root su #su的所有者置成root</span><br><span class="line">chmod 4775 /system/bin/su #把su置成-rwsr-xr-x</span><br></pre></td></tr></table></figure>
 <p>执行这三步均需要Root权限，所以接下来最重要的是就是找到系统进程存在的漏洞getShell并执行以上的三步操作。</p>
-<h2 id="绕过SELinux"><a href="#绕过SELinux" class="headerlink" title="绕过SELinux"></a>绕过SELinux</h2><p>Android 4.3及以下SELinux默认为permissive状态，部分4.4及5.0为全量开启。在这种情况下，复制就不一定有权限了。</p>
+<h2 id="绕过SELinux"><a href="#绕过SELinux" class="headerlink" title="绕过SELinux"></a>绕过SELinux</h2><p>Android 4.3及以下SELinux默认为permissive状态，部分4.4及5.0为全量开启。在这种情况下，再调用su就不一定有权限了。</p>
 <p><strong>绕过它有两种策略：</strong></p>
 <ul>
 <li>注入SELinux的安全管理策略：安全管理策略在系统启动时就已固化，无法直接修改</li>
 <li>关闭SELinux</li>
 </ul>
-<p>这里介绍第二种。</p>
+<p>第一种的最终目的是：安全管理策略中加入permissive su</p>
+<p>第二种：</p>
 <blockquote>
 <ul>
 <li>Open the <em>/proc/filesystems</em> file, search for the string <em>“selinuxfs”</em>, if the string exists, SELinux is running on this device.</li>
