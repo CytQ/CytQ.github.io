@@ -6,25 +6,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Hello! CytQ">
-    <title>HTTPS - Hello! CytQ</title>
+    <title>Linux 堆 - Hello! CytQ</title>
     <meta name="author" content="CytQ">
     
     
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="https">
-<meta name="keywords" content="漏洞,协议">
+    <meta name="description" content="堆的管理策略取决于各操作系统的堆管理器实现。之前看Windows、Linux，发现他们是存在一些区别的。虽然总的策略类似但在一些细微实现上有很大的区别。 所以本文就着重介绍一下Linux/Android的堆管理策略吧，一些个人理解就想到什么写什么了。网上这方面的内容也很多。推荐下面两个：  Linux堆内存管理深入分析(上半部) Linux堆内存管理深入分析(下部分)">
+<meta name="keywords" content="漏洞,Linux">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="HTTPS">
-<meta property="og:url" content="http://imlzq.com/2016/01/30/HTTPS/index.html">
+<meta property="og:title" content="Linux 堆">
+<meta property="og:url" content="http://imlzq.com/2018/07/03/Linux 堆/index.html">
 <meta property="og:site_name" content="Hello! CytQ">
-<meta property="og:description" content="https">
+<meta property="og:description" content="堆的管理策略取决于各操作系统的堆管理器实现。之前看Windows、Linux，发现他们是存在一些区别的。虽然总的策略类似但在一些细微实现上有很大的区别。 所以本文就着重介绍一下Linux/Android的堆管理策略吧，一些个人理解就想到什么写什么了。网上这方面的内容也很多。推荐下面两个：  Linux堆内存管理深入分析(上半部) Linux堆内存管理深入分析(下部分)">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2018-04-27T08:48:05.948Z">
+<meta property="og:image" content="https://azeria-labs.com/wp-content/uploads/2019/03/chunk-freed-CS.png">
+<meta property="og:updated_time" content="2019-05-02T07:38:25.325Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="HTTPS">
-<meta name="twitter:description" content="https">
+<meta name="twitter:title" content="Linux 堆">
+<meta name="twitter:description" content="堆的管理策略取决于各操作系统的堆管理器实现。之前看Windows、Linux，发现他们是存在一些区别的。虽然总的策略类似但在一些细微实现上有很大的区别。 所以本文就着重介绍一下Linux/Android的堆管理策略吧，一些个人理解就想到什么写什么了。网上这方面的内容也很多。推荐下面两个：  Linux堆内存管理深入分析(上半部) Linux堆内存管理深入分析(下部分)">
+<meta name="twitter:image" content="https://azeria-labs.com/wp-content/uploads/2019/03/chunk-freed-CS.png">
     
     
         
@@ -201,14 +203,14 @@
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title" itemprop="headline">
-            HTTPS
+            Linux 堆
         </h1>
     
     
         <div class="post-meta">
-    <time itemprop="datePublished" datetime="2016-01-30T23:24:18+08:00">
+    <time itemprop="datePublished" datetime="2018-07-03T00:00:00+08:00">
 	
-		    Jan 30, 2016
+		    Jul 03, 2018
     	
     </time>
     
@@ -219,54 +221,142 @@
     
     <div class="post-content markdown" itemprop="articleBody">
         <div class="main-content-wrap">
-            <p>https</p>
-<a id="more"></a>    
-<p>HTTPS是在HTTP的基础上和ssl/tls证书结合起来的一种协议,保证了传输过程中的安全性,减少了被恶意劫持的可能.解决了http的三个缺点（被监听、被篡改、被伪装）</p>
-<h2 id="对称加密和非对称加密"><a href="#对称加密和非对称加密" class="headerlink" title="对称加密和非对称加密"></a>对称加密和非对称加密</h2><ul>
-<li>对称加密<ul>
-<li>即加密的密钥和解密的密钥相同,</li>
-</ul>
-</li>
-<li>非对称加密<ul>
-<li>非对称加密将密钥分为公钥和私钥,公钥可以公开,私钥需要保密,客户端公钥加密的数据,服务端可以通过私钥来解密</li>
-</ul>
-</li>
-</ul>
-<h2 id="证书"><a href="#证书" class="headerlink" title="证书"></a>证书</h2><p>SSL证书里面包含了网站的域名，证书有效期，证书的颁发机构以及用于加密传输密码的公钥等信息。</p>
-<p>实际上，我们使用的证书分很多种类型，SSL证书只是其中的一种。证书的格式是由X.509标准定义。</p>
-<p>SSL证书负责传输公钥，是一种PKI（Public Key Infrastructure，公钥基础结构）证书。</p>
-<p>常见的证书根据用途不同大致有以下几种：</p>
+            <p>堆的管理策略取决于各操作系统的堆管理器实现。之前看Windows、Linux，发现他们是存在一些区别的。虽然总的策略类似但在一些细微实现上有很大的区别。</p>
+<p>所以本文就着重介绍一下Linux/Android的堆管理策略吧，一些个人理解就想到什么写什么了。网上这方面的内容也很多。推荐下面两个：</p>
 <ul>
-<li>SSL证书：用于加密HTTP协议，也就是HTTPS。</li>
-<li>代码签名证书：用于签名二进制文件，比如Windows内核驱动，Firefox插件，Java代码签名等等。</li>
-<li>客户端证书：用于加密邮件。</li>
-<li>双因素证书：网银专业版使用的USB Key里面用的就是这种类型的证书。</li>
+<li><a href="https://www.cnblogs.com/alisecurity/p/5486458.html" target="_blank" rel="noopener">Linux堆内存管理深入分析(上半部)</a></li>
+<li><a href="https://www.cnblogs.com/alisecurity/p/5520847.html" target="_blank" rel="noopener">Linux堆内存管理深入分析(下部分)</a></li>
 </ul>
-<p>这些证书都是由受认证的证书颁发机构——我们称之为CA（Certificate Authority）机构来颁发，针对企业与个人的不同，可申请的证书的类型也不同，价格也不同。CA机构颁发的证书都是受信任的证书，对于SSL证书来说，如果访问的网站与证书绑定的网站一致就可以通过浏览器的验证而不会提示错误。</p>
-<h2 id="握手"><a href="#握手" class="headerlink" title="握手"></a>握手</h2><ul>
-<li>1）客户端将自己支持的一套加密规则发送给网站。 </li>
-<li>2）网站从中选出一组加密算法与HASH算法，并将自己的身份信息以证书的形式发回给客户端。证书里面包含了网站地址，加密公钥，以及证书的颁发机构等信息。  </li>
-<li>3）客户端获得网站证书之后浏览器要做以下工作：<ul>
-<li>a) 验证证书的合法性（颁发证书的机构是否合法，证书中包含的网站地址是否与正在访问的地址一致等），如果证书受信任，则浏览器栏里面会显示一个小锁头，否则会给出证书不受信的提示。</li>
-<li>b) 如果证书受信任，或者是用户接受了不受信的证书，客户端会生成一串随机数的密码，并用证书中提供的公钥加密。</li>
-<li>c) 使用约定好的HASH算法计算握手消息，并使用生成的随机数对消息进行加密，最后将之前生成的所有信息发送给网站。 </li>
+<a id="more"></a>    
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>在以前的博客中有介绍到，对于Android的进程来说，每个进程内部都是一个大的虚拟地址空间。对于已经划分的区域，均会创建一个vm_area_struct结构并将其链接到进程维护的vm_area_struct链表当中。vm_area_struct结构会包含这块区域的起始位置、next指针，flag等等。而我们的堆、栈就属于这样的一个vm_area_struct结构。</p>
+<h2 id="堆的初始化"><a href="#堆的初始化" class="headerlink" title="堆的初始化"></a>堆的初始化</h2><p>堆会在程序第一次请求分配内存的时候初始化，即第一次调用malloc的时候。</p>
+<p>我们在开发或者配置系统环境的过程中，经常能看到一些关于堆最小值、最大值的参数，这些就会在堆初始化的过程中进行读取。</p>
+<h2 id="堆的拓展"><a href="#堆的拓展" class="headerlink" title="堆的拓展"></a>堆的拓展</h2><p>当堆第一次创建完成后，它的范围大小还未达到最大。当我们发现目前区域的剩余内存不够分时就需要再拓展我们的堆，直至它达到maximum。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">brk</span><span class="params">(<span class="keyword">void</span> *end_data_segment)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">sbrk</span><span class="params">(<span class="keyword">ptrdiff_t</span> increment)</span></span>;</span><br></pre></td></tr></table></figure>
+<p><strong>系统提供了两个方法：</strong></p>
+<ul>
+<li>brk:增大堆边界到指定位置</li>
+<li>sbrk：增大指定数</li>
+</ul>
+<p><strong>他们的描述如下：</strong></p>
+<blockquote>
+<p>brk sets the end of the data segment to the value specified by end_data_segment, when that value is reasonable, the system does have enough memory and the process does not exceed its max data size (see setrlimit(2)).</p>
+<p>sbrk increments the program’s data space by increment bytes. sbrk isn’t a system call, it is just a C library wrapper. Calling sbrk with an increment of 0 can be used to find the current location of the program break</p>
+</blockquote>
+<p>brk为系统调用，sbrk为brk的子集，就是它的二次封装。当区域不够时，堆会调用sbrk去增大</p>
+<h2 id="超大内存块的内配"><a href="#超大内存块的内配" class="headerlink" title="超大内存块的内配"></a>超大内存块的内配</h2><blockquote>
+<p>堆分配内存其实是从操作系统中割下一块区域给自己用，等到合适的实际再返回给操作系统。那么以正常的开发思维来看，在堆管理器中建立缓存是非常有必要的，这样能避免出现频繁的系统IO。</p>
+</blockquote>
+<p>但对于超大内存块来说，其实就没有太大的必要缓存它了，因为缓存和回收再利用的成本其实非常大。试想下面这情况：</p>
+<ol>
+<li>内存1000，此时分配了900的超大内存</li>
+<li>该超大内存被释放</li>
+<li>程序接下来的所有操作均为小内存分配，也就是10、20K的来。</li>
+<li>那么这剩余的800多K就被白白浪费了</li>
+</ol>
+<p><strong>所以Linux的堆管理器在应对超大内存块时，都会直接使用mmap在off-heap区域分配一块大内存，一旦释放，则直接unmmap将其归还给系统。</strong></p>
+<p>超大内存块的判定根据系统位数和具体的堆管理决定，32位一般是128KB起</p>
+<blockquote>
+<p>Very large allocation requests <a href="https://sourceware.org/git/gitweb.cgi?p=glibc.git;a=blob;f=malloc/malloc.c;h=6e766d11bc85b6480fa5c9f2a76559f8acf9deb5;hb=HEAD#l866" target="_blank" rel="noopener">get special treatment</a> in the heap manager. These large chunks are allocated off-heap using a direct call to <em>mmap</em>, and this fact is marked using a flag in the chunk metadata. When these huge allocations are later returned to the heap manager via a call to <em>free</em>, the heap manager releases the entire <em>mmap</em>ed region back to the system via <em>munmap</em>.</p>
+<p>By default this threshold is 128KB up to 512KB on 32-bit systems and 32MB on 64-bit systems, however this threshold can also dynamically increase if the heap manager detects that these large allocations are being used transiently.</p>
+</blockquote>
+<h2 id="小内存块的分配（相对于大内存块的概念）"><a href="#小内存块的分配（相对于大内存块的概念）" class="headerlink" title="小内存块的分配（相对于大内存块的概念）"></a>小内存块的分配（相对于大内存块的概念）</h2><p>堆分配的单位被称为块chunk。在堆第一次初始化后，堆中只有一个topChunk。之后的每次切割都会从中切出一部分，剩余的部分继续当成topChunk</p>
+<p>首先介绍Linux堆的几类chunk List。除了unsortbin无size大小限制外，其余的3个都会有：</p>
+<ul>
+<li>fastbin: 单向链表，无合并操作（除非空闲堆块数量超过阈值，才会合并后放入UnsortBin）。对应16~88 bytes的堆块</li>
+<li>unsortbin:双向链表，处于binList的第0位。内部存放的堆块无大小限制</li>
+<li>smallbin：双向链表，处于binList的第1~62位，总共62个块。对应大小小于512 bytes的堆块</li>
+<li>largebin：双向链表，处于binList的第63~125位，总共63个块。对应大小大于512 bytes的堆块</li>
+</ul>
+<p>上面提到了一个binList，其实就是unsortbin,smallbin,largebin的管理类，通过它就可以快速定位到指定的bin区域，它与fastbin同级。</p>
+<p>图解就是：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">fastbin</span><br><span class="line"></span><br><span class="line">			unsortbin</span><br><span class="line">binList -&gt;  smallbin</span><br><span class="line">			largebin</span><br></pre></td></tr></table></figure>
+<h3 id="堆块的合并"><a href="#堆块的合并" class="headerlink" title="堆块的合并"></a>堆块的合并</h3><p>上面提到了堆块的合并，这是啥呢？</p>
+<ul>
+<li>堆释放chunkB时发现它物理相连的chunkA也处于空闲状态，就会把自己和A合并从而构建一个新的大块，此为向后合并（这名字有点怪，其实就是让A的范围包含B，所以叫向后）</li>
+<li>如果释放chunkB时发现它物理相连的chunkC也处于空闲状态，就会把自己和C合并从而构建一个新的大块，此为向前合并。</li>
+<li>如果free(ChunkA)时发现它和topChunk物理相邻，那么将其合并到topChunk中</li>
+</ul>
+<h3 id="Chunk的格式"><a href="#Chunk的格式" class="headerlink" title="Chunk的格式"></a>Chunk的格式</h3><p><img src="https://azeria-labs.com/wp-content/uploads/2019/03/chunk-freed-CS.png" alt="Chunk格式"></p>
+<p>从上到下可以看到，一个空闲堆块的结构布局依次为prev_size, chunkSize &amp; flag, fd pointer, bk pointer, fd_nextsize, bk_nextsize, content。</p>
+<p>一个非空闲堆块的结构布局就很简单了，PREV_SIZE, chunkSize &amp; flag, content</p>
+<ul>
+<li><p><strong>对于unsort bin, small bin而言：</strong>不存在fd_next_size, bk_nextsize</p>
+</li>
+<li><p>chunkSize后面的flag非常重要，他有三个标志位：</p>
+<ul>
+<li>A用于表示分配的arena是main arena还是其他arena(在本文的下个内容介绍)</li>
+<li>M用于表示该堆块是否由mmap分配，如果是，那么释放的时候该chunk会走unmmap的途径</li>
+<li>P用于表示前一个堆块是否处于使用状态，用于判断是否需要合并</li>
 </ul>
 </li>
-<li>4）网站接收客户端发来的数据之后要做以下的操作：<ul>
-<li>a) 使用自己的私钥将信息解密取出密码，使用密码解密浏览器发来的握手消息，并验证HASH是否与浏览器发来的一致。</li>
-<li>b) 使用密码加密一段握手消息，发送给浏览器。 </li>
+<li><p>PREV_SIZE，chunkSize&amp;flag这些在32位的系统上为4字节，16为系统为8字节</p>
+</li>
+<li><p>使用malloc返回的指针为chunkSize&amp;flag结束的位置，即fd的开始。且malloc(8)得到的实际大小会再额外加上PREV_SIZE和CHUNK_SIZE占用的大小</p>
+</li>
+<li><p>malloc存在字节对齐，比如1024byte的数据在32位上刚好是8位对齐，可以直接分配。那如果分配1028的数据该怎么办呢？</p>
+<ul>
+<li>答案是分配1024个字节，剩余的4个字节占用下个堆块的PREV_SIZE部分</li>
 </ul>
 </li>
-<li>5）浏览器解密并计算握手消息的HASH，如果与服务端发来的HASH一致，此时握手过程结束，之后所有的通信数据将由之前浏览器生成的随机密码并利用对称加密算法进行加密。 </li>
+<li><p>使用calloc分配内存块时，它会clear掉content区域的内容，这样就不会造成数据的重复使用了</p>
+</li>
+<li><p>使用malloc分配内存块时，会直接返回指向该chunk的指针，并不会清除该chunk的内容。那么就可能造成数据的反复使用。</p>
+<ul>
+<li>如：A=malloc(8).  </li>
+<li>setTxt(A).</li>
+<li>free(A). </li>
+<li>B = malloc(8). print getTxt(B)</li>
+<li>会发现打印的结果就是A设置的内容</li>
 </ul>
-<h2 id="HTTPS协议和HTTP协议的区别"><a href="#HTTPS协议和HTTP协议的区别" class="headerlink" title="HTTPS协议和HTTP协议的区别"></a>HTTPS协议和HTTP协议的区别</h2><ul>
-<li>https协议需要到ca申请证书，一般免费证书很少，需要交费。</li>
-<li>http是超文本传输协议，信息是明文传输，https 则是具有安全性的ssl加密传输协议。</li>
-<li>http和https使用的是完全不同的连接方式用的端口也不一样,前者是80,后者是443。</li>
-<li>http的连接很简单,是无状态的 。</li>
-<li>HTTPS协议是由SSL+HTTP协议构建的可进行加密传输、身份认证的网络协议， 要比http协议安全。</li>
+</li>
 </ul>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="http://www.runoob.com/w3cnote/https-ssl-intro.html" target="_blank" rel="noopener">http://www.runoob.com/w3cnote/https-ssl-intro.html</a></p>
+<h3 id="What-is-arena"><a href="#What-is-arena" class="headerlink" title="What is arena"></a>What is arena</h3><p>这其实是为了应对多线程。多线程的资源竞争、同步、锁在任何情况都是一个大问题。如果堆管理没有应对好，那么面对的会是程序崩溃。因此Linux的堆管理器ptmalloc使用了arena的概念。</p>
+<blockquote>
+<p>Each arena is essentially an entirely different heap that manages its own chunk allocation and free bins completely separately. Each arena still serializes access to its own internal data structures with a mutex, but threads can safely perform heap operations without stalling each other so long as they are interacting with different arenas.</p>
+</blockquote>
+<p>即：每个arena都是一个完全独立的堆，拥有并管理自己的chunk分配和free。这在一定程度上是能应对多线程并发的。</p>
+<p>只不过也正因为每个arena都有自己的堆，因此操作系统一定需要堆它的数量做限制，不然其他程序还活不活了？arena的数量上限在32位的系统上是2倍CPU核，64位上时8倍。</p>
+<p><strong>So the process is :</strong></p>
+<ul>
+<li>创建Main arena</li>
+<li>创建线程A，发现arena数量未达上限，则创建arenaA</li>
+<li>如果此时发现arena数量达到上限，那么便会尝试去arenaList，从而锁定一个arena去使用（就进原则）</li>
+<li>如果遍历完了都没找到，那就挂起，等待叫醒</li>
+</ul>
+<h3 id="分配堆块的流程"><a href="#分配堆块的流程" class="headerlink" title="分配堆块的流程"></a>分配堆块的流程</h3><p>以fastbin举例，smallBin和largeBin是类似的</p>
+<p><strong>创建30byte的堆块：</strong></p>
+<ol>
+<li>属于fastbin，尝试分配</li>
+<li>【情况一】此时系统还未初始化fastbin这个链表，故无法分配</li>
+<li>往后传递给smallBin尝试分配，发现也未初始化，说明此时的binList也没初始化。故程序会调用Init函数初始化binList和fastbin，之后就可以在fastbin中分配数据了</li>
+<li>【情况二】如果此时存在fastbin链表，那么根据堆块大小从前到后依次寻找到一个最合适的chunk去分配。如果刚好够，直接取下来即可。如果有剩余，那么就把剩余的chunk放入unsortChunk</li>
+<li>【情况三】fastbin链表遍历完成，但未发现一个合适的chunk，将进入unsortChunk的遍历过程。</li>
+<li>【情况四】unsortBin也搞不定，那就从topChunk分配</li>
+<li>【情况五】topChunk也搞不定，那就压缩和回收fastbin，把空闲堆块放入unsortBin中。之后尝试再分配</li>
+<li>【情况六】还不行，那就调用sbrk增大topChunk</li>
+<li>【情况七】已达堆的上限，返回失败</li>
+</ol>
+<h3 id="释放堆块的流程"><a href="#释放堆块的流程" class="headerlink" title="释放堆块的流程"></a>释放堆块的流程</h3><p>释放就很简单了，该合并的合并（有与前后合并的，也有和topChunk合并的），该放到binList或者fastbin的就放进去。</p>
+<p>只是这里要注意一点，free之前堆管理器会校验当前chunk的合法性，从而防止内存损坏或者double free.校验措施如下：</p>
+<ul>
+<li>p-&gt;fd-&gt;bk = p</li>
+<li>p-&gt;bk-&gt;fd = p</li>
+<li>p-&gt;nextChunk-&gt;prev_size = p.size</li>
+<li>获取当前bin的头部是否与自己相等，如果相同，那意味着doubleFree了<ul>
+<li>如free(A)，此时bin的头部指向A。</li>
+<li>接着再free(A)，发现匹配，异常退出</li>
+</ul>
+</li>
+</ul>
+<p><strong>Double free</strong></p>
+<p>其实之所以会出现double free，主要是因为free这个操作会把当前chunk放入bin。如果依次free A,B,A，再连续malloc 3次，那么第一次malloc和第三次malloc指向的会是同一个chunk。这样的话修改第一个malloc就会直接影响到第三个chunk。</p>
+<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><ul>
+<li><a href="https://azeria-labs.com/heap-exploitation-part-1-understanding-the-glibc-heap-implementation/" target="_blank" rel="noopener">Arm Heap Exploitation:PART 1: UNDERSTANDING THE GLIBC HEAP IMPLEMENTATION</a></li>
+<li><a href="https://azeria-labs.com/heap-exploitation-part-2-glibc-heap-free-bins/" target="_blank" rel="noopener">PART 2: UNDERSTANDING THE GLIBC HEAP IMPLEMENTATION</a></li>
+<li><a href="https://www.cnblogs.com/alisecurity/p/5486458.html" target="_blank" rel="noopener">Linux堆内存管理深入分析(上半部)</a></li>
+<li><a href="https://www.cnblogs.com/alisecurity/p/5520847.html" target="_blank" rel="noopener">Linux堆内存管理深入分析(下部分)</a></li>
+</ul>
 
             
 
@@ -277,7 +367,7 @@
             <div class="post-footer-tags">
                 <span class="text-color-light text-small">TAGGED IN</span><br/>
                 
-    <a class="tag tag--primary tag--small t-link" href="/tags/协议/">协议</a> <a class="tag tag--primary tag--small t-link" href="/tags/漏洞/">漏洞</a>
+    <a class="tag tag--primary tag--small t-link" href="/tags/Linux/">Linux</a> <a class="tag tag--primary tag--small t-link" href="/tags/漏洞/">漏洞</a>
 
             </div>
         
@@ -288,7 +378,7 @@
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/02/24/总结及梳理：Fragment/" data-tooltip="总结及梳理：Fragment" aria-label="PREVIOUS: 总结及梳理：Fragment">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/08/07/stackOverFlow_1/" data-tooltip="通关栈溢出（一）：原理及初级攻击" aria-label="PREVIOUS: 通关栈溢出（一）：原理及初级攻击">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -297,7 +387,7 @@
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/01/24/RxjavaUsage/" data-tooltip="RxJava使用示例：实现Rxbus代替eventbus" aria-label="NEXT: RxJava使用示例：实现Rxbus代替eventbus">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/06/28/SELinux和SEAndroid/" data-tooltip="SELinux和SEAndroid" aria-label="NEXT: SELinux和SEAndroid">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -315,7 +405,7 @@
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2016/01/30/HTTPS/" title="Share on Weibo">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2018/07/03/Linux 堆/" title="Share on Weibo">
                     <i class="fa fa-weibo" aria-hidden="true"></i>
                 </a>
             </li>
@@ -323,7 +413,7 @@
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2016/01/30/HTTPS/&amp;title=HTTPS" title="Share on QQ">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2018/07/03/Linux 堆/&amp;title=Linux 堆" title="Share on QQ">
                     <i class="fa fa-qq" aria-hidden="true"></i>
                 </a>
             </li>
@@ -331,7 +421,7 @@
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2016/01/30/HTTPS/" title="Share on Qzone">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2018/07/03/Linux 堆/" title="Share on Qzone">
                     <i class="fa fa-star" aria-hidden="true"></i>
                 </a>
             </li>
@@ -339,7 +429,7 @@
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2016/01/30/HTTPS/" title="Share on Renren">
+                <a class="post-action-btn btn btn--default" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2018/07/03/Linux 堆/" title="Share on Renren">
                     <i class="fa fa-renren" aria-hidden="true"></i>
                 </a>
             </li>
@@ -390,7 +480,7 @@
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/02/24/总结及梳理：Fragment/" data-tooltip="总结及梳理：Fragment" aria-label="PREVIOUS: 总结及梳理：Fragment">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/08/07/stackOverFlow_1/" data-tooltip="通关栈溢出（一）：原理及初级攻击" aria-label="PREVIOUS: 通关栈溢出（一）：原理及初级攻击">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
@@ -399,7 +489,7 @@
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/01/24/RxjavaUsage/" data-tooltip="RxJava使用示例：实现Rxbus代替eventbus" aria-label="NEXT: RxJava使用示例：实现Rxbus代替eventbus">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/06/28/SELinux和SEAndroid/" data-tooltip="SELinux和SEAndroid" aria-label="NEXT: SELinux和SEAndroid">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -417,7 +507,7 @@
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2016/01/30/HTTPS/" title="Share on Weibo">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2018/07/03/Linux 堆/" title="Share on Weibo">
                     <i class="fa fa-weibo" aria-hidden="true"></i>
                 </a>
             </li>
@@ -425,7 +515,7 @@
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2016/01/30/HTTPS/&amp;title=HTTPS" title="Share on QQ">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2018/07/03/Linux 堆/&amp;title=Linux 堆" title="Share on QQ">
                     <i class="fa fa-qq" aria-hidden="true"></i>
                 </a>
             </li>
@@ -433,7 +523,7 @@
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2016/01/30/HTTPS/" title="Share on Qzone">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2018/07/03/Linux 堆/" title="Share on Qzone">
                     <i class="fa fa-star" aria-hidden="true"></i>
                 </a>
             </li>
@@ -441,7 +531,7 @@
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2016/01/30/HTTPS/" title="Share on Renren">
+                <a class="post-action-btn btn btn--default" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2018/07/03/Linux 堆/" title="Share on Renren">
                     <i class="fa fa-renren" aria-hidden="true"></i>
                 </a>
             </li>
@@ -474,7 +564,7 @@
             
             
             <li class="share-option">
-                <a class="share-option-btn" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2016/01/30/HTTPS/">
+                <a class="share-option-btn" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://imlzq.com/2018/07/03/Linux 堆/">
                     <i class="fa fa-weibo" aria-hidden="true"></i><span>Share on Weibo</span>
                 </a>
             </li>
@@ -482,7 +572,7 @@
             
             
             <li class="share-option">
-                <a class="share-option-btn" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2016/01/30/HTTPS/&amp;title=HTTPS">
+                <a class="share-option-btn" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://imlzq.com/2018/07/03/Linux 堆/&amp;title=Linux 堆">
                     <i class="fa fa-qq" aria-hidden="true"></i><span>Share on QQ</span>
                 </a>
             </li>
@@ -490,7 +580,7 @@
             
             
             <li class="share-option">
-                <a class="share-option-btn" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2016/01/30/HTTPS/">
+                <a class="share-option-btn" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://imlzq.com/2018/07/03/Linux 堆/">
                     <i class="fa fa-star" aria-hidden="true"></i><span>Share on Qzone</span>
                 </a>
             </li>
@@ -498,7 +588,7 @@
             
             
             <li class="share-option">
-                <a class="share-option-btn" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2016/01/30/HTTPS/">
+                <a class="share-option-btn" target="new" href="http://widget.renren.com/dialog/share?resourceUrl=http://imlzq.com/2018/07/03/Linux 堆/">
                     <i class="fa fa-renren" aria-hidden="true"></i><span>Share on Renren</span>
                 </a>
             </li>
@@ -803,7 +893,7 @@
             (function() {
                 function render() {
                     new Gitment({
-                        id: 'http://imlzq.com/2016/01/30/HTTPS/',
+                        id: 'http://imlzq.com/2018/07/03/Linux 堆/',
                         owner: 'CytQ',
                         repo: 'BlogComments',
                         oauth: {
