@@ -22,7 +22,7 @@
 <meta property="og:description" content="堆的管理策略取决于各操作系统的堆管理器实现。之前看Windows、Linux，发现他们是存在一些区别的。虽然总的策略类似但在一些细微实现上有很大的区别。 所以本文就着重介绍一下Linux/Android的堆管理策略吧，一些个人理解就想到什么写什么了。网上这方面的内容也很多。推荐下面两个：  Linux堆内存管理深入分析(上半部) Linux堆内存管理深入分析(下部分)">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https://azeria-labs.com/wp-content/uploads/2019/03/chunk-freed-CS.png">
-<meta property="og:updated_time" content="2019-05-02T07:38:25.325Z">
+<meta property="og:updated_time" content="2019-05-02T08:43:28.426Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux 堆">
 <meta name="twitter:description" content="堆的管理策略取决于各操作系统的堆管理器实现。之前看Windows、Linux，发现他们是存在一些区别的。虽然总的策略类似但在一些细微实现上有很大的区别。 所以本文就着重介绍一下Linux/Android的堆管理策略吧，一些个人理解就想到什么写什么了。网上这方面的内容也很多。推荐下面两个：  Linux堆内存管理深入分析(上半部) Linux堆内存管理深入分析(下部分)">
@@ -251,8 +251,8 @@
 <ol>
 <li>内存1000，此时分配了900的超大内存</li>
 <li>该超大内存被释放</li>
-<li>程序接下来的所有操作均为小内存分配，也就是10、20K的来。</li>
-<li>那么这剩余的800多K就被白白浪费了</li>
+<li>程序接下来的所有操作均为小内存分配，也就是10、20byte的来。</li>
+<li>那么这剩余的800多byte就被白白浪费了</li>
 </ol>
 <p><strong>所以Linux的堆管理器在应对超大内存块时，都会直接使用mmap在off-heap区域分配一块大内存，一旦释放，则直接unmmap将其归还给系统。</strong></p>
 <p>超大内存块的判定根据系统位数和具体的堆管理决定，32位一般是128KB起</p>
